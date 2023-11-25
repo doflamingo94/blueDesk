@@ -8,7 +8,7 @@ dist
 
 # Node dependencies
 node_modules
-bcrypt_lib.node
+.node
 
 # Logs
 logs
