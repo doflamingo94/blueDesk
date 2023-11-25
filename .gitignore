@@ -4,10 +4,11 @@ backend/node_modules/bcrypt/lib/binding/napi-v3/bcrypt_lib.node
 .data
 .nuxt
 .nitro
-.cache
 dist
+.cache
 
-# Node dependencies
+
+# Node dependencies ok
 node_modules
 
 # Logs
