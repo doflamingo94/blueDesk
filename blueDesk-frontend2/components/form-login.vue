@@ -1,5 +1,6 @@
 <template>
     <div id="error-message" class="error-message"></div>
+    <div id="notif-message" class="notif-message"></div>
         <header>
         <h1 class="heading">Identifiez vous</h1>
     </header>
@@ -154,6 +155,17 @@ function showError(message) {
   }, 5000);
 }
 
+function showNotif(message) {
+  const notifMessage = document.getElementById('notif-message');
+  notifMessage.textContent = message;
+  notifMessage.style.display = 'block';
+
+  setTimeout(() => {
+    notifMessage.style.display = 'none';
+    notifMessage.textContent = '';
+  }, 5000);
+}
+
 onMounted(() => {
     const signInButton = signIn.value;
     const signUpButton = signUp.value;
@@ -206,6 +218,7 @@ onMounted(() => {
         console.log('Response Data:', response.data);
 
         newUser.value = {};
+        showNotif("Votre inscription a bien été prise en compte. Connectez vous!")
       } catch (err) {
         console.log(err);
       }
@@ -239,6 +252,7 @@ onMounted(() => {
         console.log('Response Data:', response.data);
 
         newUser.value = {};
+        showNotif("Votre inscription a bien été prise en compte. Connectez vous!")
       } catch (err) {
         console.log(err);
       }
@@ -493,6 +507,20 @@ header {
     left: 50%;
     transform: translateX(-50%);
     background-color: rgb(255, 78, 78);
+    color: white;
+    padding: 6px;
+    display: none; /* Initially hidden */
+    border-radius: 6px;
+  }
+
+  .notif-message {
+    position: fixed;
+    top: 120px;
+    width: 300px;
+    z-index: 2;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgb(78, 167, 255);
     color: white;
     padding: 6px;
     display: none; /* Initially hidden */
