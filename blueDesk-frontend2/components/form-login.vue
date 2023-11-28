@@ -282,7 +282,7 @@ async function loggin() {
             const userId = response.data.userId;
 
             authStore.login(userId, role);
-            // router.push({path: '/candidat'});
+            router.push({path: '/candidat'});
           }
           
 
