@@ -6,7 +6,7 @@
                 <div class="ag-courses-item_bg"></div>
 
                 <div class="ag-courses-item_title">
-                {{a.titre}}
+                {{a.poste}}
                 </div>
 
                 <div class="ag-courses-item_date-box">

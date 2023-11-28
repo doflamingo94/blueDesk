@@ -1,26 +1,20 @@
 <template>
     <div id="error-message" class="error-message"></div>
     <div id="notif-message" class="notif-message"></div>
-        <header>
+    <header>
         <h1 class="heading">Identifiez vous</h1>
     </header>
  
-    <!-- container div -->
     <div ref="containerzz" class="container">
  
-        <!-- upper button section to select
-             the login or signup form -->
         <div ref="sliderz" class="slider"></div>
         <div class="btn">
             <button ref="signIn" class="login" id="login">Connexion</button>
             <button ref="signUp" class="signup" id="signup">S'inscrire</button>
         </div>
  
-        <!-- Form section that contains the
-             login and the signup form -->
         <div ref="formSection" class="form-section">
  
-            <!-- login form -->
             <form @submit.prevent="loggin" class="login-box">
                 <select name="typeUser" v-model="userLog.typeUser" class="name ele">
                     <option value="" disabled selected>Tu es ?</option>
@@ -39,8 +33,7 @@
                 <button type="submit" class="clkbtn">S'identifier</button>
             </form>
  
-            <!-- signup form -->
-            <form @submit.prevent="createUser" class="signup-box">
+            <form @submit.prevent class="signup-box">
                 <select name="typeUser" v-model="newUser.typeUser" class="name ele">
                     <option value="" disabled selected>Tu es ?</option>
                     <option value="Employeur">Employeur</option>
@@ -126,7 +119,6 @@ const userLog = ref({
   typeUser: '',
 });
 
-// Function to convert date format
 function convertDateFormat(dateString) {
   const parts = dateString.split('/');
 
@@ -143,7 +135,6 @@ function convertDateFormat(dateString) {
   }
 }
 
-// Function to show error message
 function showError(message) {
   const errorMessage = document.getElementById('error-message');
   errorMessage.textContent = message;
@@ -259,146 +250,69 @@ onMounted(() => {
     }
   }
    });
-     
-  
-//   const container = document.getElementById('container');
-//   const login = document.getElementById('login');
-//   const signup = document.getElementById('signup');
-//   login.addEventListener('click', ()=>{
-//     container.classList.add('right-panel-active');
-//     console.log('xxxxxxxxxxxx')
-//   })  
+})
 
-//   signup.addEventListener('click', ()=>{
-//     container.classList.remove('right-panel-active');
-//     console.log('zzzzzzzzzzz')
-
-//   })
-  
-}),
-
-
-
-// Function to create a user
-async function createUser() {
-  console.log(newUser.value);
-  if (newUser.value.typeUser === 'Candidat') {
-    if (
-      !newUser.value.prenom ||
-      !newUser.value.nom ||
-      !newUser.value.mail ||
-      !newUser.value.phone ||
-      !newUser.value.pass ||
-      !newUser.value.date_naissance ||
-      !newUser.value.sexe ||
-      !newUser.value.pass2
-    ) {
-      showError("Veuillez remplir 'tous' les champs.");
-    } else if (newUser.value.pass != newUser.value.pass2) {
-      showError("Vos mots de passe ne sont pas identiques");
-    } else {
-      try {
-        const date_naissance = convertDateFormat(newUser.value.date_naissance);
-        const response = await axios.post('http://localhost:3001/api/v1/candidats', {
-          prenom: newUser.value.prenom,
-          nom: newUser.value.nom,
-          date_naissance: date_naissance,
-          mail: newUser.value.mail,
-          phone: newUser.value.phone,
-          pass: newUser.value.pass,
-          sexe: newUser.value.sexe,
-        });
-
-        console.log('Status Code:', response.status);
-        console.log('Response Data:', response.data);
-
-        newUser.value = {};
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  } else if (newUser.value.typeUser === '') {
-    showError("Choisissez votre rôle.");
-  } else {
-    if (
-      !newUser.value.identifiant ||
-      !newUser.value.nom ||
-      !newUser.value.mail ||
-      !newUser.value.phone ||
-      !newUser.value.pass ||
-      !newUser.value.pass2 ||
-      !newUser.value.numero_siret
-    ) {
-      showError("Veuillez remplir 'tous' les champs.");
-    } else if (newUser.value.pass != newUser.value.pass2) {
-      showError("Vos mots de passe ne sont pas identiques");
-    } else {
-      try {
-        const response = await axios.post('http://localhost:3001/api/v1/employeurs', {
-          nom: newUser.value.nom,
-          mail: newUser.value.mail,
-          phone: newUser.value.phone,
-          pass: newUser.value.pass,
-          identifiant: newUser.value.identifiant,
-          numero_siret: newUser.value.numero_siret,
-        });
-        console.log('Status Code:', response.status);
-        console.log('Response Data:', response.data);
-
-        newUser.value = {};
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  }
-}
-
-// Function to log in
 async function loggin() {
   console.log(userLog.value);
   if (
-    !userLog.value.prenom ||
-    !userLog.value.nom ||
-    !userLog.value.mail ||
-    !userLog.value.phone ||
-    !userLog.value.pass
+    !userLog.value.typeUser
   ) {
-    // Display an error message or perform other validation handling
-    showError("Veuillez remplir 'tous' les champs.");
+    showError("Veuillez selectionner votre role.");
   }
+  if(userLog.value.typeUser === 'Candidat' && !userLog.value.mail || !userLog.value.pass){
+    showError("Veuiller remplir tous les champs.")
+  }
+  if(userLog.value.typeUser === 'Employeur' && !userLog.value.identifiant || !userLog.value.pass){
+    showError("Veuiller remplir tous les champs.")
+  }
+  else{
+        try {
+        if (userLog.value.typeUser === 'Candidat') {
+            const response = await axios.post('http://localhost:3001/api/v1/candidats/login', {
+            mail: userLog.value.mail,
+            pass: userLog.value.pass,
+          });
+          if(response.data.status === "error"){
+            showError("Informations incorrectes !")
+          }
+          else if(response.data.status === "success") {
+            console.log('Status Code:', response.status);
+            console.log('Response Data:', response.data);
+            const role = response.data.role;
+            const userId = response.data.userId;
 
-  try {
-    if (userLog.value.typeUser === 'Candidat') {
-        const response = await axios.post('http://localhost:3001/api/v1/candidats/login', {
-        mail: userLog.value.mail,
-        pass: userLog.value.pass,
-      });
-      console.log('Status Code:', response.status);
-      console.log('Response Data:', response.data);
-      const role = response.data.role;
-      const userId = response.data.userId;
+            authStore.login(userId, role);
+            // router.push({path: '/candidat'});
+          }
+          
 
-      authStore.login(userId, role)
+        } else {
+          const response = await axios.post('http://localhost:3001/api/v1/employeurs/login', {
+            identifiant: userLog.value.identifiant,
+            pass: userLog.value.pass,
+          });
+          if(response.data.status === "error"){
+            showError("Informations incorrectes !")
+          }
+          else if(response.data.status === "success") {
+            console.log('Status Code:', response.status);
+            console.log('Response Data:', response.data);
+            const role = response.data.role;
+            const userId = response.data.userId;
 
-    } else {
-      const response = await axios.post('http://localhost:3001/api/v1/employeurs/login', {
-        identifiant: userLog.value.identifiant,
-        pass: userLog.value.pass,
-      });
-      console.log('Status Code:', response.status);
-      console.log('Response Data:', response.data);
-      const role = response.data.role;
-      const userId = response.data.userId;
-
-      authStore.login(userId, role)
-      router.push({path: '/employeur'})
+            authStore.login(userId, role);
+            router.push({path: '/employeur'});
+          }
+          
+        }
+        
+      } catch (err) {
+        console.log(err);
+      }
     }
-
-    userLog.value = {};
-  } catch (err) {
-    console.log(err);
   }
-}
+
+  
 </script>
 <style lang="css" scoped>
  * {
@@ -441,7 +355,7 @@ header {
     left: 50%;
     height: 700px;
     width: 500px;
-    background-color: rgb(111, 111, 222);
+    background-color: rgb(56, 177, 233);
     box-shadow: 8px 8px 20px rgb(128, 128, 128);
     position: relative;
     overflow: hidden;
@@ -569,8 +483,8 @@ header {
     width: 150px;
     border-radius: 50px;
     background-image: linear-gradient(to right,
-            rgb(110, 202, 255),
-            rgb(13 102 132));
+          rgb(59, 228, 124),
+          rgb(50, 254, 138));
     font-size: 22px;
     border: none;
     cursor: pointer;

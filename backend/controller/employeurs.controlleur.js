@@ -67,19 +67,12 @@ const employeursController = {
         const [rows, fields] = await pool.query(sql, [identifiant]);
         if (rows.length === 1) {
           const user = rows[0];
-
-          bcrypt.compare(pass, user.pass, (err, result) => {
-            if (err) {
-              // Handle error
-              console.error(err);
-              res.json({ status: "error", message: "Invalid credentials" });
-            } else if (result) {
-              // const token = jwt.sign({ id: user.id }, 'codesecret');
-              // res.cookie('token', token, {
-              //   httpOnly: true,
-              //   secure: true, 
-              //   sameSite: 'strict',
-              // });
+    
+          try {
+            // Using bcrypt.compare with await
+            const result = await bcrypt.compare(pass, user.pass);
+    
+            if (result) {
               const userId = user.id;
               const role = 'employeur';
               res.json({ status: "success", message: "Login successful", userId, role });
@@ -87,10 +80,15 @@ const employeursController = {
               // Passwords do not match
               res.json({ status: "error", message: "Invalid credentials" });
             }
-          });
+          } catch (bcryptError) {
+            console.error(bcryptError);
+            res.json({ status: "error", message: "Error during password comparison" });
+          }
+        } else {
+          res.json({ status: "error", message: "Invalid credentials" });
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
         res.json({ status: "error", message: error.message });
       }
     }
