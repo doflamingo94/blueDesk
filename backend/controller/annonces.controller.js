@@ -2,7 +2,7 @@ const pool = require("../database/index");
 const annoncesController = {
     getAll: async (req, res) => {
         try{
-            const [rows, fields] = await pool.query("SELECT * FROM annonces ORDER BY date_creation DESC");
+            const [rows, fields] = await pool.query("SELECT annonces.*, employeurs.nom AS employeur_name FROM annonces JOIN employeurs ON annonces.id_employeur = employeurs.id ORDER BY annonces.date_creation DESC");
             res.json({data: rows});
         } catch (error) {
             console.log(error);
@@ -11,8 +11,7 @@ const annoncesController = {
     getOne: async (req, res) => {
         try{
             const { id } = req.params;
-            const [rows, fields] = await pool.query("SELECT * FROM annonces WHERE id = ?", [id]);
-            res.json({data: rows});
+            const [rows, fields] = await pool.query("SELECT annonces.*, employeurs.nom AS employeur_name FROM annonces JOIN employeurs ON annonces.id_employeur = employeurs.id WHERE annonces.id = ?", [id]); res.json({data: rows});
         } catch (error) {
             console.log(error);
         }

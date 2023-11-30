@@ -1,24 +1,27 @@
 <template>
+  
     <div class="ag-format-container">
         <div class="ag-courses_box" v-for="a in message" :key="a.id">
             <div class="ag-courses_item">
-            <a href="#" class="ag-courses-item_link">
-                <div class="ag-courses-item_bg"></div>
+            <nuxt-link :to="'annonce/'+ a.id" class="ag-courses-item_link">
+                <div class="ag-courses-item_bg">
+                </div>
 
                 <div class="ag-courses-item_title">
                 {{a.poste}}
                 </div>
-
+                {{ a.employeur_name }}
                 <div class="ag-courses-item_date-box">
                 Start:
                 <span class="ag-courses-item_date">
                     04.11.2022
                 </span>
                 </div>
-            </a>
-            </div>           
+              </nuxt-link>
+            </div>    
         </div>
-    </div> 
+    </div>
+  
 </template>
 
 <script>

@@ -9,6 +9,9 @@ router.post("/", candidatsController.create);
 router.put("/:id", candidatsController.updateOne);
 router.delete("/:id", candidatsController.deleteOne);
 router.post("/login", candidatsController.login);
+router.post("/candidature", candidatsController.getCandidature);
+router.post("/candidater", candidatsController.candidater)
+
 
 
 module.exports = router;
