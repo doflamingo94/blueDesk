@@ -93,7 +93,29 @@ const candidatsController = {
         console.log(error);
         res.json({ status: "error", message: error.message });
       }
-    }
+    },
+    getCandidature: async (req, res) => {
+      try {
+        const { id_candidat, id_annonce } = req.body;
+        const sql = "SELECT * FROM candidatures WHERE id_candidat = ? AND id_annonce = ?";
+        const [rows, fields] = await pool.query(sql, [id_candidat, id_annonce]);
+        res.json({ data: rows, infoo: id_annonce, infooo2: id_candidat });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
+    },
+    candidater: async (req, res) => {
+      try {
+        const { id_candidat, id_annonce, statut } = req.body;
+          const sql = "INSERT INTO candidatures (id_candidat, id_annonce, date_candidature, statut) VALUES(?, ?, NOW(), ?);";
+          const [rows, fields] = await pool.query(sql, [id_candidat, id_annonce, statut]);
+          res.json({ data: rows });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
+    },
   };
   
   module.exports = candidatsController;
