@@ -10,7 +10,13 @@
             <img src="../assets/images/background-pexels-mo-eid-11592804.jpg" alt="Profile Picture" />
         </div>
 
-        <h1><span v-if="candidatData">{{ `${candidatData.nom}` }}</span> </h1>
+        <h1><span v-if="candidatData">{{ `${candidatData.prenom}` }} {{ `${candidatData.nom}` }}</span> </h1>
+        <div v-if="candidaturesData" class="box">
+            <h2>CSS List Item Hover Effect</h2>
+            <ul v-for="candidature in candidaturesData" :key="candidature.date_candidature">
+              <li>{{ `${candidature.poste}` }} chez {{ `${candidature.employeur_nom}` }} le {{ `${candidature.date_candidature}` }}</li>
+            </ul>
+          </div>
     </div>
 </template>
 <script setup>
@@ -23,14 +29,15 @@ const router = useRouter();
 const authStore = useAuthStore();
 const userId = authStore.getId;
 const candidatData = ref(null);
+const candidaturesData = ref(null)
 
 console.log(userId)
 
 if (!authStore.isLoggedIn) {
     router.push({ path: '/' })
 } else {
-    onBeforeMount(() => {
-        hydrateUser();
+    onBeforeMount(async () => {
+        await Promise.all([hydrateUser(), candidatures()]);
     })
 }
 
@@ -43,6 +50,18 @@ const hydrateUser = async () => {
     } catch (err) {
         console.log(err)
     }
+}
+
+const candidatures = async () => {
+    try {
+                const response = await axios.post('http://localhost:3001/api/v1/candidats/candidatures', {
+                    id_candidat: userId
+                });
+                candidaturesData.value = response.data.data;
+                console.log('Response Data:', response.data.data);
+            } catch (err) {
+                console.log(err);
+            }
 }
 
 function convertDateFormat(dateString) {
@@ -87,6 +106,64 @@ function showNotif(message) {
 
 </script>
 <style scoped>
+
+.box {
+    width: 550px;
+    border-bottom: 20px solid #03a9f4;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin: 75px 0 0 53px;
+  }
+  .box h2 {
+    color: #fff;
+    background: #03a9f4;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-weight: 700;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  .box ul {
+    position: relative;
+    background: #fff;
+  }
+  .box ul:hover li {
+    opacity: 0.2;
+  }
+  .box ul li {
+    list-style: none;
+    padding: 10px;
+    background: #fff;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    transition: transform 0.5s;
+    text-align: left;
+  }
+  .box ul li:hover {
+    transform: scale(1.1);
+    z-index: 5;
+    background: #25bcff;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    opacity: 1;
+  }
+  .box ul li span {
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    background: #25bcff;
+    color: #fff;
+    display: inline-block;
+    border-radius: 50%;
+    margin-right: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    transform: translateY(-2px);
+  }
+  .box ul li:hover span {
+    background: #fff;
+    color: #25bcff;
+  }
 .user-profile {
     text-align: center;
 }

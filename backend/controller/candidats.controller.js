@@ -91,6 +91,17 @@ const candidatsController = {
         console.log(error);
         res.json({ status: "error", message: error.message });
       }
+    },
+    getCandidatures: async (req, res) => {
+      try {
+        const { id_candidat } = req.body;
+        const sql = "SELECT annonces.poste, employeurs.nom AS employeur_nom, candidatures.date_candidature FROM candidatures JOIN annonces ON candidatures.id_annonce = annonces.id JOIN employeurs ON annonces.id_employeur = employeurs.id WHERE candidatures.id_candidat = ?";
+        const [rows, fields] = await pool.query(sql, [id_candidat]);
+        res.json({data: rows, status: "success"})
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
     }
   };
   
