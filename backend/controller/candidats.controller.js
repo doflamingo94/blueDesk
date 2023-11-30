@@ -68,18 +68,11 @@ const candidatsController = {
         if (rows.length === 1) {
           const user = rows[0];
 
-          bcrypt.compare(pass, user.pass, (err, result) => {
-            if (err) {
-              // Handle error
-              console.error(err);
-              res.json({ status: "error", message: "Invalid credentials" });
-            } else if (result) {
-              // const token = jwt.sign({ id: user.id }, 'codesecret');
-              // res.cookie('token', token, {
-              //   httpOnly: true,
-              //   secure: true, 
-              //   sameSite: 'strict', 
-              // });
+          try {
+            // Using bcrypt.compare with await
+            const result = await bcrypt.compare(pass, user.pass);
+    
+            if (result) {
               const userId = user.id;
               const role = 'candidat';
               res.json({ status: "success", message: "Login successful", userId, role });
@@ -87,19 +80,24 @@ const candidatsController = {
               // Passwords do not match
               res.json({ status: "error", message: "Invalid credentials" });
             }
-          });
+          } catch (bcryptError) {
+            console.error(bcryptError);
+            res.json({ status: "error", message: "Error during password comparison" });
+          }
+        } else {
+          res.json({ status: "error", message: "Invalid credentials" });
         }
       } catch (error) {
         console.log(error);
         res.json({ status: "error", message: error.message });
       }
     },
-    getCandidature: async (req, res) => {
+    getCandidatures: async (req, res) => {
       try {
-        const { id_candidat, id_annonce } = req.body;
-        const sql = "SELECT * FROM candidatures WHERE id_candidat = ? AND id_annonce = ?";
-        const [rows, fields] = await pool.query(sql, [id_candidat, id_annonce]);
-        res.json({ data: rows, infoo: id_annonce, infooo2: id_candidat });
+        const { id_candidat } = req.body;
+        const sql = "SELECT annonces.poste, employeurs.nom AS employeur_nom, candidatures.date_candidature FROM candidatures JOIN annonces ON candidatures.id_annonce = annonces.id JOIN employeurs ON annonces.id_employeur = employeurs.id WHERE candidatures.id_candidat = ?";
+        const [rows, fields] = await pool.query(sql, [id_candidat]);
+        res.json({data: rows, status: "success"})
       } catch (error) {
         console.log(error);
         res.json({ status: "error", message: error.message });
@@ -116,6 +114,17 @@ const candidatsController = {
         res.json({ status: "error", message: error.message });
       }
     },
+    getCandidature: async (req, res) => {
+      try {
+        const { id_candidat, id_annonce } = req.body;
+        const sql = "SELECT * FROM candidatures WHERE id_candidat = ? AND id_annonce = ?";
+        const [rows, fields] = await pool.query(sql, [id_candidat, id_annonce]);
+        res.json({ data: rows, infoo: id_annonce, infooo2: id_candidat });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
+    }
   };
   
   module.exports = candidatsController;
