@@ -12,7 +12,6 @@ router.post("/login", candidatsController.login);
 router.post("/candidatures", candidatsController.getCandidatures);
 router.post("/candidature", candidatsController.getCandidature);
 router.post("/candidater", candidatsController.candidater)
-
-
+router.post("/deleteCandidature", candidatsController.deleteCandidature)
 
 module.exports = router;

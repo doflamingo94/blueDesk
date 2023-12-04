@@ -8,13 +8,14 @@
                 </div>
 
                 <div class="ag-courses-item_title">
-                {{a.poste}}
+                  {{a.poste}} <br>
+                <span class="ag-courses-item_date">{{ a.employeur_name }}</span>
                 </div>
-                {{ a.employeur_name }}
+                
                 <div class="ag-courses-item_date-box">
-                Start:
+                Débute le :
                 <span class="ag-courses-item_date">
-                    04.11.2022
+                  {{ a.date_debut }}
                 </span>
                 </div>
               </nuxt-link>
@@ -24,11 +25,49 @@
   
 </template>
 
-<script>
-export default {
-    props: ['message']
+<script setup>
+
+const props = defineProps(['message'])
+onBeforeMount(() => {
+  formatAnnonceDates(props.message)
+})
+
+
+const formatterDateSQL = (dateSQL) => {
+    // Convertir la chaîne de date SQL en objet Date
+    var dateObj = new Date(dateSQL);
+
+    // Extraire le jour, le mois et l'année
+    var jour = dateObj.getDate();
+    var mois = dateObj.getMonth() + 1; // Les mois commencent à partir de zéro
+    var annee = dateObj.getFullYear();
+
+    // Ajouter un zéro au jour et au mois si nécessaire
+    jour = (jour < 10) ? '0' + jour : jour;
+    mois = (mois < 10) ? '0' + mois : mois;
+
+    // Formater la date en jj/mm/aaaa
+    var dateFormatee = jour + '/' + mois + '/' + annee;
+
+    return dateFormatee;
 }
+
+const formatAnnonceDates = (annoncesData) => {
+    // Check if candidaturesData is an array
+    if (Array.isArray(annoncesData)) {
+        // Iterate over each candidature in the array
+        for (const annonce of annoncesData) {
+            // Check if the candidature has a date_candidature property
+            if (annonce.date_debut) {
+                // Format the date using formatterDateSQL
+                annonce.date_debut = formatterDateSQL(annonce.date_debut);
+            }
+        }
+    }
+};
 </script>
+
+
 
 <style scoped>
 .ag-format-container {
@@ -136,7 +175,9 @@ export default {
   background-color: rgb(13 102 132);
 }
 
-
+.poste-color{
+  color: #f9b234;
+}
 
 @media only screen and (max-width: 979px) {
   .ag-courses_item {

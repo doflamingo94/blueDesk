@@ -12,11 +12,11 @@
 
         <h1><span v-if="candidatData">{{ `${candidatData.prenom}` }} {{ `${candidatData.nom}` }}</span> </h1>
         <div v-if="candidaturesData" class="box">
-            <h2>CSS List Item Hover Effect</h2>
+            <h2>Mes candidatures</h2>
             <ul v-for="candidature in candidaturesData" :key="candidature.date_candidature">
-              <li>{{ `${candidature.poste}` }} chez {{ `${candidature.employeur_nom}` }} le {{ `${candidature.date_candidature}` }}</li>
+              <li><nuxt-link :to="'annonce/'+ candidature.id_annonce">{{ `${candidature.poste}` }} chez {{ `${candidature.employeur_nom}` }}</nuxt-link> le {{ `${candidature.date_candidature}` }}  STATUT : {{ `${candidature.statut}` }}  <button @click="deleteCandidature(candidature.id_annonce)" >Annuler</button></li>
             </ul>
-          </div>
+        </div>
     </div>
 </template>
 <script setup>
@@ -54,15 +54,70 @@ const hydrateUser = async () => {
 
 const candidatures = async () => {
     try {
-                const response = await axios.post('http://localhost:3001/api/v1/candidats/candidatures', {
+        const response = await axios.post('http://localhost:3001/api/v1/candidats/candidatures', {
+            id_candidat: userId
+        });
+
+        candidaturesData.value = response.data.data;
+
+        // Format dates in the candidaturesData array
+        formatCandidatureDates(candidaturesData.value);
+
+        console.log('Formatted Data:', candidaturesData.value);
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+const deleteCandidature = async (annonceId) => {
+    try {
+                const response = await axios.post('http://localhost:3001/api/v1/candidats/deleteCandidature', {
+                    id_annonce: annonceId,
                     id_candidat: userId
                 });
-                candidaturesData.value = response.data.data;
-                console.log('Response Data:', response.data.data);
+
+                console.log('Status Code:', response.status);
+                console.log('Response Data:', response.data);
+                console.log('Vous avez bien annulé votre candidature');
+                window.location.href = `/candidat`
             } catch (err) {
                 console.log(err);
             }
 }
+
+function formatterDateSQL(dateSQL) {
+    // Convertir la chaîne de date SQL en objet Date
+    var dateObj = new Date(dateSQL);
+
+    // Extraire le jour, le mois et l'année
+    var jour = dateObj.getDate();
+    var mois = dateObj.getMonth() + 1; // Les mois commencent à partir de zéro
+    var annee = dateObj.getFullYear();
+
+    // Ajouter un zéro au jour et au mois si nécessaire
+    jour = (jour < 10) ? '0' + jour : jour;
+    mois = (mois < 10) ? '0' + mois : mois;
+
+    // Formater la date en jj/mm/aaaa
+    var dateFormatee = jour + '/' + mois + '/' + annee;
+
+    return dateFormatee;
+}
+
+const formatCandidatureDates = (candidaturesData) => {
+    // Check if candidaturesData is an array
+    if (Array.isArray(candidaturesData)) {
+        // Iterate over each candidature in the array
+        for (const candidature of candidaturesData) {
+            // Check if the candidature has a date_candidature property
+            if (candidature.date_candidature) {
+                // Format the date using formatterDateSQL
+                candidature.date_candidature = formatterDateSQL(candidature.date_candidature);
+            }
+        }
+    }
+};
+
 
 function convertDateFormat(dateString) {
     const parts = dateString.split('/');

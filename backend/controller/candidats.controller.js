@@ -95,7 +95,7 @@ const candidatsController = {
     getCandidatures: async (req, res) => {
       try {
         const { id_candidat } = req.body;
-        const sql = "SELECT annonces.poste, employeurs.nom AS employeur_nom, candidatures.date_candidature FROM candidatures JOIN annonces ON candidatures.id_annonce = annonces.id JOIN employeurs ON annonces.id_employeur = employeurs.id WHERE candidatures.id_candidat = ?";
+        const sql = "SELECT annonces.poste, candidatures.id_candidat, candidatures.id_annonce, candidatures.statut, employeurs.nom AS employeur_nom, candidatures.date_candidature FROM candidatures JOIN annonces ON candidatures.id_annonce = annonces.id JOIN employeurs ON annonces.id_employeur = employeurs.id WHERE candidatures.id_candidat = ?";
         const [rows, fields] = await pool.query(sql, [id_candidat]);
         res.json({data: rows, status: "success"})
       } catch (error) {
@@ -118,6 +118,17 @@ const candidatsController = {
       try {
         const { id_candidat, id_annonce } = req.body;
         const sql = "SELECT * FROM candidatures WHERE id_candidat = ? AND id_annonce = ?";
+        const [rows, fields] = await pool.query(sql, [id_candidat, id_annonce]);
+        res.json({ data: rows, infoo: id_annonce, infooo2: id_candidat });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
+    },
+    deleteCandidature: async (req, res) => {
+      try {
+        const { id_candidat, id_annonce } = req.body;
+        const sql = "DELETE FROM candidatures WHERE id_candidat = ? AND id_annonce = ?";
         const [rows, fields] = await pool.query(sql, [id_candidat, id_annonce]);
         res.json({ data: rows, infoo: id_annonce, infooo2: id_candidat });
       } catch (error) {

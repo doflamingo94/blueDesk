@@ -5,8 +5,8 @@
           <p>{{ `${annonceData.poste}` }} chez {{ `${annonceData.employeur_name}` }}</p>
         </div>
         <div class="details">
-          <p>Date de début: {{ annonceData.date_debut ? `${annonceData.date_debut}` : 'Non spécifiée' }}</p>
-          <p v-if="annonceData.date_fin">Date de fin: {{ `${annonceData.date_fin}` }}</p>
+          <p>Date de début: {{ `${date_debut}` }}</p>
+          <p v-if="annonceData.date_fin">Date de fin: {{ `${date_fin}` }}</p>
           <p>Salaire: {{ `${annonceData.salaire}` }}</p>
         </div>
         <div class="description">
@@ -40,6 +40,8 @@ let userRole = null;
 const isLoggedIn = ref(null);
 const candidater = ref(null);
 isLoggedIn.value = authStore.isLoggedIn;
+const date_debut = ref(null);
+const date_fin = ref(null);
 
 if(isLoggedIn){
     userId = authStore.getId;
@@ -93,9 +95,32 @@ const hydrateUser = async () => {
   try  {
         const response = await axios.get(`http://localhost:3001/api/v1/annonces/${annonceId}`);
         annonceData.value = response.data.data[0];
+        date_debut.value = formatterDateSQL(annonceData.value.date_debut)
+        if(annonceData.value.date_fin){
+          date_fin.value = formatterDateSQL(annonceData.value.date_fin)
+        }
   } catch(err) {
       console.log(err)
   }
+}
+
+const formatterDateSQL = (dateSQL) => {
+    // Convertir la chaîne de date SQL en objet Date
+    var dateObj = new Date(dateSQL);
+
+    // Extraire le jour, le mois et l'année
+    var jour = dateObj.getDate();
+    var mois = dateObj.getMonth() + 1; // Les mois commencent à partir de zéro
+    var annee = dateObj.getFullYear();
+
+    // Ajouter un zéro au jour et au mois si nécessaire
+    jour = (jour < 10) ? '0' + jour : jour;
+    mois = (mois < 10) ? '0' + mois : mois;
+
+    // Formater la date en jj/mm/aaaa
+    var dateFormatee = jour + '/' + mois + '/' + annee;
+
+    return dateFormatee;
 }
 
 </script>
