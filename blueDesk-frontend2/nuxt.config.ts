@@ -27,5 +27,11 @@ export default defineNuxtConfig({
         'Josefin+Sans': true,
         'Lato': [100, 300]
     }
+  },
+  nitro: {
+    awsAmplify: {
+      catchAllStaticFallback: true,
+      imageOptimization: { cacheControl: "public, max-age=3600, immutable" }
+    }
   }
 })
