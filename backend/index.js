@@ -21,7 +21,7 @@ app.use("/api/v1/annonces", annoncesRouter);
 app.use("/api/v1/competences", competencesRouter);
 app.use("/api/v1/candidats", candidatsRouter);
 app.use("/api/v1/employeurs", employeursRouter);
-app.get('/', (req, res) => res.json('Salut Khaled'))
+app.get('/', (req, res) => res.json('Salut Khaled ça va ?'))
 
 const PORT = process.env.PORT || 3001;
 
