@@ -75,7 +75,7 @@ if(!authStore.isLoggedIn){
 
 const hydrateUser = async () => {
   try  {
-        const response = await axios.get(`http://13.39.156.186:3001/api/v1/employeurs/${userId}`);
+        const response = await axios.get(`https://13.39.156.186:3001/api/v1/employeurs/${userId}`);
         employeursData.value = response.data.data[0];
         console.log(response.data.data[0]);
         console.log(employeursData.value);
@@ -142,7 +142,7 @@ onMounted(() => {
         if(newAnnonce.value.date_fin.length > 0){
           newAnnonce.value.date_fin = convertDateFormat(newAnnonce.value.date_fin);
         }
-        const response = await axios.post('http://13.39.156.186:3001/api/v1/annonces', {
+        const response = await axios.post('https://13.39.156.186:3001/api/v1/annonces', {
           titre: newAnnonce.value.titre,
           lieu: newAnnonce.value.lieu,
           date_debut: date_debut,

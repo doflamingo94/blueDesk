@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-   const { data: responses } = await useFetch('http://13.39.156.186:3001/api/v1/annonces')
+   const { data: responses } = await useFetch('https://13.39.156.186:3001/api/v1/annonces')
    const annonces = responses._rawValue.data
 </script>
 
