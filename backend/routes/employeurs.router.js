@@ -9,5 +9,7 @@ router.post("/", employeursController.create);
 router.put("/:id", employeursController.updateOne);
 router.delete("/:id", employeursController.deleteOne);
 router.post("/login", employeursController.login);
+router.post("/mesAnnonces", employeursController.mesAnnonces);
+router.post("/deleteAnnonce", employeursController.deleteAnnonce);
 
 module.exports = router;

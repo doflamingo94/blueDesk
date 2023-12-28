@@ -91,6 +91,48 @@ const employeursController = {
         console.error(error);
         res.json({ status: "error", message: error.message });
       }
+    },
+    mesAnnonces: async (req, res) => {
+      try {
+        const { id_employeur } = req.body; // Assuming you're sending id_employeur in the request body
+    
+        const sql = `
+          SELECT annonces.poste, annonces.id AS annonce_id, annonces.titre, annonces.date_creation, 
+          annonces.profil, annonces.banniere, annonces.lieu, annonces.date_debut, annonces.date_fin, 
+          annonces.salaire, annonces.description_poste
+          FROM annonces
+          JOIN employeurs ON annonces.id_employeur = employeurs.id
+          WHERE employeurs.id = ?
+        `;
+    
+        const [rows, fields] = await pool.query(sql, [id_employeur]);
+        res.json({ data: rows, status: 'success' });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: 'error', message: error.message });
+      }
+    },
+    deleteAnnonce: async (req, res) => {
+      try {
+        const { id_employeur, id_annonce } = req.body; // Assuming you're sending id_employeur and annonce_id in the request body
+    
+        // Delete candidatures associated with the annonce
+        const deleteCandidaturesSQL = 'DELETE FROM candidatures WHERE id_annonce = ?;';
+        await pool.query(deleteCandidaturesSQL, [id_annonce]);
+
+        // Delete the annonce
+        const deleteAnnonceSQL = 'DELETE FROM annonces WHERE id = ? AND id_employeur = ?;';
+        const [deleteAnnonceResult] = await pool.query(deleteAnnonceSQL, [id_annonce, id_employeur]);
+    
+        if (deleteAnnonceResult.affectedRows > 0) {
+          res.json({ status: 'success', message: 'Announcement deleted successfully.' });
+        } else {
+          res.json({ status: 'error', message: 'Announcement not found or you do not have permission to delete it.' });
+        }
+      } catch (error) {
+        console.log(error);
+        res.json({ status: 'error', message: error.message });
+      }
     }
   };
   

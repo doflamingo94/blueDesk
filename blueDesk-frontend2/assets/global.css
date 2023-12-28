@@ -27,3 +27,6 @@ body{
     /* background-size: cover; */
     background-color: rgb(238, 238, 238);
 }
+.page-content{
+    min-height: 100vh;
+}

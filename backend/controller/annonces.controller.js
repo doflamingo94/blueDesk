@@ -55,7 +55,15 @@ const annoncesController = {
             console.log(error);
             res.json({status: "error"});
         }
-    }
+    },
+    getCandidatures: async (req, res) => {
+        try{
+            const { id_annonce } = req.body;
+            const [rows, fields] = await pool.query("SELECT candidats.id, candidats.prenom, candidats.nom, candidats.date_naissance, annonces.poste FROM candidats JOIN candidatures ON candidats.id = candidatures.id_candidat JOIN annonces ON candidatures.id_annonce = annonces.id WHERE candidatures.id_annonce = ?", [id_annonce]); res.json({data: rows});
+        } catch (error) {
+            console.log(error);
+        }
+    },
 }
 
 module.exports = annoncesController;
