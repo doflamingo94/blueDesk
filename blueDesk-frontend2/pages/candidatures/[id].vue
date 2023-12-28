@@ -5,26 +5,31 @@
             <h1 v-else>Pas encore de candidatures</h1>
         </div>
         <div v-if="candidaturesData" class="candidatures-block">
-            <!-- <ul v-for="candidature in candidaturesData" :key="candidature.id">
-                <li>{{ `${candidature.prenom}` }}</li>
-            </ul> -->
             <ul v-for="candidature in candidaturesData" :key="candidature.id">
-                <li>{{ `${candidature.prenom}` }}  {{ `${candidature.nom}` }} {{ `${ calculateAge(candidature.date_naissance) }` }} ans</li>
+                <li @click="checkProfile(candidature.id)">{{ `${candidature.prenom}` }}  {{ `${candidature.nom}` }} {{ `${ calculateAge(candidature.date_naissance) }` }} ans</li>
             </ul>
         </div>
     </div>
 </template>
     
 <script setup>
+import { useAuthStore } from '~/store/auth';
+import { useProfile } from '~/store/profile';
 import axios from 'axios';
 const route = useRoute();
+const router = useRouter();
 let annonceId = route.params.id; 
 const candidaturesData = ref(null);
+const profileStore = useProfile();
+const authStore = useAuthStore();
+const userId = authStore.getId;
+console.log(userId)
 
 const candidatures = async () => {
     try {
             const response = await axios.post('http://localhost:3001/api/v1/annonces/candidatures', {
-                id_annonce: annonceId
+                id_annonce: annonceId,
+                id_employeur: userId
             });
 
             candidaturesData.value = response.data.data;
@@ -32,7 +37,6 @@ const candidatures = async () => {
             console.log('Status Code:', response.status);
             console.log('Response Data:', response.data.data[0].poste);
             console.log(candidaturesData.value);
-            // window.location.href = `/annonce/${annonceId}`
         } catch (err) {
             console.log(err);
         }
@@ -63,6 +67,11 @@ function calculateAge(birthdate) {
 
     return age;
 }
+
+const checkProfile = (profileId) => {
+    profileStore.setProfile(profileId);
+    router.push('/profile-candidat');
+}
     
 </script>
     
@@ -82,7 +91,6 @@ function calculateAge(birthdate) {
 ul{
     list-style: none;
 }
-
 
 
 </style>
