@@ -59,7 +59,7 @@ const annoncesController = {
     getCandidatures: async (req, res) => {
         try{
             const { id_annonce, id_employeur } = req.body;
-            const [rows, fields] = await pool.query("SELECT candidats.id, candidats.prenom, candidats.nom, candidats.date_naissance, annonces.poste FROM candidats JOIN candidatures ON candidats.id = candidatures.id_candidat JOIN annonces ON candidatures.id_annonce = annonces.id WHERE candidatures.id_annonce = ? AND annonces.id_employeur = ?", [id_annonce, id_employeur]); res.json({data: rows});
+            const [rows, fields] = await pool.query("SELECT candidats.id, candidats.prenom, candidats.nom, candidats.date_naissance, annonces.poste, candidatures.statut FROM candidats JOIN candidatures ON candidats.id = candidatures.id_candidat JOIN annonces ON candidatures.id_annonce = annonces.id WHERE candidatures.id_annonce = ? AND annonces.id_employeur = ? AND (candidatures.statut = 'en cours' OR candidatures.statut = 'retenue')", [id_annonce, id_employeur]); res.json({data: rows});
         } catch (error) {
             console.log(error);
         }

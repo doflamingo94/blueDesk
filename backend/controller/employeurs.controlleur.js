@@ -133,6 +133,28 @@ const employeursController = {
         console.log(error);
         res.json({ status: 'error', message: error.message });
       }
+    },
+    refusCandidature: async (req, res) => {
+      try {
+        const { id_annonce, id_candidat } = req.body;
+        const sql = "UPDATE candidatures SET statut = 'refusé' WHERE id_candidat = ? AND id_annonce = ?;";
+        const [rows, fields] = await pool.query(sql, [id_candidat, id_annonce]);
+        res.json({ data: rows });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
+    },
+    ValiderCandidature: async (req, res) => {
+      try {
+        const { id_annonce, id_candidat } = req.body;
+        const sql = "UPDATE candidatures SET statut = 'retenue' WHERE id_candidat = ? AND id_annonce = ?;";
+        const [rows, fields] = await pool.query(sql, [id_candidat, id_annonce]);
+        res.json({ data: rows });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
     }
   };
   

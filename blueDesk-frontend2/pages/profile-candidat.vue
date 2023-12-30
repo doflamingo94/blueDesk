@@ -10,7 +10,11 @@
             </div>
 
             <h1><span v-if="candidatData">{{ `${candidatData.prenom}` }} {{ `${candidatData.nom}` }}</span> </h1>
+            <div v-if="status != 'retenue' && status !='refusé'" class="decision">
+                <button @click="valider">Valider</button> <button @click="refuser">Refuser</button>
+            </div>
         </div>
+        
     </div>
 </template>
 <script setup>
@@ -23,11 +27,12 @@ import { useProfile } from '~/store/profile';
 const router = useRouter();
 const authStore = useAuthStore();
 const profileStore = useProfile();
+const annonceId = profileStore.getAnnonceId;
 const userId = authStore.getId;
 const candidatData = ref(null);
-const candidaturesData = ref(null)
-let profilId = profileStore.getId;
-console.log('khaledddddddd yoooo', profilId, 'bonjourrrr');
+let profileId = profileStore.getProfileId;
+const status = profileStore.getStatus;
+console.log('khaledddddddd yoooo', profileId, 'bonjourrrr', annonceId, '3emeeee', status);
 
 console.log(userId)
 
@@ -41,12 +46,40 @@ if (!authStore.isLoggedIn) {
 
 const hydrateUser = async () => {
     try {
-        const response = await axios.get(`http://localhost:3001/api/v1/candidats/${profilId}`);
+        const response = await axios.get(`http://localhost:3001/api/v1/candidats/${profileId}`);
         candidatData.value = response.data.data[0];
         console.log(response.data.data[0]);
         console.log(candidatData.value);
     } catch (err) {
         console.log(err)
+    }
+}
+
+const refuser = async () => {
+    try {
+        const response = await axios.post('http://localhost:3001/api/v1/employeurs/refuser', {
+                id_annonce: annonceId,
+                id_candidat: profileId
+            });
+            console.log('Status Code:', response.status);
+            console.log('La candidature a bien été refusée');
+            router.push(`/candidatures/${annonceId}`);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const valider = async () => {
+    try {
+        const response = await axios.post('http://localhost:3001/api/v1/employeurs/valider', {
+                id_annonce: annonceId,
+                id_candidat: profileId
+            });
+            console.log('Status Code:', response.status);
+            console.log('La candidature a bien été validée');
+            router.push(`/candidatures/${annonceId}`);
+    } catch (error) {
+        console.log(error)
     }
 }
 

@@ -11,5 +11,7 @@ router.delete("/:id", employeursController.deleteOne);
 router.post("/login", employeursController.login);
 router.post("/mesAnnonces", employeursController.mesAnnonces);
 router.post("/deleteAnnonce", employeursController.deleteAnnonce);
+router.post("/refuser", employeursController.refusCandidature);
+router.post("/valider", employeursController.ValiderCandidature);
 
 module.exports = router;

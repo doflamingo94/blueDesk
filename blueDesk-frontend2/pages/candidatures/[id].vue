@@ -6,7 +6,7 @@
         </div>
         <div v-if="candidaturesData" class="candidatures-block">
             <ul v-for="candidature in candidaturesData" :key="candidature.id">
-                <li @click="checkProfile(candidature.id)">{{ `${candidature.prenom}` }}  {{ `${candidature.nom}` }} {{ `${ calculateAge(candidature.date_naissance) }` }} ans</li>
+                <li @click="checkProfile(candidature.id, annonceId, candidature.statut)">{{ `${candidature.prenom}` }}  {{ `${candidature.nom}` }} {{ `${ calculateAge(candidature.date_naissance) }` }} ans</li>
             </ul>
         </div>
     </div>
@@ -36,7 +36,7 @@ const candidatures = async () => {
 
             console.log('Status Code:', response.status);
             console.log('Response Data:', response.data.data[0].poste);
-            console.log(candidaturesData.value);
+            console.log('PESOSPESOS', candidaturesData.value);
         } catch (err) {
             console.log(err);
         }
@@ -68,8 +68,10 @@ function calculateAge(birthdate) {
     return age;
 }
 
-const checkProfile = (profileId) => {
+const checkProfile = (profileId, annonceId, statut) => {
     profileStore.setProfile(profileId);
+    profileStore.setAnnonce(annonceId);
+    profileStore.setStatus(statut);
     router.push('/profile-candidat');
 }
     
