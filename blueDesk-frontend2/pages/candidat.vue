@@ -14,7 +14,7 @@
         <div v-if="candidaturesData" class="box">
             <h2>Mes candidatures</h2>
             <ul v-for="candidature in candidaturesData" :key="candidature.date_candidature">
-              <li><nuxt-link :to="'annonce/'+ candidature.id_annonce">{{ `${candidature.poste}` }} chez {{ `${candidature.employeur_nom}` }}</nuxt-link> le {{ `${candidature.date_candidature}` }}  STATUT : {{ `${candidature.statut}` }}  <button @click="deleteCandidature(candidature.id_annonce)" >Annuler</button></li>
+              <li><nuxt-link :to="'annonce/'+ candidature.id_annonce">{{ `${candidature.poste}` }} chez {{ `${candidature.employeur_nom}` }}</nuxt-link> le {{ `${candidature.date_candidature}` }}  STATUT : {{ `${candidature.statut}` }}  <button v-if="candidature.statut != 'refusé' && candidature.statut != 'retenue'" @click="deleteCandidature(candidature.id_annonce)" >Annuler</button></li>
             </ul>
         </div>
     </div>

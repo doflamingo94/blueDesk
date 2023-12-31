@@ -8,5 +8,6 @@ router.get("/:id", annoncesController.getOne);
 router.post("/", annoncesController.create);
 router.put("/:id", annoncesController.updateOne);
 router.delete("/:id", annoncesController.deleteOne);
+router.post("/candidatures", annoncesController.getCandidatures)
 
 module.exports = router;

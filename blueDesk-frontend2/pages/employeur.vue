@@ -1,4 +1,5 @@
 <template>
+  <div class="page-content">
         <div id="error-message" class="error-message"></div>
         <div id="notif-message" class="notif-message"></div>
         <div class="user-profile">
@@ -12,6 +13,7 @@
             
             <h1><span v-if="employeursData">{{ `${employeursData.nom}` }}</span> </h1>
         </div>
+        <div class="annonces-section">
           <div class="container">
               <div class="form-section">
  
@@ -35,10 +37,21 @@
                            class="name ele"
                            placeholder="Salaire *" v-model="newAnnonce.salaire">
                     <textarea name="description_poste ele" cols="34" rows="70" placeholder="Description du poste *" v-model="newAnnonce.description_poste"></textarea>
-                    <button ref="annonceButton" type="submit" class="clkbtn">S'identifier</button>
+                    <button ref="annonceButton" type="submit" class="clkbtn">test</button>
                 </form>
+              </div> 
+          </div>
+          <!-- <div class="red"></div> -->
+          <div>
+              <div v-if="annoncesData" class="box">
+                  <h2>Mes annonces</h2>
+                  <ul v-for="annonce in annoncesData" :key="annonce.annonce_id">
+                    <li><nuxt-link :to="'annonce/'+ annonce.annonce_id">{{ `${annonce.poste}` }}</nuxt-link> le {{ `${annonce.date_creation}` }}               <nuxt-link :to="'candidatures/'+ annonce.annonce_id">candidatures</nuxt-link>                <button @click="deleteAnnonce(annonce.annonce_id)" >Annuler</button></li>
+                  </ul>
               </div>
           </div>
+        </div>
+  </div>
         
 </template>
 <script setup>
@@ -53,6 +66,7 @@ const authStore = useAuthStore();
 const userId = authStore.getId;
 const employeursData = ref(null);
 const annonceButton = ref(null);
+const annoncesData = ref(null);
 const newAnnonce = ref({
   titre: '',
   lieu: '',
@@ -68,8 +82,8 @@ console.log(userId)
 if(!authStore.isLoggedIn){
         router.push({path: '/'})
 } else {
-    onBeforeMount(()=>{
-        hydrateUser();
+    onBeforeMount(async()=>{
+      await Promise.all([hydrateUser(), mesAnnonces()]);
     })
 }
 
@@ -82,6 +96,36 @@ const hydrateUser = async () => {
   } catch(err) {
       console.log(err)
   }
+}
+
+const mesAnnonces = async () => {
+    try {
+        const response = await axios.post('http://localhost:3001/api/v1/employeurs/mesAnnonces', {
+            id_employeur: userId
+        });
+
+        annoncesData.value = response.data.data;
+        formatAnnoncesDates(annoncesData.value)
+
+        console.log('Formatted Data:', annoncesData.value);
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+const deleteAnnonce = async (annonceId) => {
+    try {
+                const response = await axios.post('http://localhost:3001/api/v1/employeurs/deleteAnnonce', {
+                    id_annonce: annonceId,
+                    id_employeur: userId
+                });
+                console.log('Status Code:', response.status);
+                console.log('Response Data:', response.data);
+                console.log('Vous avez bien supprimé votre annonce');
+                window.location.href = `/employeur`
+            } catch (err) {
+                console.log(err);
+            }
 }
 
 function convertDateFormat(dateString) {
@@ -99,6 +143,40 @@ function convertDateFormat(dateString) {
     return 'Invalid date format';
   }
 }
+
+function formatterDateSQL(dateSQL) {
+    // Convertir la chaîne de date SQL en objet Date
+    var dateObj = new Date(dateSQL);
+
+    // Extraire le jour, le mois et l'année
+    var jour = dateObj.getDate();
+    var mois = dateObj.getMonth() + 1; // Les mois commencent à partir de zéro
+    var annee = dateObj.getFullYear();
+
+    // Ajouter un zéro au jour et au mois si nécessaire
+    jour = (jour < 10) ? '0' + jour : jour;
+    mois = (mois < 10) ? '0' + mois : mois;
+
+    // Formater la date eannoncaa
+    var dateFormatee = jour + '/' + mois + '/' + annee;
+
+    return dateFormatee;
+}
+
+const formatAnnoncesDates = (annoncesData) => {
+    // Check if candidaturesData is an array
+    if (Array.isArray(annoncesData)) {
+        // Iterate over each candidature in the array
+        for (const annonce of annoncesData) {
+            // Check if the candidature has a date_candidature property
+            if (annonce.date_creation) {
+                // Format the date using formatterDateSQL
+                annonce.date_creation = formatterDateSQL(annonce.date_creation);
+            }
+        }
+    }
+};
+
 
 function showError(message) {
   const errorMessage = document.getElementById('error-message');
@@ -157,7 +235,8 @@ onMounted(() => {
         console.log('Response Data:', response.data);
 
         newAnnonce.value = {};
-        showNotif("Votre annonce a bien été crée.")
+        // showNotif("Votre annonce a bien été crée.")
+        window.location.href = `/employeur`
       } catch (err) {
         console.log(err);
       }
@@ -169,8 +248,79 @@ onMounted(() => {
 
 </script>
 <style scoped>
+
+.box {
+    width: 550px;
+    border-bottom: 20px solid #03a9f4;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin: 75px 0 0 53px;
+  }
+  .box h2 {
+    color: #fff;
+    background: #03a9f4;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-weight: 700;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  .box ul {
+    position: relative;
+    background: #fff;
+  }
+  .box ul:hover li {
+    opacity: 0.2;
+  }
+  .box ul li {
+    list-style: none;
+    padding: 10px;
+    background: #fff;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    transition: transform 0.5s;
+    text-align: left;
+  }
+  .box ul li:hover {
+    transform: scale(1.1);
+    z-index: 5;
+    background: #25bcff;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    opacity: 1;
+  }
+  .box ul li span {
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    background: #25bcff;
+    color: #fff;
+    display: inline-block;
+    border-radius: 50%;
+    margin-right: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    transform: translateY(-2px);
+  }
+  .box ul li:hover span {
+    background: #fff;
+    color: #25bcff;
+  }
+  .annonces-section{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 13px;
+  }
   .user-profile {
     text-align: center;
+  }
+
+  .red{
+    width: 50%;
+    height: 200px;
+    background-color: Red;
   }
 
   .error-message {
@@ -212,6 +362,8 @@ onMounted(() => {
     width: 100%;
     height: auto;
   }
+
+  
   
   .profile-picture {
     position: absolute;
@@ -233,14 +385,12 @@ onMounted(() => {
   }
 
   .container {
-    left: 50%;
     height: 700px;
     width: 500px;
     background-color: rgb(56, 177, 233);
     box-shadow: 8px 8px 20px rgb(128, 128, 128);
     position: relative;
     overflow: hidden;
-    transform: translateX(-50%);
     margin-top: 20px;
     border-radius: 10px;
 }
@@ -342,7 +492,7 @@ onMounted(() => {
     display: none;
   }
 
-  @media screen and (max-width: 900px) {
+  @media screen and (max-width: 1023px) {
     .profile-picture {
         position: absolute;
         top: 7rem; 
@@ -353,6 +503,10 @@ onMounted(() => {
         overflow: hidden;
         width: 150px; 
         height: 150px;
+      }
+      .annonces-section{
+        flex-direction: column;
+        align-items: center;
       }
   }
 
