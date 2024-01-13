@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken')
 const pool = require("../database/index");
 const bcrypt = require("bcrypt");
 
