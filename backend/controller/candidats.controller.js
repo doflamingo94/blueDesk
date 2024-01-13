@@ -68,7 +68,6 @@ const candidatsController = {
           const user = rows[0];
 
           try {
-            // Using bcrypt.compare with await
             const result = await bcrypt.compare(pass, user.pass);
     
             if (result) {
@@ -76,7 +75,6 @@ const candidatsController = {
               const role = 'candidat';
               res.json({ status: "success", message: "Login successful", userId, role });
             } else {
-              // Passwords do not match
               res.json({ status: "error", message: "Invalid credentials" });
             }
           } catch (bcryptError) {

@@ -68,7 +68,6 @@ const employeursController = {
           const user = rows[0];
     
           try {
-            // Using bcrypt.compare with await
             const result = await bcrypt.compare(pass, user.pass);
     
             if (result) {
@@ -76,7 +75,6 @@ const employeursController = {
               const role = 'employeur';
               res.json({ status: "success", message: "Login successful", userId, role });
             } else {
-              // Passwords do not match
               res.json({ status: "error", message: "Invalid credentials" });
             }
           } catch (bcryptError) {
@@ -93,7 +91,7 @@ const employeursController = {
     },
     mesAnnonces: async (req, res) => {
       try {
-        const { id_employeur } = req.body; // Assuming you're sending id_employeur in the request body
+        const { id_employeur } = req.body; 
     
         const sql = `
           SELECT annonces.poste, annonces.id AS annonce_id, annonces.titre, annonces.date_creation, 
@@ -113,13 +111,11 @@ const employeursController = {
     },
     deleteAnnonce: async (req, res) => {
       try {
-        const { id_employeur, id_annonce } = req.body; // Assuming you're sending id_employeur and annonce_id in the request body
+        const { id_employeur, id_annonce } = req.body;
     
-        // Delete candidatures associated with the annonce
         const deleteCandidaturesSQL = 'DELETE FROM candidatures WHERE id_annonce = ?;';
         await pool.query(deleteCandidaturesSQL, [id_annonce]);
 
-        // Delete the annonce
         const deleteAnnonceSQL = 'DELETE FROM annonces WHERE id = ? AND id_employeur = ?;';
         const [deleteAnnonceResult] = await pool.query(deleteAnnonceSQL, [id_annonce, id_employeur]);
     
