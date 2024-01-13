@@ -145,32 +145,24 @@ function convertDateFormat(dateString) {
 }
 
 function formatterDateSQL(dateSQL) {
-    // Convertir la chaîne de date SQL en objet Date
     var dateObj = new Date(dateSQL);
 
-    // Extraire le jour, le mois et l'année
     var jour = dateObj.getDate();
-    var mois = dateObj.getMonth() + 1; // Les mois commencent à partir de zéro
+    var mois = dateObj.getMonth() + 1; 
     var annee = dateObj.getFullYear();
 
-    // Ajouter un zéro au jour et au mois si nécessaire
     jour = (jour < 10) ? '0' + jour : jour;
     mois = (mois < 10) ? '0' + mois : mois;
 
-    // Formater la date eannoncaa
     var dateFormatee = jour + '/' + mois + '/' + annee;
 
     return dateFormatee;
 }
 
 const formatAnnoncesDates = (annoncesData) => {
-    // Check if candidaturesData is an array
     if (Array.isArray(annoncesData)) {
-        // Iterate over each candidature in the array
         for (const annonce of annoncesData) {
-            // Check if the candidature has a date_candidature property
             if (annonce.date_creation) {
-                // Format the date using formatterDateSQL
                 annonce.date_creation = formatterDateSQL(annonce.date_creation);
             }
         }
@@ -235,7 +227,6 @@ onMounted(() => {
         console.log('Response Data:', response.data);
 
         newAnnonce.value = {};
-        // showNotif("Votre annonce a bien été crée.")
         window.location.href = `/employeur`
       } catch (err) {
         console.log(err);

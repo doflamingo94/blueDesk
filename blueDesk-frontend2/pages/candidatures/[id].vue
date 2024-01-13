@@ -47,16 +47,12 @@ onBeforeMount(async ()=>{
     })
 
 function calculateAge(birthdate) {
-    // Parse the MySQL DATETIME string into a JavaScript Date object
     var birthDate = new Date(birthdate);
 
-    // Get the current date
     var currentDate = new Date();
 
-    // Calculate the difference in years
     var age = currentDate.getFullYear() - birthDate.getFullYear();
 
-    // Check if the birthday has already occurred this year
     if (
         currentDate.getMonth() < birthDate.getMonth() ||
         (currentDate.getMonth() === birthDate.getMonth() &&

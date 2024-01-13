@@ -60,7 +60,6 @@ const candidatures = async () => {
 
         candidaturesData.value = response.data.data;
 
-        // Format dates in the candidaturesData array
         formatCandidatureDates(candidaturesData.value);
 
         console.log('Formatted Data:', candidaturesData.value);
@@ -86,32 +85,24 @@ const deleteCandidature = async (annonceId) => {
 }
 
 function formatterDateSQL(dateSQL) {
-    // Convertir la chaîne de date SQL en objet Date
     var dateObj = new Date(dateSQL);
 
-    // Extraire le jour, le mois et l'année
     var jour = dateObj.getDate();
-    var mois = dateObj.getMonth() + 1; // Les mois commencent à partir de zéro
+    var mois = dateObj.getMonth() + 1; 
     var annee = dateObj.getFullYear();
 
-    // Ajouter un zéro au jour et au mois si nécessaire
     jour = (jour < 10) ? '0' + jour : jour;
     mois = (mois < 10) ? '0' + mois : mois;
 
-    // Formater la date en jj/mm/aaaa
     var dateFormatee = jour + '/' + mois + '/' + annee;
 
     return dateFormatee;
 }
 
 const formatCandidatureDates = (candidaturesData) => {
-    // Check if candidaturesData is an array
     if (Array.isArray(candidaturesData)) {
-        // Iterate over each candidature in the array
         for (const candidature of candidaturesData) {
-            // Check if the candidature has a date_candidature property
             if (candidature.date_candidature) {
-                // Format the date using formatterDateSQL
                 candidature.date_candidature = formatterDateSQL(candidature.date_candidature);
             }
         }
