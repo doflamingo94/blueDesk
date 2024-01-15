@@ -43,7 +43,7 @@ if (!authStore.isLoggedIn) {
 
 const hydrateUser = async () => {
     try {
-        const response = await axios.get(`http://13.39.156.186:3001/api/v1/candidats/${userId}`);
+        const response = await axios.get(`https://ae28qeazag.execute-api.eu-west-3.amazonaws.com/api/v1/candidats/${userId}`);
         candidatData.value = response.data.data[0];
         console.log(response.data.data[0]);
         console.log(candidatData.value);
@@ -54,7 +54,7 @@ const hydrateUser = async () => {
 
 const candidatures = async () => {
     try {
-        const response = await axios.post('http://13.39.156.186:3001/api/v1/candidats/candidatures', {
+        const response = await axios.post('https://ae28qeazag.execute-api.eu-west-3.amazonaws.com/api/v1/candidats/candidatures', {
             id_candidat: userId
         });
 
@@ -71,7 +71,7 @@ const candidatures = async () => {
 
 const deleteCandidature = async (annonceId) => {
     try {
-                const response = await axios.post('http://13.39.156.186:3001/api/v1/candidats/deleteCandidature', {
+                const response = await axios.post('https://ae28qeazag.execute-api.eu-west-3.amazonaws.com/api/v1/candidats/deleteCandidature', {
                     id_annonce: annonceId,
                     id_candidat: userId
                 });

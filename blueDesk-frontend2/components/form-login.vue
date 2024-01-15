@@ -195,7 +195,7 @@ onMounted(() => {
     } else {
       try {
         const date_naissance = convertDateFormat(newUser.value.date_naissance);
-        const response = await axios.post('http://13.39.156.186:3001/api/v1/candidats', {
+        const response = await axios.post('https://ae28qeazag.execute-api.eu-west-3.amazonaws.com/api/v1/candidats', {
           prenom: newUser.value.prenom,
           nom: newUser.value.nom,
           date_naissance: date_naissance,
@@ -231,7 +231,7 @@ onMounted(() => {
       showError("Vos mots de passe ne sont pas identiques");
     } else {
       try {
-        const response = await axios.post('http://13.39.156.186:3001/api/v1/employeurs', {
+        const response = await axios.post('https://ae28qeazag.execute-api.eu-west-3.amazonaws.com/api/v1/employeurs', {
           nom: newUser.value.nom,
           mail: newUser.value.mail,
           phone: newUser.value.phone,
@@ -268,7 +268,7 @@ async function loggin() {
   else{
         try {
         if (userLog.value.typeUser === 'Candidat') {
-            const response = await axios.post('http://13.39.156.186:3001/api/v1/candidats/login', {
+            const response = await axios.post('https://ae28qeazag.execute-api.eu-west-3.amazonaws.com/api/v1/candidats/login', {
             mail: userLog.value.mail,
             pass: userLog.value.pass,
           });
@@ -287,7 +287,7 @@ async function loggin() {
           
 
         } else {
-          const response = await axios.post('http://13.39.156.186:3001/api/v1/employeurs/login', {
+          const response = await axios.post('https://ae28qeazag.execute-api.eu-west-3.amazonaws.com/api/v1/employeurs/login', {
             identifiant: userLog.value.identifiant,
             pass: userLog.value.pass,
           });
