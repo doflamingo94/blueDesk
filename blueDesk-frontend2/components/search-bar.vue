@@ -1,9 +1,21 @@
 <template>
     <div class="box">
-        <input type="text" placeholder="Comptable">
-        <a href="/">Rechercher</a>
+        <input ref="searchedPoste" type="text" placeholder="Comptable">
+        <button @click="handleSearch">Rechercher</button>
     </div>
 </template>
+
+<script setup>
+const emit = defineEmits(['click']);
+console.log(emit);
+
+// const router = useRouter();
+const searchedPoste = ref('');
+const handleSearch = () => {
+  emit('click', searchedPoste.value)
+};
+
+</script>
 
 <style scoped>
 .mask-demo{
@@ -33,7 +45,7 @@
     background: transparent;
     font-size: 17px;
 }
-.box a {
+.box button {
     text-decoration: none;
     color: rgb(255, 255, 255);
     font-size: 17px;
@@ -44,6 +56,11 @@
     align-items: center;
     padding: 0 13px;
     border-radius: 35px;
+    border: transparent;
+}
+
+button{
+    cursor: pointer;
 }
 
 @media only screen and (max-width: 979px) {
