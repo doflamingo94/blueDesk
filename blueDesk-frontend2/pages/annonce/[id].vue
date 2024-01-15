@@ -105,19 +105,15 @@ const hydrateUser = async () => {
 }
 
 const formatterDateSQL = (dateSQL) => {
-    // Convertir la chaîne de date SQL en objet Date
     var dateObj = new Date(dateSQL);
 
-    // Extraire le jour, le mois et l'année
     var jour = dateObj.getDate();
-    var mois = dateObj.getMonth() + 1; // Les mois commencent à partir de zéro
+    var mois = dateObj.getMonth() + 1; 
     var annee = dateObj.getFullYear();
 
-    // Ajouter un zéro au jour et au mois si nécessaire
     jour = (jour < 10) ? '0' + jour : jour;
     mois = (mois < 10) ? '0' + mois : mois;
 
-    // Formater la date en jj/mm/aaaa
     var dateFormatee = jour + '/' + mois + '/' + annee;
 
     return dateFormatee;

@@ -146,6 +146,11 @@ function showError(message) {
   }, 5000);
 }
 
+function passwordRules(chaine) {
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+  return regex.test(chaine);
+}
+
 function showNotif(message) {
   const notifMessage = document.getElementById('notif-message');
   notifMessage.textContent = message;
@@ -192,6 +197,8 @@ onMounted(() => {
       showError("Veuillez remplir 'tous' les champs.");
     } else if (newUser.value.pass != newUser.value.pass2) {
       showError("Vos mots de passe ne sont pas identiques");
+    }  else if (!passwordRules(newUser.value.pass)) {
+      showError("Votre mot de passe doit contenir au minimum 8 caractères, minuscule, majuscule et un chiffre")
     } else {
       try {
         const date_naissance = convertDateFormat(newUser.value.date_naissance);
@@ -229,6 +236,8 @@ onMounted(() => {
       showError("Veuillez remplir 'tous' les champs.");
     } else if (newUser.value.pass != newUser.value.pass2) {
       showError("Vos mots de passe ne sont pas identiques");
+    } else if (!passwordRules(newUser.value.pass)) {
+      showError("Votre mot de passe doit contenir au minimum 8 caractères, minuscule, majuscule et un chiffre")
     } else {
       try {
         const response = await axios.post('http://localhost:3001/api/v1/employeurs', {

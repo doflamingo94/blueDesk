@@ -34,32 +34,24 @@ onBeforeMount(() => {
 
 
 const formatterDateSQL = (dateSQL) => {
-    // Convertir la chaîne de date SQL en objet Date
     var dateObj = new Date(dateSQL);
 
-    // Extraire le jour, le mois et l'année
     var jour = dateObj.getDate();
-    var mois = dateObj.getMonth() + 1; // Les mois commencent à partir de zéro
+    var mois = dateObj.getMonth() + 1; 
     var annee = dateObj.getFullYear();
 
-    // Ajouter un zéro au jour et au mois si nécessaire
     jour = (jour < 10) ? '0' + jour : jour;
     mois = (mois < 10) ? '0' + mois : mois;
 
-    // Formater la date en jj/mm/aaaa
     var dateFormatee = jour + '/' + mois + '/' + annee;
 
     return dateFormatee;
 }
 
 const formatAnnonceDates = (annoncesData) => {
-    // Check if candidaturesData is an array
     if (Array.isArray(annoncesData)) {
-        // Iterate over each candidature in the array
         for (const annonce of annoncesData) {
-            // Check if the candidature has a date_candidature property
             if (annonce.date_debut) {
-                // Format the date using formatterDateSQL
                 annonce.date_debut = formatterDateSQL(annonce.date_debut);
             }
         }
@@ -78,11 +70,6 @@ const formatAnnonceDates = (annoncesData) => {
   justify-content: center;
 }
 .ag-courses_box {
-  /* display: -webkit-box;
-  display: -ms-flexbox; */
-  /* display: flex;
-  align-items: flex-start; */
-  /* flex-wrap: wrap; */
   width: 450px;
   padding: 50px 0;
 }
@@ -159,18 +146,6 @@ const formatAnnonceDates = (annoncesData) => {
   -o-transition: all .5s ease;
   transition: all .5s ease;
 }
-/* .ag-courses_item:nth-child(2n) .ag-courses-item_bg {
-  background-color: #3ecd5e;
-}
-.ag-courses_item:nth-child(3n) .ag-courses-item_bg {
-  background-color: #e44002;
-}
-.ag-courses_item:nth-child(4n) .ag-courses-item_bg {
-  background-color: #952aff;
-}
-.ag-courses_item:nth-child(5n) .ag-courses-item_bg {
-  background-color: #cd3e94;
-} */
 .ag-courses_item .ag-courses-item_bg {
   background-color: rgb(13 102 132);
 }
