@@ -1,8 +1,12 @@
 <template>
-    <div class="page-content">
+    <div v-if="!candidaturesData" class="page-content">
         <div class="header">
-            <h1 v-if="candidaturesData">Candidatures pour le poste de {{ `${candidaturesData[0].poste}` }} </h1>
-            <h1 v-else>Pas encore de candidatures</h1>
+            <h1>Pas encore de candidature</h1>
+        </div>
+    </div>
+    <div v-else class="page-content">
+        <div class="header">
+            <h1>Candidatures pour le poste de {{ `${candidaturesData[0].poste}` }} </h1>
         </div>
         <div v-if="candidaturesData" class="candidatures-block">
             <ul v-for="candidature in candidaturesData" :key="candidature.id">
@@ -32,12 +36,13 @@ const candidatures = async () => {
                 id_annonce: annonceId,
                 id_employeur: userId
             });
-
-            candidaturesData.value = response.data.data;
-
-            console.log('Status Code:', response.status);
-            console.log('Response Data:', response.data.data[0].poste);
-            console.log('PESOSPESOS', candidaturesData.value);
+            if(response.data.data){
+               candidaturesData.value = response.data.data;
+            }
+            else {
+                console.log('Aucune candidature');
+            }
+            
         } catch (err) {
             console.log(err);
         }
