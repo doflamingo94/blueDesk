@@ -47,6 +47,7 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { ref } from 'vue';
 import { vMaska } from 'maska';
+const config = useRuntimeConfig();
 
 const router = useRouter();
 const authStore = useAuthStore();

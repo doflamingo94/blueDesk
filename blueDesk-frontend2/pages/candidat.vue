@@ -29,7 +29,8 @@ const router = useRouter();
 const authStore = useAuthStore();
 const userId = authStore.getId;
 const candidatData = ref(null);
-const candidaturesData = ref(null)
+const candidaturesData = ref(null);
+const config = useRuntimeConfig();
 
 console.log(userId)
 

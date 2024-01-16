@@ -91,6 +91,7 @@ const formSection = ref(null);
 const signingUp = ref(null);
 const authStore = useAuthStore();
 const router = useRouter();
+const config = useRuntimeConfig();
 
 console.log(authStore.isLoggedIn) 
 

@@ -42,6 +42,7 @@ const candidater = ref(null);
 isLoggedIn.value = authStore.isLoggedIn;
 const date_debut = ref(null);
 const date_fin = ref(null);
+const config = useRuntimeConfig();
 
 if(isLoggedIn){
     userId = authStore.getId;
