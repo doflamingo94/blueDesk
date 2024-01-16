@@ -46,6 +46,7 @@ isLoggedIn.value = authStore.isLoggedIn;
 const date_debut = ref(null);
 const date_fin = ref(null);
 const madeIt = ref(false);
+const config = useRuntimeConfig();
 
 if(isLoggedIn){
     userId = authStore.getId;
@@ -57,7 +58,7 @@ const verifCandidature = async () => {
         try {
             annonceId = parseInt(annonceId, 10);
 
-            const response = await axios.post('http://localhost:3001/api/v1/candidats/candidature', {
+            const response = await axios.post(`${config.public.backend}/api/v1/candidats/candidature`, {
                     id_candidat: userId,
                     id_annonce: annonceId
             });
@@ -76,7 +77,7 @@ const verifCandidature = async () => {
 
 const candidate = async () => {
     try {
-                const response = await axios.post('http://localhost:3001/api/v1/candidats/candidater', {
+                const response = await axios.post(`${config.public.backend}/api/v1/candidats/candidater`, {
                     id_annonce: annonceId,
                     id_candidat: userId,
                     statut: 'en cours'
@@ -97,7 +98,7 @@ onBeforeMount(async ()=>{
 
 const hydrateUser = async () => {
   try  {
-        const response = await axios.get(`http://localhost:3001/api/v1/annonces/${annonceId}`);
+        const response = await axios.get(`${config.public.backend}/api/v1/annonces/${annonceId}`);
         annonceData.value = response.data.data[0];
         date_debut.value = formatterDateSQL(annonceData.value.date_debut)
         if(annonceData.value.date_fin){

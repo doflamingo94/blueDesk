@@ -23,11 +23,12 @@ const candidaturesData = ref(null);
 const profileStore = useProfile();
 const authStore = useAuthStore();
 const userId = authStore.getId;
-console.log(userId)
+console.log(userId);
+const config = useRuntimeConfig();
 
 const candidatures = async () => {
     try {
-            const response = await axios.post('http://localhost:3001/api/v1/annonces/candidatures', {
+            const response = await axios.post(`${config.public.backend}/api/v1/annonces/candidatures`, {
                 id_annonce: annonceId,
                 id_employeur: userId
             });

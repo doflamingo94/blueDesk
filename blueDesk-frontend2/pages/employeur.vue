@@ -76,6 +76,7 @@ const newAnnonce = ref({
   salaire: '',
   description_poste: ''
 });
+const config = useRuntimeConfig();
 
 console.log(userId)
 
@@ -89,7 +90,7 @@ if(!authStore.isLoggedIn){
 
 const hydrateUser = async () => {
   try  {
-        const response = await axios.get(`http://localhost:3001/api/v1/employeurs/${userId}`);
+        const response = await axios.get(`${config.public.backend}/api/v1/employeurs/${userId}`);
         employeursData.value = response.data.data[0];
         console.log(response.data.data[0]);
         console.log(employeursData.value);
@@ -100,7 +101,7 @@ const hydrateUser = async () => {
 
 const mesAnnonces = async () => {
     try {
-        const response = await axios.post('http://localhost:3001/api/v1/employeurs/mesAnnonces', {
+        const response = await axios.post(`${config.public.backend}/api/v1/employeurs/mesAnnonces`, {
             id_employeur: userId
         });
 
@@ -115,7 +116,7 @@ const mesAnnonces = async () => {
 
 const deleteAnnonce = async (annonceId) => {
     try {
-                const response = await axios.post('http://localhost:3001/api/v1/employeurs/deleteAnnonce', {
+                const response = await axios.post(`${config.public.backend}/api/v1/employeurs/deleteAnnonce`, {
                     id_annonce: annonceId,
                     id_employeur: userId
                 });
@@ -212,7 +213,7 @@ onMounted(() => {
         if(newAnnonce.value.date_fin.length > 0){
           newAnnonce.value.date_fin = convertDateFormat(newAnnonce.value.date_fin);
         }
-        const response = await axios.post('http://localhost:3001/api/v1/annonces', {
+        const response = await axios.post(`${config.public.backend}/api/v1/annonces`, {
           titre: newAnnonce.value.titre,
           lieu: newAnnonce.value.lieu,
           date_debut: date_debut,

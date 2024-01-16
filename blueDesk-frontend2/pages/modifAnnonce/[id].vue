@@ -54,7 +54,7 @@ const annonceButton = ref(null);
 const previousAnnonceData = ref(null);
 const date_debut = ref(null);
 const date_fin = ref(null);
-
+const config = useRuntimeConfig();
 const newAnnonce = ref({
   titre: '',
   lieu: '',
@@ -115,7 +115,7 @@ function showError(message) {
 
 const hydrateUser = async () => {
   try  {
-        const response = await axios.get(`http://localhost:3001/api/v1/annonces/${annonceId}`);
+        const response = await axios.get(`${config.public.backend}/api/v1/annonces/${annonceId}`);
         previousAnnonceData.value = response.data.data[0];
         date_debut.value = formatterDateSQL(previousAnnonceData.value.date_debut)
         if(previousAnnonceData.value.date_fin){
@@ -143,7 +143,7 @@ const updateAnnonce = async () => {
         if(newAnnonce.value.date_fin.length > 0){
           newAnnonce.value.date_fin = convertDateFormat(newAnnonce.value.date_fin);
         }
-        const response = await axios.put(`http://localhost:3001/api/v1/annonces/${annonceId}`, {
+        const response = await axios.put(`${config.public.backend}/api/v1/annonces/${annonceId}`, {
           titre: newAnnonce.value.titre,
           lieu: newAnnonce.value.lieu,
           date_debut: date_debut,

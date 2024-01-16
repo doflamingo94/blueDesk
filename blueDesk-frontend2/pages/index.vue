@@ -7,8 +7,11 @@
 </template>
 
 <script setup>
-   const { data: responses } = await useFetch('http://localhost:3001/api/v1/annonces')
-   const annonces = responses._rawValue.data
+   import axios from 'axios';
+   const config = useRuntimeConfig();
+   const response = await axios.get(`${config.public.backend}/api/v1/annonces`);
+   console.log('Khaled', config.public.backend)
+   const annonces = response.data.data;
 </script>
 
 <style scoped>

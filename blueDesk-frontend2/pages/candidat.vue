@@ -29,7 +29,8 @@ const router = useRouter();
 const authStore = useAuthStore();
 const userId = authStore.getId;
 const candidatData = ref(null);
-const candidaturesData = ref(null)
+const candidaturesData = ref(null);
+const config = useRuntimeConfig();
 
 console.log(userId)
 
@@ -43,7 +44,7 @@ if (!authStore.isLoggedIn) {
 
 const hydrateUser = async () => {
     try {
-        const response = await axios.get(`http://localhost:3001/api/v1/candidats/${userId}`);
+        const response = await axios.get(`${config.public.backend}/api/v1/candidats/${userId}`);
         candidatData.value = response.data.data[0];
         console.log(response.data.data[0]);
         console.log(candidatData.value);
@@ -54,7 +55,7 @@ const hydrateUser = async () => {
 
 const candidatures = async () => {
     try {
-        const response = await axios.post('http://localhost:3001/api/v1/candidats/candidatures', {
+        const response = await axios.post(`${config.public.backend}/api/v1/candidats/candidatures`, {
             id_candidat: userId
         });
 
@@ -70,7 +71,7 @@ const candidatures = async () => {
 
 const deleteCandidature = async (annonceId) => {
     try {
-                const response = await axios.post('http://localhost:3001/api/v1/candidats/deleteCandidature', {
+                const response = await axios.post(`${config.public.backend}/api/v1/candidats/deleteCandidature`, {
                     id_annonce: annonceId,
                     id_candidat: userId
                 });

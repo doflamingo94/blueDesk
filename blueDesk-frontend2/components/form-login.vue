@@ -91,6 +91,7 @@ const formSection = ref(null);
 const signingUp = ref(null);
 const authStore = useAuthStore();
 const router = useRouter();
+const config = useRuntimeConfig();
 
 console.log(authStore.isLoggedIn) 
 
@@ -202,7 +203,7 @@ onMounted(() => {
     } else {
       try {
         const date_naissance = convertDateFormat(newUser.value.date_naissance);
-        const response = await axios.post('http://localhost:3001/api/v1/candidats', {
+        const response = await axios.post(`${config.public.backend}/api/v1/candidats`, {
           prenom: newUser.value.prenom,
           nom: newUser.value.nom,
           date_naissance: date_naissance,
@@ -240,7 +241,7 @@ onMounted(() => {
       showError("Votre mot de passe doit contenir au minimum 8 caractères, minuscule, majuscule et un chiffre")
     } else {
       try {
-        const response = await axios.post('http://localhost:3001/api/v1/employeurs', {
+        const response = await axios.post(`${config.public.backend}/api/v1/employeurs`, {
           nom: newUser.value.nom,
           mail: newUser.value.mail,
           phone: newUser.value.phone,
@@ -277,7 +278,7 @@ async function loggin() {
   else{
         try {
         if (userLog.value.typeUser === 'Candidat') {
-            const response = await axios.post('http://localhost:3001/api/v1/candidats/login', {
+            const response = await axios.post(`${config.public.backend}/api/v1/candidats/login`, {
             mail: userLog.value.mail,
             pass: userLog.value.pass,
           });
@@ -296,7 +297,7 @@ async function loggin() {
           
 
         } else {
-          const response = await axios.post('http://localhost:3001/api/v1/employeurs/login', {
+          const response = await axios.post(`${config.public.backend}/api/v1/employeurs/login`, {
             identifiant: userLog.value.identifiant,
             pass: userLog.value.pass,
           });

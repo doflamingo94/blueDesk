@@ -32,6 +32,7 @@ const userId = authStore.getId;
 const candidatData = ref(null);
 let profileId = profileStore.getProfileId;
 const status = profileStore.getStatus;
+const config = useRuntimeConfig();
 console.log('khaledddddddd yoooo', profileId, 'bonjourrrr', annonceId, '3emeeee', status);
 
 console.log(userId)
@@ -46,7 +47,7 @@ if (!authStore.isLoggedIn) {
 
 const hydrateUser = async () => {
     try {
-        const response = await axios.get(`http://localhost:3001/api/v1/candidats/${profileId}`);
+        const response = await axios.get(`${config.public.backend}/api/v1/candidats/${profileId}`);
         candidatData.value = response.data.data[0];
         console.log(response.data.data[0]);
         console.log(candidatData.value);
@@ -57,7 +58,7 @@ const hydrateUser = async () => {
 
 const refuser = async () => {
     try {
-        const response = await axios.post('http://localhost:3001/api/v1/employeurs/refuser', {
+        const response = await axios.post(`${config.public.backend}/api/v1/employeurs/refuser`, {
                 id_annonce: annonceId,
                 id_candidat: profileId
             });
@@ -71,7 +72,7 @@ const refuser = async () => {
 
 const valider = async () => {
     try {
-        const response = await axios.post('http://localhost:3001/api/v1/employeurs/valider', {
+        const response = await axios.post(`${config.public.backend}/api/v1/employeurs/valider`, {
                 id_annonce: annonceId,
                 id_candidat: profileId
             });
