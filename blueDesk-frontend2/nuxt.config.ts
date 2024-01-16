@@ -1,5 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      backend: process.env.NUXT_PUBLIC_BACKEND
+    }
+  },
   devtools: { enabled: true },
   app: {
     head: {

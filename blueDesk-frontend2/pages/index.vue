@@ -8,9 +8,9 @@
 
 <script setup>
 import axios from 'axios';
-   const response = await axios.get(`https://ae28qeazag.execute-api.eu-west-3.amazonaws.com/api/v1/annonces`);
-   const annonces = response.data.data;
-//    console.log(annonces)
+const config = useRuntimeConfig();
+const response = await axios.get(`${config.public.backend}/api/v1/annonces`);
+const annonces = response.data.data;
    
 </script>
 

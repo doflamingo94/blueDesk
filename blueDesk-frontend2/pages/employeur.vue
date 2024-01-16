@@ -75,7 +75,7 @@ if(!authStore.isLoggedIn){
 
 const hydrateUser = async () => {
   try  {
-        const response = await axios.get(`https://ae28qeazag.execute-api.eu-west-3.amazonaws.com/api/v1/employeurs/${userId}`);
+        const response = await axios.get(`${config.public.backend}/api/v1/employeurs/${userId}`);
         employeursData.value = response.data.data[0];
         console.log(response.data.data[0]);
         console.log(employeursData.value);
@@ -142,7 +142,7 @@ onMounted(() => {
         if(newAnnonce.value.date_fin.length > 0){
           newAnnonce.value.date_fin = convertDateFormat(newAnnonce.value.date_fin);
         }
-        const response = await axios.post('https://ae28qeazag.execute-api.eu-west-3.amazonaws.com/api/v1/annonces', {
+        const response = await axios.post(`${config.public.backend}/api/v1/annonces`, {
           titre: newAnnonce.value.titre,
           lieu: newAnnonce.value.lieu,
           date_debut: date_debut,
