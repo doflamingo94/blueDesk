@@ -21,6 +21,9 @@
         </div>
         <div class="apply-button" v-else-if="userRole === 'employeur' || (userRole === 'candidat' && hasApplied)" style="display: none;">
         </div>
+        <div class="apply-button" v-if="madeIt" >
+          <nuxt-link :to="'/modifAnnonce/'+ annonceId"><button>Modifier</button></nuxt-link>
+      </div>
         <div v-else style="display: none;">
         </div>
       </div>
@@ -42,6 +45,7 @@ const candidater = ref(null);
 isLoggedIn.value = authStore.isLoggedIn;
 const date_debut = ref(null);
 const date_fin = ref(null);
+const madeIt = ref(false);
 
 if(isLoggedIn){
     userId = authStore.getId;
@@ -98,6 +102,11 @@ const hydrateUser = async () => {
         date_debut.value = formatterDateSQL(annonceData.value.date_debut)
         if(annonceData.value.date_fin){
           date_fin.value = formatterDateSQL(annonceData.value.date_fin)
+        }
+        if(userRole === "employeur"){
+          if(userId === annonceData.value.id_employeur){
+            madeIt.value = true;
+          }
         }
   } catch(err) {
       console.log(err)

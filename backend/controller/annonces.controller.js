@@ -46,10 +46,10 @@ const annoncesController = {
     },
     updateOne: async (req, res) => {
         try{
-            const {titre, profil, banniere, lieu, date_debut, date_fin, poste, salaire, description_poste} = req.body;
+            const {titre, lieu, date_debut, date_fin, poste, salaire, description_poste} = req.body;
             const { id } = req.params;
-            const sql = "UPDATE annonces SET titre = ?, profil = ?, banniere = ?, lieu = ?, date_debut = ?, date_fin = ?, poste = ?, salaire = ?, description_poste = ? where id = ?";            
-            const [rows, fields] = await pool.query(sql, [titre, profil, banniere, lieu, date_debut, date_fin, poste, salaire, description_poste, id]);
+            const sql = "UPDATE annonces SET titre = ?, lieu = ?, date_debut = ?, date_fin = ?, poste = ?, salaire = ?, description_poste = ? where id = ?";            
+            const [rows, fields] = await pool.query(sql, [titre, lieu, date_debut, date_fin, poste, salaire, description_poste, id]);
             res.json({data: rows});
         } catch (error) {
             console.log(error);
