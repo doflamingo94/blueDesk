@@ -26,11 +26,23 @@ const candidatsController = {
     create: async (req, res) => {
       try {
         const { prenom, nom, date_naissance, mail, phone, pass, sexe } = req.body;
-        bcrypt.hash(pass, 10, async(err, hash) => {
-          const sql = "INSERT INTO candidats (prenom, nom, date_naissance, date_creation, mail, phone, pass, sexe) VALUES (?, ?, ?, NOW(), ?, ?, ?, ?)";
-          const [rows, fields] = await pool.query(sql, [prenom, nom, date_naissance, mail, phone, hash, sexe]);
-          res.json({ data: rows });
-        });    
+        const sql = "SELECT COUNT(*) AS email_count FROM candidats WHERE mail = ?";
+        const [rows, fields] = await pool.query(sql, [mail]);
+        const emailCount = rows[0].email_count;
+        if(emailCount > 0){
+          res.json({ data: 'mail existant' });
+        } else {
+              bcrypt.hash(pass, 10, async(err, hash) => {
+                const sql = "INSERT INTO candidats (prenom, nom, date_naissance, date_creation, mail, phone, pass, sexe) VALUES (?, ?, ?, NOW(), ?, ?, ?, ?)";
+                const [rows, fields] = await pool.query(sql, [prenom, nom, date_naissance, mail, phone, hash, sexe]);
+                res.json({ data: rows });
+              });    
+        }
+        // bcrypt.hash(pass, 10, async(err, hash) => {
+        //   const sql = "INSERT INTO candidats (prenom, nom, date_naissance, date_creation, mail, phone, pass, sexe) VALUES (?, ?, ?, NOW(), ?, ?, ?, ?)";
+        //   const [rows, fields] = await pool.query(sql, [prenom, nom, date_naissance, mail, phone, hash, sexe]);
+        //   res.json({ data: rows });
+        // });    
       } catch (error) {
         console.log(error);
         res.json({ status: "error", message: error.message });

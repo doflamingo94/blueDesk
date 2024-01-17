@@ -212,12 +212,12 @@ onMounted(() => {
           pass: newUser.value.pass,
           sexe: newUser.value.sexe,
         });
-
-        console.log('Status Code:', response.status);
-        console.log('Response Data:', response.data);
-
-        newUser.value = {};
-        showNotif("Votre inscription a bien été prise en compte. Connectez vous!")
+        if(response.data.data === 'mail existant'){
+          showError("Un compte a déjà été créé avec cette adresse mail.");
+        } else {
+          showNotif("Votre inscription a bien été prise en compte. Connectez vous!")
+          newUser.value = {};
+        }
       } catch (err) {
         console.log(err);
       }
@@ -249,11 +249,18 @@ onMounted(() => {
           identifiant: newUser.value.identifiant,
           numero_siret: newUser.value.numero_siret,
         });
-        console.log('Status Code:', response.status);
-        console.log('Response Data:', response.data);
-
-        newUser.value = {};
-        showNotif("Votre inscription a bien été prise en compte. Connectez vous!")
+        if(response.data.data === 'mail existant'){
+          showError("Un compte a déjà été créé avec cette adresse mail.");
+        } else if(response.data.data === 'identifiant existant'){
+          showError("Un compte a déjà été créé avec cet identifiant.");
+        } else if(response.data.data === 'numero_siret existant'){
+          showError("Ce SIRET appartient à une autre entreprise");
+        } else if(response.data.data === 'nom existant'){
+          showError("Ce nom appartient à une autre entreprise");
+        } else {
+          showNotif("Votre inscription a bien été prise en compte. Connectez vous!")
+          newUser.value = {};
+        }
       } catch (err) {
         console.log(err);
       }
