@@ -10,7 +10,17 @@ export default defineNuxtConfig({
     head: {
       title: "Blue Desk",
       charset: 'utf-8',
-      viewport: 'width=device-width, initial-scale=1'
+      viewport: 'width=device-width, initial-scale=1',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { hid: 'description', name: 'description', content: "Trouvez des offres d'emploi passionnantes aux Comores et boostez votre carrière avec notre plateforme de recherche d'emploi." },
+        { hid: 'keywords', name: 'keywords', content: "emploi, recherche d'emploi, carrière, offres d'emploi Comores, opportunités professionnelles Comores" },
+        { hid: 'og:title', property: 'og:title', content: "Trouvez votre emploi idéal aux Comores | Blue Desk" },
+        { hid: 'og:description', property: 'og:description', content: "Trouvez des offres d'emploi passionnantes aux Comores et boostez votre carrière avec notre plateforme de recherche d'emploi." },
+        { hid: 'twitter:title', name: 'twitter:title', content: "Trouvez votre emploi idéal aux Comores | Blue Desk" },
+        { hid: 'twitter:description', name: 'twitter:description', content: "Trouvez des offres d'emploi passionnantes aux Comores et boostez votre carrière avec notre plateforme de recherche d'emploi." },
+      ]
     }
   },
   plugins: [

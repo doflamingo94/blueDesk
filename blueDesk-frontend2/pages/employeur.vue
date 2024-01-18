@@ -37,7 +37,7 @@
                            class="name ele"
                            placeholder="Salaire *" v-model="newAnnonce.salaire">
                     <textarea name="description_poste ele" cols="34" rows="70" placeholder="Description du poste *" v-model="newAnnonce.description_poste"></textarea>
-                    <button ref="annonceButton" type="submit" class="clkbtn">test</button>
+                    <button ref="annonceButton" type="submit" class="clkbtn">publier</button>
                 </form>
               </div> 
           </div>
