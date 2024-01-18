@@ -1,4 +1,9 @@
 <template>
+    <div class="basic-container">
+       <div class="titles">
+            <h1>Rechercher un emploi aux Comores</h1>
+       </div> 
+    </div>
     <div class="container">
         <SearchBar @clicked="handleSearch" />
     </div>
@@ -6,7 +11,7 @@
 </template>
 
 <script setup>
-   import axios from 'axios';
+import axios from 'axios';
    const config = useRuntimeConfig();
    const router = useRouter();
    const response = await axios.get(`${config.public.backend}/api/v1/annonces`);
@@ -27,9 +32,30 @@
 </script>
 
 <style scoped>
+.titles{
+    background-color: white;
+    width: auto;
+    border-radius: 80px;
+    padding: 0px 15px 15px 15px;
+    margin-top: 22px;
+    color: rgb(13 102 132);
+}
+h1, h2{
+    text-align: center;
+}
+h1 {
+    padding-top: 19px;
+}
+h2{
+    padding-top: 30px;
+}
 .container {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.basic-container{
+    display: flex;
+    justify-content: center;
 }
 </style>

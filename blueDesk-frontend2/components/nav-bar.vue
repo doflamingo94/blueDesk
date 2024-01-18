@@ -169,10 +169,14 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      color: rgb(13 102 132);
+      color: rgb(13 102 132) !important;
       transition: 0.6s;
       cursor: pointer;
     }
+
+    nav:hover ul .test a {
+    color: white !important;
+  }
 
     .navlinks ul .test{
       margin: 3px 0;
