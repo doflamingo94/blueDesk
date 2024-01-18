@@ -9,5 +9,5 @@ router.post("/", annoncesController.create);
 router.put("/:id", annoncesController.updateOne);
 router.delete("/:id", annoncesController.deleteOne);
 router.post("/candidatures", annoncesController.getCandidatures)
-
+router.post("/search", annoncesController.getSearched)
 module.exports = router;

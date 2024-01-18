@@ -64,6 +64,14 @@ const annoncesController = {
             console.log(error);
         }
     },
+    getSearched: async (req, res) => {
+        try{
+            const { search } = req.body;
+            const [rows, fields] = await pool.query("SELECT annonces.*, employeurs.nom AS employeur_name FROM annonces JOIN employeurs ON annonces.id_employeur = employeurs.id WHERE annonces.poste LIKE ? ORDER BY annonces.date_creation DESC; ", [`%${search}%`]); res.json({data: rows});
+        } catch (error) {
+            console.log(error);
+        }
+    },
 }
 
 module.exports = annoncesController;

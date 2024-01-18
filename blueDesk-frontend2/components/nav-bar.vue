@@ -20,8 +20,12 @@
 
 <style scoped>
 
-    a{
-    color: black !important;
+  a{
+    color: white !important;
+  }
+
+  a:hover{
+    color: blue !important;
   }
     .blue{
     color: rgb(13 102 132);
@@ -47,7 +51,8 @@
     /* box-shadow: 0 25px 20px -20px #252525; */
     background-color: rgb(13 102 132);
     transition: 0.2s;
-  }nav:hover{
+  }
+  nav:hover{
     background-color: rgb(255, 255, 255);
   }
   nav:hover .mask-demo{
@@ -64,8 +69,11 @@
     padding: 0; 
     border-radius: 0;
   }
-  nav:hover .logo{
-    color: rgb(14, 14, 14);
+  nav:hover .logo a{
+    color: rgb(14, 14, 14) !important;
+  }
+  nav:hover ul .test a {
+    color: black !important;
   }
   .test:hover li{
     font-size: larger;
@@ -168,11 +176,8 @@
 
     .navlinks ul .test{
       margin: 3px 0;
-      padding: 50px;
+      padding: 15px;
       transition: 0.5s;
-    }
-    .navlinks ul .test:hover li{
-      transform: rotate(360deg)
     }
   }
   </style>

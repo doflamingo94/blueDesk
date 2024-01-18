@@ -3,7 +3,7 @@
     <div class="ag-format-container">
         <div class="ag-courses_box" v-for="a in message" :key="a.id">
             <div class="ag-courses_item">
-            <nuxt-link :to="'annonce/'+ a.id" class="ag-courses-item_link">
+            <nuxt-link :to="'/annonce/'+ a.id" class="ag-courses-item_link">
                 <div class="ag-courses-item_bg">
                 </div>
 
