@@ -242,7 +242,7 @@ onMounted(() => {
 <style scoped>
 
 .box {
-    width: 550px;
+    width: 490px;
     border-bottom: 20px solid #03a9f4;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -484,7 +484,35 @@ onMounted(() => {
     display: none;
   }
 
-  @media screen and (max-width: 1023px) {
+  @media (max-width:1086px) and (min-width:769px) {
+    .box {
+      width: 420px;
+      margin: 45px 0 0 15px !important;
+    }
+  }
+
+  @media (max-width:768px) and (min-width:500px) {
+    .box {
+      width: 420px;
+      margin: 45px 0 0 0 !important;
+    }
+  }
+
+  @media (max-width:499px) and (min-width:350px) {
+    .box {
+      width: 450px !important; 
+      margin: 35px 0 0 0 !important;
+    }
+  }
+
+  @media (max-width:349px) and (min-width:150px) {
+    .box {
+      width: 250px !important; 
+      margin: 25px 0 0 0 !important;
+    }
+  }
+
+  @media screen and (max-width: 1085px) {
     .profile-picture {
         position: absolute;
         top: 7rem; 
@@ -502,7 +530,7 @@ onMounted(() => {
       }
   }
 
-  
+ 
 
   @media screen and (max-width: 650px) {
     .container {
