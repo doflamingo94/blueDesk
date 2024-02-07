@@ -4,6 +4,14 @@
             <h1>Rechercher un emploi aux Comores</h1>
        </div> 
     </div>
+    <CldUploadWidget
+      v-slot="{ open }"
+      uploadPreset="candidat-pp"
+      :options="{ publicId: 'test/yopr0yooj9p1xrcxceln' }"
+      @upload="handleSuccess"
+    >
+        <button type="button" @click="open">Upload an Image</button>
+    </CldUploadWidget>
     <div class="container">
         <SearchBar @clicked="handleSearch" />
     </div>
@@ -17,6 +25,10 @@ import axios from 'axios';
    const response = await axios.get(`${config.public.backend}/api/v1/annonces`);
    console.log('Khaled', config.public.backend)
    const annonces = response.data.data;
+
+   const handleSuccess = (test, tt) => {
+    console.log(test._rawValue.info.public_id, tt)
+   }
 
    const handleSearch = (searchValue) => {
   // Use the search value and navigate to another route
