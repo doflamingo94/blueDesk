@@ -1,0 +1,92 @@
+<template>
+    <div class="basic-container">
+       <div class="titles">
+            <h1>Rechercher un emploi aux Comores</h1>
+       </div> 
+    </div>
+    <CldUploadWidget
+      v-slot="{ open }"
+      uploadPreset="candidat-pp"
+      :options="{ clientAllowedFormats: ['pdf'], maxFiles: 1 }"
+      @upload="handleSuccess"
+    >
+        <button type="button" @click="open">Upload an Image</button>
+    </CldUploadWidget>
+    <div class="container">
+        <SearchBar @clicked="handleSearch" />
+    </div>
+    <div class="testDelete">
+        <Button @click="booom">Supprime</Button>
+    </div>
+    <JobCard :message="annonces" />
+</template>
+
+<script setup>
+import Button from 'primevue/button'
+import axios from 'axios';
+   const config = useRuntimeConfig();
+   const router = useRouter();
+   const response = await axios.get(`${config.public.backend}/api/v1/annonces`);
+   console.log('Khaled', config.public.backend)
+   const annonces = response.data.data;
+
+   const handleSuccess = (test, tt) => {
+    console.log(test._rawValue.info.public_id, tt)
+   }
+
+   const booom = async () => {
+    try {
+                const response = await axios.post(`${config.public.backend}/api/v1/cloudinary/deleteFile`, {
+                    publicId: 'test/nwd71iseqvislf4obpj6'
+                });
+
+                // console.log('Status Code:', response.status);
+                console.log('Response Data:', response.data);
+                // console.log('Vous avez bien annulé votre candidature');
+                // window.location.href = `/candidat`
+            } catch (e) {
+                console.log(e);
+            }
+}
+
+   const handleSearch = (searchValue) => {
+  // Use the search value and navigate to another route
+        if(searchValue.length > 0){
+            const routePath = `/jobs/${searchValue}`;
+            router.push(routePath);
+        } else {
+            const routePath = `/jobs/jobs`;
+            router.push(routePath);
+        }
+   };
+
+</script>
+
+<style scoped>
+.titles{
+    background-color: white;
+    width: auto;
+    border-radius: 80px;
+    padding: 0px 15px 15px 15px;
+    margin-top: 22px;
+    color: rgb(13 102 132);
+}
+h1, h2{
+    text-align: center;
+}
+h1 {
+    padding-top: 19px;
+}
+h2{
+    padding-top: 30px;
+}
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.basic-container{
+    display: flex;
+    justify-content: center;
+}
+</style>
