@@ -2,16 +2,24 @@
   <div class="page-content">
         <div id="error-message" class="error-message"></div>
         <div id="notif-message" class="notif-message"></div>
-        <div class="user-profile">
-            <div class="banner">
+        <div v-if="employeursData" class="user-profile">
+            <div v-if="!employeursData.url_banniere" class="banner">
               <img src="../assets/images/background-original.jpg" alt="Banner Image" />
             </div>
-            
-            <div class="profile-picture">
-              <img src="../assets/images/background-pexels-mo-eid-11592804.jpg" alt="Profile Picture" />
+
+            <div v-else class="banner">
+              <p>heloooooooo</p>
             </div>
             
-            <h1><span v-if="employeursData">{{ `${employeursData.nom}` }}</span> </h1>
+            <div v-if="!employeursData.url_logo" class="profile-picture">
+              <img src="../assets/images/background-pexels-mo-eid-11592804.jpg" alt="Profile Picture" />
+            </div>
+
+            <div v-else class="profile-picture">
+              <p>go fuck yourself</p>
+            </div>
+            
+            <h1><span>{{ `${employeursData.nom}` }}</span> </h1>
         </div>
         <div class="annonces-section">
           <div class="container">
