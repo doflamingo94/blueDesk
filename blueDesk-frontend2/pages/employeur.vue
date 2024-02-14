@@ -13,14 +13,25 @@
             
             <div v-if="!employeursData.url_logo" class="profile-picture">
               <img src="../assets/images/background-pexels-mo-eid-11592804.jpg" alt="Profile Picture" />
+            <CldUploadWidget
+              v-slot="{ open }"
+              uploadPreset="employeur-logo"
+              :options="{ clientAllowedFormats: ['png', 'jpeg'], maxFiles: 1 }"
+              @upload="handleSuccess"
+            >
+                <p @click="open" class="overlay-text">Ajouter un logo</p>
+            </CldUploadWidget>
             </div>
-
+            
             <div v-else class="profile-picture">
-              <p>go fuck yourself</p>
+              <CldImage :src="employeursData.url_logo" />
             </div>
             
             <h1><span>{{ `${employeursData.nom}` }}</span> </h1>
         </div>
+        
+        <!-- <button type="button" @click="open">Upload an Image</button> -->
+        
         <div class="annonces-section">
           <div class="container">
               <div class="form-section">
@@ -85,6 +96,23 @@ const newAnnonce = ref({
   description_poste: ''
 });
 const config = useRuntimeConfig();
+
+const handleSuccess = async (data, extra) => {
+    // console.log(data._rawValue.info.public_id, extra)
+    const publicId = data._rawValue.info.public_id;
+    try {
+          const response = await axios.post(`${config.public.backend}/api/v1/employeurs/logo`, {
+          url_logo: publicId,
+          id: userId
+      });
+      console.log('Status Code:', response.status);
+      console.log('Response Data:', response.data);
+      console.log(publicId);
+      // window.location.href = `/employeur`
+    } catch (err) {
+        console.log(err);
+    }
+   }
 
 console.log(userId)
 
@@ -376,6 +404,31 @@ onMounted(() => {
     width: 150px; 
     height: 150px;
   }
+
+  .overlay-text {
+  position: absolute;
+  top: 50%; /* Adjust as per your requirement */
+  left: 50%; /* Adjust as per your requirement */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-50%, -50%);
+  background-color: rgba(60, 60, 60, 0.448); /* Adjust background color and opacity */
+  width: 150px; 
+    height: 150px;
+  padding: 10px;
+  border-radius: 50%;
+  font-size: 16px;
+  color: white;
+  transition: 0.7s ease-in-out;
+}
+
+.overlay-text:hover {
+  font-size: 19px;
+  color: #25bcff;
+  background-color: rgba(255, 255, 255, 0.834);
+  cursor: pointer;
+}
 
   .blockA{
     background-color: white;
