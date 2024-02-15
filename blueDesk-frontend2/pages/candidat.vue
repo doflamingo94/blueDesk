@@ -1,16 +1,40 @@
 <template>
     <div id="error-message" class="error-message"></div>
     <div id="notif-message" class="notif-message"></div>
-    <div class="user-profile">
+    <div v-if="candidatData" class="user-profile">
         <div class="banner">
             <img src="../assets/images/background-original.jpg" alt="Banner Image" />
         </div>
 
-        <div class="profile-picture">
-            <img src="../assets/images/background-pexels-mo-eid-11592804.jpg" alt="Profile Picture" />
-        </div>
+        <div v-if="!candidatData.url_pp" class="profile-picture">
+              <img src="../assets/images/background-pexels-mo-eid-11592804.jpg" alt="Profile Picture" />
+            <CldUploadWidget
+              v-slot="{ open }"
+              uploadPreset="candidat-pp"
+              :options="{ clientAllowedFormats: ['png', 'jpeg'], maxFiles: 1 }"
+              @upload="handleSuccess"
+            >
+                <p @click="open" class="overlay-text">Ajouter une photo</p>
+            </CldUploadWidget>
+            </div>
+            
+            <div v-else class="profile-picture">
+              <CldImage :src="candidatData.url_pp" @click="visible = true" />
+            </div>
 
-        <h1><span v-if="candidatData">{{ `${candidatData.prenom}` }} {{ `${candidatData.nom}` }}</span> </h1>
+            <Dialog v-model:visible="visible" modal :style="{ width: '25rem' }">
+              <CldImage :src="candidatData.url_pp" />
+              <CldUploadWidget
+              v-slot="{ open }"
+              uploadPreset="candidat-pp"
+              :options="{ clientAllowedFormats: ['png', 'jpeg'], maxFiles: 1 }"
+              @upload="modifLogo"
+              >
+                <Button label="modifier" @click="open"/>
+              </CldUploadWidget>
+            </Dialog>
+
+        <h1><span >{{ `${candidatData.prenom}` }} {{ `${candidatData.nom}` }}</span> </h1>
         <div class="box-container">
             <div v-if="candidaturesData" class="box">
                 <h2>Mes candidatures</h2>
@@ -151,7 +175,35 @@ function showNotif(message) {
     }, 5000);
 }
 
+const handleSuccess = async (data, extra) => {
+    const publicId = data._rawValue.info.public_id;
+    try {
+          const response = await axios.post(`${config.public.backend}/api/v1/employeurs/logo`, {
+          url_pp: publicId,
+          id: userId
+      });
+      window.location.href = `/candidat`
+    } catch (err) {
+        console.log(err);
+    }
+}
 
+const modifLogo = async (data, extra) => {
+ const oldPublicId = employeursData.value.url_logo;
+ const newPublicId = data._rawValue.info.public_id;
+            try {
+                const firstResponse = await axios.post(`${config.public.backend}/api/v1/employeurs/logo`, {
+                    url_pp: newPublicId,
+                    id: userId
+                });
+                const secondResponse = await axios.post(`${config.public.backend}/api/v1/cloudinary/deleteFile`, {
+                    publicId: oldPublicId
+                });
+                window.location.href = `/employeur`
+            } catch (e) {
+                console.log(e);
+            }
+}
 
 </script>
 <style scoped>
@@ -249,6 +301,31 @@ function showNotif(message) {
     border-radius: 6px;
 }
 
+.overlay-text {
+  position: absolute;
+  top: 50%; /* Adjust as per your requirement */
+  left: 50%; /* Adjust as per your requirement */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-50%, -50%);
+  background-color: rgba(60, 60, 60, 0.448); /* Adjust background color and opacity */
+  width: 150px; 
+    height: 150px;
+  padding: 10px;
+  border-radius: 50%;
+  font-size: 16px;
+  color: white;
+  transition: 0.3s ease-in-out;
+}
+
+.overlay-text:hover {
+  font-size: 18px;
+  color: #25bcff;
+  background-color: rgba(255, 255, 255, 0.834);
+  cursor: pointer;
+}
+
 .banner {
     width: 100%;
     height: 200px;
@@ -271,6 +348,7 @@ function showNotif(message) {
     overflow: hidden;
     width: 150px;
     height: 150px;
+    cursor: pointer;
 }
 
 .profile-picture img {

@@ -29,7 +29,14 @@
 
             <Dialog v-model:visible="visible" modal :style="{ width: '25rem' }">
               <CldImage :src="employeursData.url_logo" />
-              <Button label="modifier"/>
+              <CldUploadWidget
+              v-slot="{ open }"
+              uploadPreset="employeur-logo"
+              :options="{ clientAllowedFormats: ['png', 'jpeg'], maxFiles: 1 }"
+              @upload="modifLogo"
+              >
+                <Button label="modifier" @click="open"/>
+              </CldUploadWidget>
             </Dialog>
             
             <h1><span>{{ `${employeursData.nom}` }}</span> </h1>
@@ -105,21 +112,34 @@ const newAnnonce = ref({
 const config = useRuntimeConfig();
 
 const handleSuccess = async (data, extra) => {
-    // console.log(data._rawValue.info.public_id, extra)
     const publicId = data._rawValue.info.public_id;
     try {
           const response = await axios.post(`${config.public.backend}/api/v1/employeurs/logo`, {
           url_logo: publicId,
           id: userId
       });
-      console.log('Status Code:', response.status);
-      console.log('Response Data:', response.data);
-      console.log(publicId);
-      // window.location.href = `/employeur`
+      window.location.href = `/employeur`
     } catch (err) {
         console.log(err);
     }
-   }
+}
+
+const modifLogo = async (data, extra) => {
+ const oldPublicId = employeursData.value.url_logo;
+ const newPublicId = data._rawValue.info.public_id;
+            try {
+                const firstResponse = await axios.post(`${config.public.backend}/api/v1/employeurs/logo`, {
+                    url_logo: newPublicId,
+                    id: userId
+                });
+                const secondResponse = await axios.post(`${config.public.backend}/api/v1/cloudinary/deleteFile`, {
+                    publicId: oldPublicId
+                });
+                window.location.href = `/employeur`
+            } catch (e) {
+                console.log(e);
+            }
+}
 
 console.log(userId)
 
