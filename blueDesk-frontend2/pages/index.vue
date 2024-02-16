@@ -4,19 +4,8 @@
             <h1>Rechercher un emploi aux Comores</h1>
        </div> 
     </div>
-    <CldUploadWidget
-      v-slot="{ open }"
-      uploadPreset="candidat-pp"
-      :options="{ clientAllowedFormats: ['pdf'], maxFiles: 1 }"
-      @upload="handleSuccess"
-    >
-        <button type="button" @click="open">Upload an Image</button>
-    </CldUploadWidget>
     <div class="container">
         <SearchBar @clicked="handleSearch" />
-    </div>
-    <div class="testDelete">
-        <Button @click="booom">Supprime</Button>
     </div>
     <JobCard :message="annonces" />
 </template>
@@ -29,25 +18,6 @@ import axios from 'axios';
    const response = await axios.get(`${config.public.backend}/api/v1/annonces`);
    console.log('Khaled', config.public.backend)
    const annonces = response.data.data;
-
-   const handleSuccess = (test, tt) => {
-    console.log(test._rawValue.info.public_id, tt)
-   }
-
-   const booom = async () => {
-    try {
-                const response = await axios.post(`${config.public.backend}/api/v1/cloudinary/deleteFile`, {
-                    publicId: 'test/nwd71iseqvislf4obpj6'
-                });
-
-                // console.log('Status Code:', response.status);
-                console.log('Response Data:', response.data);
-                // console.log('Vous avez bien annulé votre candidature');
-                // window.location.href = `/candidat`
-            } catch (e) {
-                console.log(e);
-            }
-}
 
    const handleSearch = (searchValue) => {
   // Use the search value and navigate to another route

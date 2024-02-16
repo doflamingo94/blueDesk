@@ -51,6 +51,7 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { ref } from 'vue';
 
+const visible = ref(false);
 const router = useRouter();
 const authStore = useAuthStore();
 const userId = authStore.getId;
@@ -178,7 +179,7 @@ function showNotif(message) {
 const handleSuccess = async (data, extra) => {
     const publicId = data._rawValue.info.public_id;
     try {
-          const response = await axios.post(`${config.public.backend}/api/v1/employeurs/logo`, {
+          const response = await axios.post(`${config.public.backend}/api/v1/candidats/update_pp`, {
           url_pp: publicId,
           id: userId
       });
@@ -189,17 +190,17 @@ const handleSuccess = async (data, extra) => {
 }
 
 const modifLogo = async (data, extra) => {
- const oldPublicId = employeursData.value.url_logo;
+ const oldPublicId = candidatData.value.url_pp;
  const newPublicId = data._rawValue.info.public_id;
             try {
-                const firstResponse = await axios.post(`${config.public.backend}/api/v1/employeurs/logo`, {
+                const firstResponse = await axios.post(`${config.public.backend}/api/v1/candidats/update_pp`, {
                     url_pp: newPublicId,
                     id: userId
                 });
                 const secondResponse = await axios.post(`${config.public.backend}/api/v1/cloudinary/deleteFile`, {
                     publicId: oldPublicId
                 });
-                window.location.href = `/employeur`
+                window.location.href = `/candidat`
             } catch (e) {
                 console.log(e);
             }
