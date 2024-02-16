@@ -13,5 +13,6 @@ router.post("/mesAnnonces", employeursController.mesAnnonces);
 router.post("/deleteAnnonce", employeursController.deleteAnnonce);
 router.post("/refuser", employeursController.refusCandidature);
 router.post("/valider", employeursController.ValiderCandidature);
+router.post("/logo", employeursController.updateLogo);
 
 module.exports = router;

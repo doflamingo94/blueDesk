@@ -2,12 +2,13 @@
     <div class="basic-container">
        <div class="titles">
             <h1>Rechercher un emploi aux Comores</h1>
+            
        </div> 
     </div>
     <div class="container">
         <SearchBar @clicked="handleSearch" />
     </div>
-    <JobCard :message="annonces" />
+    <JobCards :message="annonces" />
 </template>
 
 <script setup>
@@ -19,7 +20,6 @@ import axios from 'axios';
    const annonces = response.data.data;
 
    const handleSearch = (searchValue) => {
-  // Use the search value and navigate to another route
         if(searchValue.length > 0){
             const routePath = `/jobs/${searchValue}`;
             router.push(routePath);

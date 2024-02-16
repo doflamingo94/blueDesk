@@ -2,7 +2,8 @@
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      backend: process.env.NUXT_PUBLIC_BACKEND
+      backend: process.env.NUXT_PUBLIC_BACKEND,
+      cname: process.env.CLOUDINARY_CLOUD_NAME
     }
   },
   devtools: { enabled: false },
@@ -30,7 +31,7 @@ export default defineNuxtConfig({
     '@/assets/global.css',
     '@/assets/scss/main.scss'
   ],
-  modules: ['@nuxtjs/google-fonts', '@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt'],
+  modules: ['@nuxtjs/google-fonts', '@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt', '@nuxtjs/cloudinary', 'nuxt-primevue'],
   googleFonts: {
     display: "swap",
     families:{
@@ -42,5 +43,8 @@ export default defineNuxtConfig({
         'Josefin+Sans': true,
         'Lato': [100, 300]
     }
+  },
+  cloudinary: {
+    cloudname: process.env.CLOUDINARY_CLOUD_NAME
   }
 })

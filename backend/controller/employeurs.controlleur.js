@@ -178,7 +178,20 @@ const employeursController = {
         console.log(error);
         res.json({ status: "error", message: error.message });
       }
-    }
+    },
+    updateLogo: async (req, res) => {
+      try {
+        const { url_logo, id } = req.body;
+        const sql = "UPDATE employeurs SET url_logo = ? WHERE id = ?";
+        const [rows, fields] = await pool.query(sql, [url_logo, id]);
+        res.json({ data: rows });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
+    },
   };
   
   module.exports = employeursController;
+
+  // UPDATE employeurs SET url_logo = 'https://url_logo.fr' WHERE id = 5;

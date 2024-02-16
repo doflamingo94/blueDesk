@@ -144,6 +144,17 @@ const candidatsController = {
         console.log(error);
         res.json({ status: "error", message: error.message });
       }
+    },
+    updatePp: async (req, res) => {
+      try {
+        const { url_pp, id } = req.body;
+        const sql = "UPDATE candidats SET url_pp = ? WHERE id = ?";
+        const [rows, fields] = await pool.query(sql, [url_pp, id]);
+        res.json({ data: rows });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
     }
   };
   
