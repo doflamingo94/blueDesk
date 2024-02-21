@@ -9,9 +9,15 @@
             <h1>Candidatures pour le poste de {{ `${candidaturesData[0].poste}` }} </h1>
         </div>
         <div v-if="candidaturesData" class="candidatures-block">
-            <ul v-for="candidature in candidaturesData" :key="candidature.id">
+            <ul v-for="candidature in paginatedCandidatures" :key="candidature.id">
                 <li @click="checkProfile(candidature.id, annonceId, candidature.statut)">{{ `${candidature.prenom}` }}  {{ `${candidature.nom}` }} {{ `${ calculateAge(candidature.date_naissance) }` }} ans</li>
             </ul>
+            <Paginator
+            v-if="candidaturesPage.length > 15"
+            v-model:first="first"
+            :rows="10"
+            :totalRecords="candidaturesPage.length"
+            />
         </div>
     </div>
 </template>
@@ -29,6 +35,8 @@ const authStore = useAuthStore();
 const userId = authStore.getId;
 console.log(userId);
 const config = useRuntimeConfig();
+const candidaturesPage = ref([]);
+const first = ref(0);
 
 const candidatures = async () => {
     try {
@@ -38,6 +46,7 @@ const candidatures = async () => {
             });
             if(response.data.data){
                candidaturesData.value = response.data.data;
+               candidaturesPage.value = candidaturesData.value;
             }
             else {
                 console.log('Aucune candidature');
@@ -47,6 +56,12 @@ const candidatures = async () => {
             console.log(err);
         }
 }
+
+const paginatedCandidatures = computed(() => {
+        const startIndex = first.value;
+        const endIndex = startIndex + 15; // Change 15 to the number of jobs per page
+        return candidaturesPage.value.slice(startIndex, endIndex);
+    });
 
 onBeforeMount(async ()=>{
     await candidatures();

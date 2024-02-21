@@ -76,9 +76,16 @@
           <div>
               <div v-if="annoncesData" class="box">
                   <h2>Mes annonces</h2>
-                  <ul v-for="annonce in annoncesData" :key="annonce.annonce_id">
+                  <ul v-if="annonces.length > 0" v-for="annonce in paginatedAnnonces" :key="annonce.annonce_id">
                     <li><nuxt-link :to="'annonce/'+ annonce.annonce_id">{{ `${annonce.poste}` }}</nuxt-link> le {{ `${annonce.date_creation}` }}               <nuxt-link :to="'candidatures/'+ annonce.annonce_id">candidatures</nuxt-link>                <button @click="deleteAnnonce(annonce.annonce_id)" >Annuler</button></li>
                   </ul>
+                  <p v-else>Vous n'avez pas encore posté d'annonces</p>
+                  <Paginator
+                  v-if="annoncesData"
+                  v-model:first="first"
+                  :rows="10"
+                  :totalRecords="annonces.length"
+                  />
               </div>
           </div>
         </div>
@@ -109,6 +116,8 @@ const newAnnonce = ref({
   salaire: '',
   description_poste: ''
 });
+const annonces = ref([]);
+const first = ref(0);
 const config = useRuntimeConfig();
 
 const handleSuccess = async (data, extra) => {
@@ -169,6 +178,7 @@ const mesAnnonces = async () => {
         });
 
         annoncesData.value = response.data.data;
+        annonces.value = annoncesData.value;
         formatAnnoncesDates(annoncesData.value)
 
         console.log('Formatted Data:', annoncesData.value);
@@ -176,6 +186,12 @@ const mesAnnonces = async () => {
         console.log(err);
     }
 };
+
+const paginatedAnnonces = computed(() => {
+        const startIndex = first.value;
+        const endIndex = startIndex + 15; // Change 15 to the number of jobs per page
+        return annonces.value.slice(startIndex, endIndex);
+    });
 
 const deleteAnnonce = async (annonceId) => {
     try {
@@ -303,7 +319,14 @@ onMounted(() => {
 
 </script>
 <style scoped>
-
+:deep(.p-paginator) {
+    background-color: #03a9f4;
+    justify-content: center;
+    color: white;
+}
+:deep(.p-paginator .p-paginator-pages .p-paginator-page.p-highlight) {
+  color: white;
+}
 .box {
     width: 490px;
     border-bottom: 20px solid #03a9f4;

@@ -1,12 +1,20 @@
 <template>
-    <h1>Recherche un poste</h1>
-    <div class="container">
-        <SearchBar @clicked="handleSearch" />
+    <div class="page-content">
+        <h1>Recherche un poste</h1>
+        <div class="container">
+            <SearchBar @clicked="handleSearch" />
+        </div>
+        <JobCards v-if="testAnnonces" :message="paginatedJobs" />
+        <h2 class="no-result" v-else>
+            Pas d'annonces pour ce poste :/
+        </h2>
+        <Paginator
+        v-if="testAnnonces && jobs.length > 15"
+        v-model:first="first"
+        :rows="10"
+        :totalRecords="jobs.length"
+        />
     </div>
-    <JobCard v-if="testAnnonces" :message="annonces" />
-    <h2 v-else>
-        Pas d'annonces pour ce poste :/
-    </h2>
 </template>
 <script setup>
 import axios from 'axios';
@@ -16,6 +24,11 @@ const search = ref('');
 const config = useRuntimeConfig();
 const annonces = ref(null);
 const testAnnonces = ref(false);
+const jobs = ref([]);
+
+   
+jobs.value = annonces;
+const first = ref(0);
 
 if(route.params.id){
     search.value = route.params.id;
@@ -45,7 +58,7 @@ const hydrateJobs = async () => {
             if (response.data.data.length > 0){
                 testAnnonces.value = true;
             }
-            annonces.value = response.data.data
+            jobs.value = response.data.data
             
         } catch (err) {
             console.log(err);
@@ -53,8 +66,18 @@ const hydrateJobs = async () => {
     }
 }
 
+const paginatedJobs = computed(() => {
+        const startIndex = first.value;
+        const endIndex = startIndex + 15; // Change 15 to the number of jobs per page
+        return jobs.value.slice(startIndex, endIndex);
+    });
+
 </script>
 <style scoped>
+:deep(.p-paginator) {
+    background-color: transparent;
+    justify-content: center;
+}
 h1{
     text-align: center;
 }
@@ -62,5 +85,9 @@ h1{
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.no-result {
+    text-align: center;
+    margin-top: 20vh;
 }
 </style>

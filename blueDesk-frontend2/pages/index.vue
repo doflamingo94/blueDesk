@@ -8,7 +8,12 @@
     <div class="container">
         <SearchBar @clicked="handleSearch" />
     </div>
-    <JobCards :message="annonces" />
+    <JobCards :message="paginatedJobs" />
+    <Paginator
+    v-model:first="first"
+    :rows="10"
+    :totalRecords="jobs.length"
+    />
 </template>
 
 <script setup>
@@ -18,6 +23,11 @@ import axios from 'axios';
    const response = await axios.get(`${config.public.backend}/api/v1/annonces`);
    console.log('Khaled', config.public.backend)
    const annonces = response.data.data;
+   const jobs = ref([]);
+
+   
+   jobs.value = annonces;
+   const first = ref(0);
 
    const handleSearch = (searchValue) => {
         if(searchValue.length > 0){
@@ -29,9 +39,20 @@ import axios from 'axios';
         }
    };
 
+   // Compute paginated jobs based on current page and jobs per page
+    const paginatedJobs = computed(() => {
+        const startIndex = first.value;
+        const endIndex = startIndex + 15; // Change 15 to the number of jobs per page
+        return jobs.value.slice(startIndex, endIndex);
+    });
+
 </script>
 
 <style scoped>
+:deep(.p-paginator) {
+    background-color: transparent;
+    justify-content: center;
+}
 .titles{
     background-color: white;
     width: auto;
