@@ -23,4 +23,5 @@ body{
 }
 .page-content{
     min-height: 100vh;
+	margin-top: 49px;
 }

@@ -5,8 +5,8 @@
         <ul v-if="!authStore.isAuthenticated">
           <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/jobs/kazisearch">Jobs</nuxt-link></li></div>
           <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/contact">Contact</nuxt-link></li></div>
-          <div @click="toggleNavlinks" class="test" ><li><nuxt-link to="/login">Se connecter</nuxt-link></li></div>
           <div @click="toggleNavlinks" class="test" ><li><nuxt-link to="/aboutus">À propos</nuxt-link></li></div>
+          <div @click="toggleNavlinks" class="test" ><li><nuxt-link to="/login">Se connecter</nuxt-link></li></div>
         </ul>
         <ul v-else>
           <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/jobs/kazisearch">Jobs</nuxt-link></li></div>
@@ -157,7 +157,7 @@
       padding: 3px;
       border-radius: 15px;
       font-size: 2.2em;
-      background-color:rgb(13 102 132);
+      background-color:#34a7d3;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -166,16 +166,20 @@
       cursor: pointer;
     }
 
+    .navlinks ul li:hover {
+      margin: 19px 0;
+      background-color:#34a7d3 !important;
+      font-size: 1.7rem;
+    }
+
     .test:hover li{
       margin: 25px 0;
       padding: 3px;
       border-radius: 15px;
       font-size: 2.2em;
-      background-color:rgb(255, 255, 255);
       display: flex;
       justify-content: center;
       align-items: center;
-      color: rgb(13 102 132) !important;
       transition: 0.6s;
       cursor: pointer;
     }

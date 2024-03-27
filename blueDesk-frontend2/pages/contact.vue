@@ -1,30 +1,32 @@
 <template>
-<section id="contact">
-  <div class="contact-box">
-    <div class="contact-links">
-      <h2>CONTACT</h2>
+<div class="page-content">
+  <section id="contact">
+    <div class="contact-box">
+      <div class="contact-links">
+        <h2>CONTACT</h2>
+      </div>
+      <div class="contact-form-wrapper">
+        <form action="https://formspree.io/f/mnqebeyr"
+    method="POST">
+          <div class="form-item">
+            <input type="text" name="sender" required>
+            <label>Name:</label>
+          </div>
+          <div class="form-item">
+            <input type="text" name="email" required>
+            <label>Email:</label>
+          </div>
+          <div class="form-item">
+            <textarea class="" name="message" required></textarea>
+            <label>Message:</label>
+          </div>
+          <button class="submit-btn">Send</button>  
+        </form>
+      </div>
     </div>
-    <div class="contact-form-wrapper">
-      <form action="https://formspree.io/f/mnqebeyr"
-  method="POST">
-        <div class="form-item">
-          <input type="text" name="sender" required>
-          <label>Name:</label>
-        </div>
-        <div class="form-item">
-          <input type="text" name="email" required>
-          <label>Email:</label>
-        </div>
-        <div class="form-item">
-          <textarea class="" name="message" required></textarea>
-          <label>Message:</label>
-        </div>
-        <button class="submit-btn">Send</button>  
-      </form>
-    </div>
-  </div>
-</section>
-  </template>
+  </section>
+</div>
+</template>
 
 <script setup>
 import { ref } from "vue";
@@ -47,6 +49,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 68px;
 }
 
 .contact-box {
