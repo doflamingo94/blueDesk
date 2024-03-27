@@ -19,13 +19,7 @@ time, mark, audio, video {
 	text-decoration: none;
 }
 body{
-    width: 100vw;
-    height: 100vh;
-    /* background-image: url("../assets/images/background-pexels-matheus-natan-3297593.jpg");
-    background-repeat: no-repeat; */
-    /* background-position: center; */
-    /* background-size: cover; */
-    background-color: rgb(238, 238, 238);
+    background-color: rgb(255, 255, 255);
 }
 .page-content{
     min-height: 100vh;
