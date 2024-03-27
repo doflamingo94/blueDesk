@@ -6,10 +6,12 @@
           <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/jobs/kazisearch">Jobs</nuxt-link></li></div>
           <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/contact">Contact</nuxt-link></li></div>
           <div @click="toggleNavlinks" class="test" ><li><nuxt-link to="/login">Se connecter</nuxt-link></li></div>
+          <div @click="toggleNavlinks" class="test" ><li><nuxt-link to="/aboutus">À propos</nuxt-link></li></div>
         </ul>
         <ul v-else>
           <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/jobs/kazisearch">Jobs</nuxt-link></li></div>
           <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/contact">Contact</nuxt-link></li></div>
+          <div @click="toggleNavlinks" class="test" ><li><nuxt-link to="/aboutus">À propos</nuxt-link></li></div>  
           <div @click="toggleNavlinks" class="test"><li><nuxt-link :to="`/${authStore.getRole}`">Mon compte</nuxt-link></li></div>
           <div @click="disconnect" class="test" ><li><nuxt-link to="/login">Deconnexion</nuxt-link></li></div>
         </ul>
