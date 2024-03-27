@@ -3,13 +3,13 @@
       <div class="logo"><NuxtLink class="linkRoute" to="/">Kazi</NuxtLink></div>
       <div :class="{ navlinks: true, 'navlinks--visible': showNavlinks }">
         <ul v-if="!authStore.isAuthenticated">
-          <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/">Jobs</nuxt-link></li></div>
-          <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/">A propos</nuxt-link></li></div>
+          <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/jobs/kazisearch">Jobs</nuxt-link></li></div>
+          <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/contact">Contact</nuxt-link></li></div>
           <div @click="toggleNavlinks" class="test" ><li><nuxt-link to="/login">Se connecter</nuxt-link></li></div>
         </ul>
         <ul v-else>
-          <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/">Jobs</nuxt-link></li></div>
-          <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/">A propos</nuxt-link></li></div>
+          <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/jobs/kazisearch">Jobs</nuxt-link></li></div>
+          <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/contact">Contact</nuxt-link></li></div>
           <div @click="toggleNavlinks" class="test"><li><nuxt-link :to="`/${authStore.getRole}`">Mon compte</nuxt-link></li></div>
           <div @click="disconnect" class="test" ><li><nuxt-link to="/login">Deconnexion</nuxt-link></li></div>
         </ul>
@@ -49,14 +49,15 @@
     box-sizing: border-box;
     align-items: center;
     /* backdrop-filter: blur(16px); */
-    /* box-shadow: 0 25px 20px -20px #252525; */
+    box-shadow: 0 10px 15px -10px rgba(0, 0, 0, 0.5);
     background-color: #34a7d3;
     transition: 0.2s;
     position: fixed;
-    z-index: 11;
+    z-index: 13;
   }
   nav:hover{
     background-color: rgb(255, 255, 255);
+    box-shadow: 0 25px 20px -20px #252525;
   }
   nav:hover .mask-demo{
     color: rgb(13 102 132);
