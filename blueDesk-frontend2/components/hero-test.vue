@@ -51,7 +51,7 @@ const handleSearch = (searchValue) => {
             const routePath = `/jobs/${searchValue}`;
             router.push(routePath);
         } else {
-            const routePath = `/jobs/jobs`;
+            const routePath = `/jobs/kazisearch`;
             router.push(routePath);
         }
    };

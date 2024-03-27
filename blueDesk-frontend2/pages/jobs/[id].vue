@@ -5,6 +5,7 @@
             <SearchBar @clicked="handleSearch" />
         </div>
         <JobCards v-if="testAnnonces" :message="paginatedJobs" />
+        <h2 class="no-result" v-else-if="vide">Faites une recherche de poste ;)</h2>
         <h2 class="no-result" v-else>
             Pas d'annonces pour ce poste :/
         </h2>
@@ -25,6 +26,7 @@ const config = useRuntimeConfig();
 const annonces = ref(null);
 const testAnnonces = ref(false);
 const jobs = ref([]);
+const vide = ref(false);
 
    
 jobs.value = annonces;
@@ -34,13 +36,16 @@ if(route.params.id){
     search.value = route.params.id;
 }
 
+if(search.value === 'kazisearch'){
+    vide.value = true;
+}
+
 const handleSearch = (searchValue) => {
     if(searchValue.length > 0){
             const routePath = `/jobs/${searchValue}`;
             router.push(routePath);
         } else {
-            const routePath = `/jobs/jobs`;
-            router.push(routePath);
+            vide.value = true;
         }
 }
 
