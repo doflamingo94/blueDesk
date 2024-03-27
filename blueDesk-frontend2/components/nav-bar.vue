@@ -1,6 +1,6 @@
 <template>
     <nav>
-      <div class="logo"><NuxtLink class="linkRoute" to="/">Blue <span class="blue">Desk</span></NuxtLink></div>
+      <div class="logo"><NuxtLink class="linkRoute" to="/">Kazi</NuxtLink></div>
       <div :class="{ navlinks: true, 'navlinks--visible': showNavlinks }">
         <ul v-if="!authStore.isAuthenticated">
           <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/">Jobs</nuxt-link></li></div>
@@ -45,12 +45,15 @@
     justify-content: space-between;
     width: 100%;
     padding: 15px;
+    height: 49px;
     box-sizing: border-box;
     align-items: center;
     /* backdrop-filter: blur(16px); */
     /* box-shadow: 0 25px 20px -20px #252525; */
-    background-color: rgb(13 102 132);
+    background-color: #34a7d3;
     transition: 0.2s;
+    position: fixed;
+    z-index: 11;
   }
   nav:hover{
     background-color: rgb(255, 255, 255);
@@ -205,6 +208,8 @@
   }
 
   const showNavlinks = ref(false);
+
+
 
   const toggleNavlinks = () => {
     if (window.innerWidth > 900){

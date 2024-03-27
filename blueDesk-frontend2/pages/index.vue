@@ -1,13 +1,19 @@
 <template>
-    <div class="basic-container">
-       <div class="titles">
+    <!-- <div class="hero-container"> -->
+        <!-- <he-ro /> -->
+        <HeroTest />
+        <!-- <VueCardCarousel /> -->
+       <!-- <div class="titles">
             <h1>Rechercher un emploi aux Comores</h1>
             
-       </div> 
-    </div>
-    <div class="container">
+       </div>  -->
+    <!-- </div> -->
+    <!-- <div class="container">
         <SearchBar @clicked="handleSearch" />
-    </div>
+    </div> -->
+    <div class="titles">
+        <h1>Nos annonces</h1>
+    </div> 
     <JobCards :message="paginatedJobs" />
     <Paginator
     v-model:first="first"
@@ -29,15 +35,15 @@ import axios from 'axios';
    jobs.value = annonces;
    const first = ref(0);
 
-   const handleSearch = (searchValue) => {
-        if(searchValue.length > 0){
-            const routePath = `/jobs/${searchValue}`;
-            router.push(routePath);
-        } else {
-            const routePath = `/jobs/jobs`;
-            router.push(routePath);
-        }
-   };
+//    const handleSearch = (searchValue) => {
+//         if(searchValue.length > 0){
+//             const routePath = `/jobs/${searchValue}`;
+//             router.push(routePath);
+//         } else {
+//             const routePath = `/jobs/jobs`;
+//             router.push(routePath);
+//         }
+//    };
 
    // Compute paginated jobs based on current page and jobs per page
     const paginatedJobs = computed(() => {
@@ -56,7 +62,6 @@ import axios from 'axios';
 .titles{
     background-color: white;
     width: auto;
-    border-radius: 80px;
     padding: 0px 15px 15px 15px;
     margin-top: 22px;
     color: rgb(13 102 132);
@@ -75,8 +80,8 @@ h2{
     justify-content: center;
     align-items: center;
 }
-.basic-container{
-    display: flex;
-    justify-content: center;
+.hero-container {
+    height: 95vh;
+    width: 100vw;
 }
 </style>

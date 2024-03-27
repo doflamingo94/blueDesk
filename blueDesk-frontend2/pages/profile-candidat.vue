@@ -1,13 +1,25 @@
 <template>
     <div class="page-content">
-        <div class="user-profile">
+        <div v-if="candidatData" class="user-profile">
             <div class="banner">
                 <img src="../assets/images/background-original.jpg" alt="Banner Image" />
             </div>
 
-            <div class="profile-picture">
-                <img src="../assets/images/background-pexels-mo-eid-11592804.jpg" alt="Profile Picture" />
-            </div>
+            <div v-if="!candidatData.url_pp" class="profile-picture">
+              <img src="../assets/images/background-pexels-mo-eid-11592804.jpg" alt="Profile Picture" />
+            <CldUploadWidget
+              v-slot="{ open }"
+              uploadPreset="candidat-pp"
+              :options="{ clientAllowedFormats: ['png', 'jpeg'], maxFiles: 1 }"
+              @upload="handleSuccess"
+            >
+                <p @click="open" class="overlay-text">Ajouter une photo</p>
+            </CldUploadWidget>
+          </div>
+            
+          <div v-else class="profile-picture">
+            <CldImage :src="candidatData.url_pp" @click="visible = true" />
+          </div>
 
             <h1><span v-if="candidatData">{{ `${candidatData.prenom}` }} {{ `${candidatData.nom}` }}</span> </h1>
             <div v-if="status != 'retenue' && status !='refusé'" class="decision">

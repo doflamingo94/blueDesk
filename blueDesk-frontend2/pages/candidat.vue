@@ -6,7 +6,7 @@
             <img src="../assets/images/background-original.jpg" alt="Banner Image" />
         </div>
 
-        <div v-if="!candidatData.url_pp" class="profile-picture">
+          <div v-if="!candidatData.url_pp" class="profile-picture">
               <img src="../assets/images/background-pexels-mo-eid-11592804.jpg" alt="Profile Picture" />
             <CldUploadWidget
               v-slot="{ open }"
@@ -16,11 +16,11 @@
             >
                 <p @click="open" class="overlay-text">Ajouter une photo</p>
             </CldUploadWidget>
-            </div>
+          </div>
             
-            <div v-else class="profile-picture">
-              <CldImage :src="candidatData.url_pp" @click="visible = true" />
-            </div>
+          <div v-else class="profile-picture">
+            <CldImage :src="candidatData.url_pp" @click="visible = true" />
+          </div>
 
             <Dialog v-model:visible="visible" modal :style="{ width: '25rem' }">
               <CldImage :src="candidatData.url_pp" />
