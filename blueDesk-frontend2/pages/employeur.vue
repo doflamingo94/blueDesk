@@ -9,7 +9,7 @@
 
             <div v-else class="banner">
               <p>heloooooooo</p>
-            </div>
+            </div> 
             
             <div v-if="!employeursData.url_logo" class="profile-picture">
               <img src="../assets/images/background-pexels-mo-eid-11592804.jpg" alt="Profile Picture" />
@@ -41,40 +41,159 @@
             
             <h1><span>{{ `${employeursData.nom}` }}</span> </h1>
         </div>
-        
-        <!-- <button type="button" @click="open">Upload an Image</button> -->
+
+        <div v-if="employeursData" class="employer-profile">
+          <h2 class="profile-heading">Mon Profil</h2>
+          <div class="profile-info">
+            <div class="row">
+              <div class="col-sm-4">
+                <strong>Ville:</strong>
+              </div>
+              <div v-if="employeursData.ville" class="col-sm-8">
+                <span>{{ `${employeursData.ville}` }}</span>
+              </div>
+              <div v-else class="col-sm-8">
+                <span> <Button class="yooooo" label="Renseigner" @click="villeModal = true"/> </span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <strong>Secteur d'activité:</strong>
+              </div>
+              <div v-if="employeursData.secteur" class="col-sm-8">
+                <span>{{ `${employeursData.secteur}` }}</span>
+              </div>
+              <div v-else class="col-sm-8">
+                <span><Button class="yooooo" label="Renseigner" @click="secteurModal = true"/></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <strong>Description:</strong>
+              </div>
+              <div v-if="employeursData.description" class="col-sm-8">
+                <p v-dompurify-html="employeursData.description"></p>
+              </div>
+              <div v-else class="col-sm-8">
+                <span><Button class="yooooo" label="Renseigner" @click="descriptionModal = true" /></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <Dialog v-model:visible="villeModal" modal :style="{ width: '100%', height: 'auto', padding: '12px' }">
+            <div class="wrapper">
+              <div class="title-text">
+                <div class="title" :style="{marginLeft: loginMargin}">Renseigner votre ville</div>
+              </div>
+              <div class="form-container">
+                <div class="form-inner">
+                  <form @submit.prevent class="login" :style="{marginLeft: loginFormMargin}">
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Nom de la Ville *" v-model="ville">
+                    </div>
+                    <div class="field btn">
+                      <div class="btn-layer"></div>
+                      <button ref="annonceButton" @click="insertVille" type="submit" class="clkbtn">Renseigner</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </Dialog>
+
+          <Dialog v-model:visible="secteurModal" modal :style="{ width: '100%', height: 'auto', padding: '12px' }">
+            <div class="wrapper">
+              <div class="title-text">
+                <div class="title" :style="{marginLeft: loginMargin}">Renseigner votre ville</div>
+              </div>
+              <div class="form-container">
+                <div class="form-inner">
+                  <form @submit.prevent class="login" :style="{marginLeft: loginFormMargin}">
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Nom du secteur d'activité *" v-model="secteur">
+                    </div>
+                    <div class="field btn">
+                      <div class="btn-layer"></div>
+                      <button ref="annonceButton" @click="insertSecteur" type="submit" class="clkbtn">Renseigner</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </Dialog>
+
+          <Dialog v-model:visible="descriptionModal" modal :style="{ width: '100%', height: 'auto', padding: '12px' }">
+            <div class="wrapper">
+              <div class="title-text">
+                <div class="title" :style="{marginLeft: loginMargin}">Renseigner une description de votre business</div>
+              </div>
+              <div class="form-container">
+                <div class="form-inner">
+                  <form @submit.prevent class="login" :style="{marginLeft: loginFormMargin}">
+                    <div class="editor-container">
+                      <Editor v-model="description" editorStyle="min-height: 320px" />
+                    </div>
+                    <div class="field btn">
+                      <div class="btn-layer"></div>
+                      <button ref="annonceButton" @click="insertDescription" type="submit" class="clkbtn">Renseigner</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </Dialog>
         
         <div class="annonces-section">
-          <div class="container">
-              <div class="form-section">
- 
-                <form @submit.prevent class="login-box">
-                    <input type="text"
-                           class="name ele"
+          <!-- <Button label="Poster une annonce" @click="postAnnonceModal = true"/> -->
+          <Dialog v-model:visible="postAnnonceModal" modal :style="{ width: '100%', height: '90vh' }">
+            <div class="wrapper">
+              <div class="title-text">
+                <div class="title" :style="{marginLeft: loginMargin}">Rédiger votre annonce</div>
+              </div>
+              <div class="form-container">
+                <div class="form-inner">
+                  <form @submit.prevent class="login" :style="{marginLeft: loginFormMargin}">
+                    <div class="field">
+                      <input type="text"
                            placeholder="Titre *" v-model="newAnnonce.titre">
-                    <input type="text"
-                           class="name ele"
+                    </div>
+                    <div class="field">
+                      <input type="text"
                            placeholder="Lieu *" v-model="newAnnonce.lieu">
-                    <input v-maska data-maska="##/##/####" type="text"
-                           class="name ele"
+                    </div>
+                    <div class="field">
+                      <input v-maska data-maska="##/##/####" type="text"
                            placeholder="Date de début *" v-model="newAnnonce.date_debut">
-                    <input v-maska data-maska="##/##/####" type="text"
-                           class="name ele"
+                    </div>
+                    <div class="field">
+                      <input v-maska data-maska="##/##/####" type="text"
                            placeholder="Date de fin" v-model="newAnnonce.date_fin">
-                    <input type="text"
-                           class="name ele"
+                    </div>
+                    <div class="field">
+                      <input type="text"
                            placeholder="Nom du poste *" v-model="newAnnonce.poste">
-                    <input type="text"
-                           class="name ele"
+                    </div>
+                    <div class="field">
+                      <input type="text"
                            placeholder="Salaire *" v-model="newAnnonce.salaire">
-                    <textarea name="description_poste ele" cols="34" rows="70" placeholder="Description du poste *" v-model="newAnnonce.description_poste"></textarea>
-                    <button ref="annonceButton" type="submit" class="clkbtn">publier</button>
-                </form>
-              </div> 
-          </div>
+                    </div>
+                    <div class="editor-container">
+                      <Editor v-model="newAnnonce.description_poste" editorStyle="min-height: 320px" />
+                    </div>
+                    <div class="field btn">
+                      <div class="btn-layer"></div>
+                      <button ref="annonceButton" @click="publish" type="submit" class="clkbtn">publier</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </Dialog>
           <!-- <div class="red"></div> -->
           <div>
-              <div v-if="annoncesData" class="box">
+              <!-- <div v-if="annoncesData" class="box">
                   <h2>Mes annonces</h2>
                   <ul v-if="annonces.length > 0" v-for="annonce in paginatedAnnonces" :key="annonce.annonce_id">
                     <li><nuxt-link :to="'annonce/'+ annonce.annonce_id">{{ `${annonce.poste}` }}</nuxt-link> le {{ `${annonce.date_creation}` }}               <nuxt-link :to="'candidatures/'+ annonce.annonce_id">candidatures</nuxt-link>                <button @click="deleteAnnonce(annonce.annonce_id)" >Annuler</button></li>
@@ -86,8 +205,31 @@
                   :rows="10"
                   :totalRecords="annonces.length"
                   />
-              </div>
+              </div> -->
+              <table v-if="annoncesData">
+                <caption>Mes annonces</caption>
+                <thead>
+                  <tr>
+                    <th scope="col" v-for="header in headers" :key="header">{{ header }}</th>
+                  </tr>
+                </thead>
+                <tbody v-if="annonces.length > 0" v-for="annonce in paginatedAnnonces" :key="annonce.annonce_id">
+                  <tr>
+                    <td><span class="only-small-mobile">Poste</span> <nuxt-link :to="'annonce/'+ annonce.annonce_id">{{ `${annonce.poste}` }}</nuxt-link> </td>
+                    <td><span class="only-small-mobile">Date de publication</span> {{ `${annonce.date_creation}` }}</td>
+                    <td><span class="only-small-mobile">Candidatures</span> <nuxt-link :to="'candidatures/'+ annonce.annonce_id">candidatures</nuxt-link></td>
+                    <td><span class="only-small-mobile">Cloturer</span> <Button @click="deleteAnnonce(annonce.annonce_id)" >Annuler</button></td>
+                  </tr>
+                </tbody>
+              </table>
+              <Paginator
+                  v-if="annoncesData"
+                  v-model:first="first"
+                  :rows="10"
+                  :totalRecords="annonces.length"
+                  />
           </div>
+          <Button class="yooooo" label="Poster une annonce" @click="postAnnonceModal = true"/>
         </div>
   </div>
         
@@ -99,8 +241,19 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { vMaska } from 'maska';
 import Dialog from 'primevue/dialog'
+import Editor from 'primevue/editor';
+import VueDOMPurifyHTML from 'vue-dompurify-html';
+
+const headers = ['Poste', 'Date de publication', 'Candidatures', 'Cloturer'];
 
 const visible = ref(false);
+const postAnnonceModal = ref(false);
+const villeModal = ref(false);
+const ville = ref(null);
+const secteurModal = ref(false);
+const secteur = ref(null);
+const descriptionModal = ref(false);
+const description = ref(null);
 const router = useRouter();
 const authStore = useAuthStore();
 const userId = authStore.getId;
@@ -189,7 +342,7 @@ const mesAnnonces = async () => {
 
 const paginatedAnnonces = computed(() => {
         const startIndex = first.value;
-        const endIndex = startIndex + 15; // Change 15 to the number of jobs per page
+        const endIndex = startIndex + 5; // Change 15 to the number of jobs per page
         return annonces.value.slice(startIndex, endIndex);
     });
 
@@ -272,12 +425,9 @@ function showNotif(message) {
   }, 5000);
 }
 
-onMounted(() => {
-  const createAnnonce = annonceButton.value;
-  createAnnonce.addEventListener('click', async ()=>{
-    console.log(newAnnonce.value);
-  
-    if (
+const publish = async () => {
+  postAnnonceModal.value = false;
+  if (
       !newAnnonce.value.titre ||
       !newAnnonce.value.lieu ||
       !newAnnonce.value.date_debut ||
@@ -311,28 +461,153 @@ onMounted(() => {
       } catch (err) {
         console.log(err);
       }
-  } 
-   });
+  }
+}
+
+const insertVille = async () => {
+  villeModal.value = false;
+  if (
+      !ville.value
+    ) {
+      showError("Veuillez renseigner une ville");
+    } else if (ville.value.length < 3) {
+      showError("Renseigner une ville d'au moins 3 lettres");
+    } else {
+      try {
+        const response = await axios.post(`${config.public.backend}/api/v1/employeurs/ville`, {
+          ville: ville.value,
+          id: userId
+        });
+
+        console.log('Status Code:', response.status);
+        console.log('Response Data:', response.data);
+
+        // newAnnonce.value = {};
+        window.location.href = `/employeur`
+      } catch (err) {
+        console.log(err);
+      }
+  }
+}
+
+const insertSecteur = async () => {
+  secteurModal.value = false;
+  if (
+      !secteur.value
+    ) {
+      showError("Veuillez renseigner un Secteur d'activité");
+    } else if (secteur.value.length < 3) {
+      showError("Minimum 3 lettres");
+    } else {
+      try {
+        const response = await axios.post(`${config.public.backend}/api/v1/employeurs/secteur`, {
+          secteur: secteur.value,
+          id: userId
+        });
+
+        console.log('Status Code:', response.status);
+        console.log('Response Data:', response.data);
+
+        // newAnnonce.value = {};
+        window.location.href = `/employeur`
+      } catch (err) {
+        console.log(err);
+      }
+  }
+}
+
+const insertDescription = async () => {
+  descriptionModal.value = false;
+  if (
+      !description.value
+    ) {
+      showError("Veuillez renseigner une description");
+    } else {
+      try {
+        const response = await axios.post(`${config.public.backend}/api/v1/employeurs/description`, {
+          description: description.value,
+          id: userId
+        });
+
+        console.log('Status Code:', response.status);
+        console.log('Response Data:', response.data);
+
+        // newAnnonce.value = {};
+        window.location.href = `/employeur`
+      } catch (err) {
+        console.log(err);
+      }
+  }
+}
+
+// onMounted(() => {
+//   if(annonceButton.value){
+//     const createAnnonce = annonceButton.value;
+//     createAnnonce.addEventListener('click', async ()=>{
+//     console.log(newAnnonce.value);
   
-})
+//     if (
+//       !newAnnonce.value.titre ||
+//       !newAnnonce.value.lieu ||
+//       !newAnnonce.value.date_debut ||
+//       !newAnnonce.value.poste ||
+//       !newAnnonce.value.salaire ||
+//       !newAnnonce.value.description_poste
+//     ) {
+//       showError("Veuillez remplir 'tous' les champs obligatoires (*).");
+//     }else {
+//       try {
+//         const date_debut = convertDateFormat(newAnnonce.value.date_debut);
+//         if(newAnnonce.value.date_fin.length > 0){
+//           newAnnonce.value.date_fin = convertDateFormat(newAnnonce.value.date_fin);
+//         }
+//         const response = await axios.post(`${config.public.backend}/api/v1/annonces`, {
+//           titre: newAnnonce.value.titre,
+//           lieu: newAnnonce.value.lieu,
+//           date_debut: date_debut,
+//           poste: newAnnonce.value.poste,
+//           salaire: newAnnonce.value.salaire,
+//           description_poste: newAnnonce.value.description_poste,
+//           date_fin: newAnnonce.value.date_fin,
+//           id_employeur: userId
+//         });
+
+//         console.log('Status Code:', response.status);
+//         console.log('Response Data:', response.data);
+
+//         newAnnonce.value = {};
+//         window.location.href = `/employeur`
+//       } catch (err) {
+//         console.log(err);
+//       }
+//   } 
+//    });
+//   }
+  
+  
+// })
 
 
 </script>
 <style scoped>
 :deep(.p-paginator) {
-    background-color: #03a9f4;
+    background-color: transparent;
     justify-content: center;
-    color: white;
+    margin-bottom: 5px;
 }
-:deep(.p-paginator .p-paginator-pages .p-paginator-page.p-highlight) {
-  color: white;
+
+:deep(.p-button){
+      background-color: #03a9f4;
+    }
+.only-small-mobile {
+  display: none;
 }
 .box {
-    width: 490px;
+    width: auto;
     border-bottom: 20px solid #03a9f4;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
-    margin: 75px 0 0 53px;
+    margin-bottom: 20px;
   }
   .box h2 {
     color: #fff;
@@ -387,7 +662,7 @@ onMounted(() => {
   .annonces-section{
     width: 100%;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     padding: 13px;
   }
@@ -445,7 +720,7 @@ onMounted(() => {
   
   .profile-picture {
     position: absolute;
-    top: 12rem;
+    top: 11rem;
     left: 13%;
     transform: translateX(-50%);
     border-radius: 50%;
@@ -489,6 +764,7 @@ onMounted(() => {
   }
 
   .container {
+    display: none;
     height: 700px;
     width: 500px;
     background-color: rgb(56, 177, 233);
@@ -598,36 +874,35 @@ onMounted(() => {
 
   @media (max-width:1086px) and (min-width:769px) {
     .box {
-      width: 420px;
-      margin: 45px 0 0 15px !important;
+      width: auto;
     }
   }
 
   @media (max-width:768px) and (min-width:500px) {
-    .box {
+    /* .box {
       width: 420px;
       margin: 45px 0 0 0 !important;
-    }
+    } */
   }
 
   @media (max-width:499px) and (min-width:350px) {
-    .box {
+    /* .box {
       width: 450px !important; 
       margin: 35px 0 0 0 !important;
-    }
+    } */
   }
 
   @media (max-width:349px) and (min-width:150px) {
-    .box {
+    /* .box {
       width: 250px !important; 
       margin: 25px 0 0 0 !important;
-    }
+    } */
   }
 
-  @media screen and (max-width: 1085px) {
+  @media screen and (max-width: 770px) {
     .profile-picture {
         position: absolute;
-        top: 7rem; 
+        top: 5rem; 
         left: 50%;
         transform: translateX(-50%);
         border-radius: 50%;
@@ -639,6 +914,7 @@ onMounted(() => {
       .annonces-section{
         flex-direction: column;
         align-items: center;
+        width: auto;
       }
   }
 
@@ -771,5 +1047,356 @@ onMounted(() => {
     textarea {
       width: 137%;
     }
+}
+::selection{
+  background: #34a7d3;
+  color: #fff;
+}
+.wrapper{
+  overflow: hidden;
+  max-width: 630px;
+  margin: auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 5px;
+  box-shadow: 0px 15px 20px rgba(0,0,0,0.1);
+}
+.wrapper .title-text{
+  display: flex;
+  width: 200%;
+}
+.wrapper .title{
+  width: 50%;
+  font-size: 35px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+}
+.format-input {
+  height: 100%;
+  width: 100%;
+  outline: none;
+  padding-left: 15px;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+  border-bottom-width: 2px;
+  font-size: 17px;
+  transition: all 0.3s ease;
+}
+.wrapper .slide-controls{
+  position: relative;
+  display: flex;
+  height: 50px;
+  width: 100%;
+  overflow: hidden;
+  margin: 30px 0 10px 0;
+  justify-content: space-between;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+}
+.slide-controls .slide{
+  height: 100%;
+  width: 100%;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 48px;
+  cursor: pointer;
+  z-index: 1;
+  transition: all 0.6s ease;
+}
+.slide-controls label.signup{
+  color: #000;
+}
+.slide-controls .slider-tab{
+  position: absolute;
+  height: 100%;
+  width: 50%;
+  left: 0;
+  z-index: 0;
+  border-radius: 5px;
+  background: -webkit-linear-gradient(left, #68cef7, #08b2f5);
+  transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+}
+input[type="radio"]{
+  display: none;
+}
+#signup:checked ~ .slider-tab{
+  left: 50%;
+}
+#signup:checked ~ label.signup{
+  color: #fff;
+  cursor: default;
+  user-select: none;
+}
+#signup:checked ~ label.login{
+  color: #000;
+}
+#login:checked ~ label.signup{
+  color: #000;
+}
+#login:checked ~ label.login{
+  cursor: default;
+  user-select: none;
+}
+.wrapper .form-container{
+  width: 100%;
+  overflow: hidden;
+}
+.form-container .form-inner{
+  display: flex;
+  width: 200%;
+}
+.form-container .form-inner form{
+  width: 50%;
+  transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+}
+.form-inner form .field{
+  height: 50px;
+  width: 100%;
+  margin-top: 20px;
+}
+.form-inner form .field input{
+  height: 100%;
+  width: 100%;
+  outline: none;
+  padding-left: 15px;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+  border-bottom-width: 2px;
+  font-size: 17px;
+  transition: all 0.3s ease;
+}
+textarea{
+  margin-top: 20px;
+  width: 100%;
+  outline: none;
+  padding-left: 15px;
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+  border-bottom-width: 2px;
+  font-size: 17px;
+  transition: all 0.3s ease;
+}
+.form-inner form .field input:focus{
+  border-color: #34a7d3;
+  /* box-shadow: inset 0 0 3px #fb6aae; */
+}
+.form-inner form .field input::placeholder{
+  color: #999;
+  transition: all 0.3s ease;
+}
+form .field input:focus::placeholder{
+  color: #b3b3b3;
+}
+.form-inner form .pass-link{
+  margin-top: 5px;
+}
+.form-inner form .signup-link{
+  text-align: center;
+  margin-top: 30px;
+}
+.form-inner form .pass-link a,
+.form-inner form .signup-link a{
+  color: #34a7d3;
+  text-decoration: none;
+}
+.form-inner form .pass-link a:hover,
+.form-inner form .signup-link a:hover{
+  text-decoration: underline;
+}
+form .btn{
+  height: 50px;
+  width: 100%;
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+}
+form .btn .btn-layer{
+  height: 100%;
+  width: 300%;
+  position: absolute;
+  left: -100%;
+  background: -webkit-linear-gradient(left, #68cef7, #08b2f5);
+  border-radius: 5px;
+  transition: all 0.4s ease;;
+}
+form .btn:hover .btn-layer{
+  left: 0;
+}
+form .btn input[type="submit"]{
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  position: relative;
+  background: none;
+  border: none;
+  color: #fff;
+  padding-left: 0;
+  border-radius: 5px;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
+}
+form .btn button{
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  position: relative;
+  background: none;
+  border: none;
+  color: #fff;
+  padding-left: 0;
+  border-radius: 5px;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.error-message {
+    position: fixed;
+    top: 120px;
+    width: 300px;
+    z-index: 2;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgb(255, 78, 78);
+    color: white;
+    padding: 6px;
+    display: none; /* Initially hidden */
+    border-radius: 6px;
+  }
+
+  .notif-message {
+    position: fixed;
+    top: 120px;
+    width: 300px;
+    z-index: 2;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgb(78, 167, 255);
+    color: white;
+    padding: 6px;
+    display: none; /* Initially hidden */
+    border-radius: 6px;
+  }
+  .editor-container {
+    margin-top: 20px;
+  }
+  table {
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    /* margin-bottom: 20px; */
+    padding: 0;
+    width: 100%;
+    table-layout: fixed;
+  }
+  
+  table caption {
+    font-size: 1.5em;
+    margin: .5em 0 .75em;
+  }
+  
+  table tr {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    padding: .35em;
+  }
+  
+  table th,
+  table td {
+    padding: .625em;
+    text-align: center;
+  }
+  
+  table th {
+    font-size: .85em;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  
+  @media screen and (max-width: 600px) {
+    table {
+      border: 0;
+      margin: 0;
+    }
+
+    .only-small-mobile {
+      display: inline;
+      position: absolute;
+      left: 20px;
+    }
+  
+    table caption {
+      font-size: 1.3em;
+    }
+    
+    table thead {
+      border: none;
+      clip: rect(0 0 0 0);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      width: 1px;
+    }
+    
+    table tr {
+      border-bottom: 3px solid #ddd;
+      display: block;
+      margin-bottom: .625em;
+    }
+    
+    table td {
+      border-bottom: 1px solid #ddd;
+      display: block;
+      font-size: .8em;
+      text-align: right;
+    }
+    
+    table td::before {
+      content: attr(data-label);
+      float: left;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    
+    table td:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  .employer-profile {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  margin: 0 13px;
+  margin-bottom: 20px;
+  margin-top: 45px;
+}
+
+.profile-heading {
+  font-size: 24px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.profile-info .row {
+  margin-bottom: 10px;
+}
+
+.profile-info strong {
+  font-weight: bold;
+}
+
+.profile-info span {
+  display: inline-block;
+  width: 100%;
+}
+
+.profile-info p {
+  margin-top: 0;
 }
 </style>

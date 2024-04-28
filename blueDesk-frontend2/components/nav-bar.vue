@@ -51,7 +51,6 @@
     box-sizing: border-box;
     align-items: center;
     /* backdrop-filter: blur(16px); */
-    box-shadow: 0 10px 15px -10px rgba(0, 0, 0, 0.5);
     background-color: #34a7d3;
     transition: 0.2s;
     position: fixed;
@@ -190,7 +189,6 @@
 
     .navlinks ul .test{
       margin: 3px 0;
-      padding: 15px;
       transition: 0.5s;
     }
   }

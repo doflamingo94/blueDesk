@@ -31,7 +31,7 @@
     margin-top: 70px;
     width: 100%;
     backdrop-filter: blur(15px);
-    background-color: rgb(13 102 132);
+    background-color: #34a7d3;
     color: #fff;
     padding: 50px 0;
     font-family: 'Roboto', sans-serif;
@@ -48,7 +48,6 @@
   
   .footer-col {
     flex: 1;
-    min-width: 300px;
     margin: 20px;
   }
   

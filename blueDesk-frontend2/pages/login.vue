@@ -1,6 +1,7 @@
 <template>
-    <div>
-        <FormLogin />
+    <div class="page-content">
+        <!-- <FormLogin /> -->
+        <LoginForm />
     </div>
 </template>
 <script>
@@ -11,5 +12,8 @@ export default {
 }
 </script>
 <style scoped>
-    
+.page-content {
+    min-height: 0;
+    margin-top: 70px;
+}
 </style>

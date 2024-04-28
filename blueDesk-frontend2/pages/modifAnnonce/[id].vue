@@ -1,8 +1,7 @@
 <template>
 <div class="page-content">
     <div id="error-message" class="error-message"></div>
-    <h1>Test</h1>
-    <div class="annonces-section">
+    <!-- <div class="annonces-section">
         <div class="container">
             <div class="form-section" v-if="previousAnnonceData">
 
@@ -33,7 +32,51 @@
               </form>
             </div> 
         </div>
-    </div>
+    </div> -->
+    <div v-if="previousAnnonceData" class="wrapper">
+              <div class="title-text">
+                <div class="title" :style="{marginLeft: loginMargin}">Modifiez votre annonce</div>
+              </div>
+              <div class="form-container">
+                <div class="form-inner">
+                  <form @submit.prevent class="login" :style="{marginLeft: loginFormMargin}">
+                    <div class="field">
+                      <input type="text"
+                      :placeholder="previousAnnonceData.titre" v-model="newAnnonce.titre">
+                    </div>
+                    <div class="field">
+                      <input type="text"
+                      :placeholder="previousAnnonceData.lieu" v-model="newAnnonce.lieu">
+                    </div>
+                    <div class="field">
+                      <input v-maska data-maska="##/##/####" type="text"
+                      :placeholder="date_debut" v-model="newAnnonce.date_debut">
+                    </div>
+                    <div class="field">
+                      <input v-if="date_fin" v-maska data-maska="##/##/####" type="text"
+                      :placeholder="date_fin" v-model="newAnnonce.date_fin">
+                      <input v-else v-maska data-maska="##/##/####" type="text"
+                      placeholder="Date de fin" v-model="newAnnonce.date_fin">
+                    </div>
+                    <div class="field">
+                      <input type="text"
+                      :placeholder="previousAnnonceData.poste" v-model="newAnnonce.poste">
+                    </div>
+                    <div class="field">
+                      <input type="text"
+                      :placeholder="previousAnnonceData.salaire" v-model="newAnnonce.salaire">
+                    </div>
+                    <div class="editor-container">
+                      <Editor :placeholder="previousAnnonceData.description_poste" v-model="newAnnonce.description_poste" editorStyle="min-height: 320px" />
+                    </div>
+                    <div class="field btn">
+                      <div class="btn-layer"></div>
+                      <button ref="annonceButton" @click="updateAnnonce" type="submit" class="clkbtn">modifier</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
 </div>
 </template>
 
@@ -43,6 +86,7 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { ref } from 'vue';
 import { vMaska } from 'maska';
+import Editor from 'primevue/editor';
 
 const router = useRouter();
 const route = useRoute();
@@ -341,4 +385,210 @@ textarea {
       width: 137%;
     }
 }
+
+.wrapper{
+  overflow: hidden;
+  max-width: 630px;
+  margin: auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 5px;
+  box-shadow: 0px 15px 20px rgba(0,0,0,0.1);
+}
+.wrapper .title-text{
+  display: flex;
+  width: 200%;
+}
+.wrapper .title{
+  width: 50%;
+  font-size: 35px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+}
+.format-input {
+  height: 100%;
+  width: 100%;
+  outline: none;
+  padding-left: 15px;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+  border-bottom-width: 2px;
+  font-size: 17px;
+  transition: all 0.3s ease;
+}
+.wrapper .slide-controls{
+  position: relative;
+  display: flex;
+  height: 50px;
+  width: 100%;
+  overflow: hidden;
+  margin: 30px 0 10px 0;
+  justify-content: space-between;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+}
+.slide-controls .slide{
+  height: 100%;
+  width: 100%;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 48px;
+  cursor: pointer;
+  z-index: 1;
+  transition: all 0.6s ease;
+}
+.slide-controls label.signup{
+  color: #000;
+}
+.slide-controls .slider-tab{
+  position: absolute;
+  height: 100%;
+  width: 50%;
+  left: 0;
+  z-index: 0;
+  border-radius: 5px;
+  background: -webkit-linear-gradient(left, #68cef7, #08b2f5);
+  transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+}
+input[type="radio"]{
+  display: none;
+}
+#signup:checked ~ .slider-tab{
+  left: 50%;
+}
+#signup:checked ~ label.signup{
+  color: #fff;
+  cursor: default;
+  user-select: none;
+}
+#signup:checked ~ label.login{
+  color: #000;
+}
+#login:checked ~ label.signup{
+  color: #000;
+}
+#login:checked ~ label.login{
+  cursor: default;
+  user-select: none;
+}
+.wrapper .form-container{
+  width: 100%;
+  overflow: hidden;
+}
+.form-container .form-inner{
+  display: flex;
+  width: 200%;
+}
+.form-container .form-inner form{
+  width: 50%;
+  transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+}
+.form-inner form .field{
+  height: 50px;
+  width: 100%;
+  margin-top: 20px;
+}
+.form-inner form .field input{
+  height: 100%;
+  width: 100%;
+  outline: none;
+  padding-left: 15px;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+  border-bottom-width: 2px;
+  font-size: 17px;
+  transition: all 0.3s ease;
+}
+textarea{
+  margin-top: 20px;
+  width: 100%;
+  outline: none;
+  padding-left: 15px;
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+  border-bottom-width: 2px;
+  font-size: 17px;
+  transition: all 0.3s ease;
+}
+.form-inner form .field input:focus{
+  border-color: #34a7d3;
+  /* box-shadow: inset 0 0 3px #fb6aae; */
+}
+.form-inner form .field input::placeholder{
+  color: #999;
+  transition: all 0.3s ease;
+}
+form .field input:focus::placeholder{
+  color: #b3b3b3;
+}
+.form-inner form .pass-link{
+  margin-top: 5px;
+}
+.form-inner form .signup-link{
+  text-align: center;
+  margin-top: 30px;
+}
+.form-inner form .pass-link a,
+.form-inner form .signup-link a{
+  color: #34a7d3;
+  text-decoration: none;
+}
+.form-inner form .pass-link a:hover,
+.form-inner form .signup-link a:hover{
+  text-decoration: underline;
+}
+form .btn{
+  height: 50px;
+  width: 100%;
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+}
+form .btn .btn-layer{
+  height: 100%;
+  width: 300%;
+  position: absolute;
+  left: -100%;
+  background: -webkit-linear-gradient(left, #68cef7, #08b2f5);
+  border-radius: 5px;
+  transition: all 0.4s ease;;
+}
+form .btn:hover .btn-layer{
+  left: 0;
+}
+form .btn input[type="submit"]{
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  position: relative;
+  background: none;
+  border: none;
+  color: #fff;
+  padding-left: 0;
+  border-radius: 5px;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
+}
+form .btn button{
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  position: relative;
+  background: none;
+  border: none;
+  color: #fff;
+  padding-left: 0;
+  border-radius: 5px;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.editor-container {
+    margin-top: 20px;
+  }
 </style>
