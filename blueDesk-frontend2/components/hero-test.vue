@@ -102,6 +102,7 @@ body {
 }
 
 .shapeImg {
+    display: none;
     width: 800px;
     position: absolute;
     bottom: -380px;

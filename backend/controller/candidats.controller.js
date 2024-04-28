@@ -155,6 +155,114 @@ const candidatsController = {
         console.log(error);
         res.json({ status: "error", message: error.message });
       }
+    },
+    insertExperience: async (req, res) => {
+      try {
+        const { id_candidat, poste, employeur, date_debut, date_fin } = req.body;
+  
+        // Insert into experiences table
+        const experienceSql = "INSERT INTO experiences (poste, employeur, date_debut, date_fin) VALUES (?, ?, ?, ?);";
+        const [experienceRows, _] = await pool.query(experienceSql, [poste, employeur, date_debut, date_fin]);
+  
+        // Get the ID of the last inserted experience
+        const experienceId = experienceRows.insertId;
+  
+        // Insert into exp_candi table to link the experience with the candidate
+        const expCandiSql = "INSERT INTO exp_candi (id_candidat, id_experience) VALUES (?, ?);";
+        await pool.query(expCandiSql, [id_candidat, experienceId]);
+  
+        res.json({ status: "success", message: "Experience inserted successfully." });
+      } catch (error) {
+          console.log(error);
+          res.json({ status: "error", message: error.message });
+      }
+    },
+    insertDescription: async (req, res) => {
+      try {
+        const { id, description } = req.body;
+
+        // Update the description of the candidat
+        const sql = "UPDATE candidats SET description = ? WHERE id = ?";
+        await pool.query(sql, [description, id]);
+  
+        res.json({ status: "success", message: "Description inserted successfully." });
+      } catch (error) {
+          console.log(error);
+          res.json({ status: "error", message: error.message });
+      }
+    },
+    insertProfession: async (req, res) => {
+      try {
+        const { id, profession } = req.body;
+
+        // Update the description of the candidat
+        const sql = "UPDATE candidats SET profession = ? WHERE id = ?";
+        await pool.query(sql, [profession, id]);
+  
+        res.json({ status: "success", message: "Profession inserted successfully." });
+      } catch (error) {
+          console.log(error);
+          res.json({ status: "error", message: error.message });
+      }
+    },
+    insertFormation: async (req, res) => {
+      try {
+        const { id_candidat, nom, ecole, date_debut, date_fin } = req.body;
+  
+        // Insert into formations table
+        const formationSql = "INSERT INTO formations (nom, ecole, date_debut, date_fin) VALUES (?, ?, ?, ?);";
+        const [formationRows, _] = await pool.query(formationSql, [nom, ecole, date_debut, date_fin]);
+  
+        // Get the ID of the last inserted formation
+        const formationId = formationRows.insertId;
+  
+        // Insert into form_candi table to link the formation with the candidate
+        const formCandiSql = "INSERT INTO form_candi (id_candidat, id_formation) VALUES (?, ?);";
+        await pool.query(formCandiSql, [id_candidat, formationId]);
+  
+        res.json({ status: "success", message: "Formation inserted successfully." });
+      } catch (error) {
+          console.log(error);
+          res.json({ status: "error", message: error.message });
+      }
+    },
+    getProfile: async (req, res) => {
+      try {
+        const { id } = req.params;
+        const sql = "SELECT e.poste AS poste_experience, e.employeur AS employeur_experience, e.date_debut AS debut_experience, e.date_fin AS fin_experience, f.nom AS nom_formation, f.ecole AS ecole_formation, f.date_debut AS debut_formation, f.date_fin AS fin_formati FROM candidats LEFT JOIN exp_candi ec ON c.id = ec.id_candid LEFT JOIN experiences e ON ec.id_experience = e. LEFT JOIN form_candi fc ON c.id = fc.id_candid LEFT JOIN formations f ON fc.id_formation = f. WHERE c.id = ?";
+        const [rows, fields] = await pool.query(sql, [id]);
+        res.json({ data: rows });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
+    },
+    getExperiences: async (req, res) => {
+      try {
+        const { id_candidat } = req.body;
+        // Select all experiences of the candidat
+        const sql = "SELECT * FROM experiences WHERE id IN (SELECT id_experience FROM exp_candi WHERE id_candidat = ?)";
+        const [rows, fields] = await pool.query(sql, [id_candidat]);
+
+        res.json({ status: "success 44444", data: rows });
+      } catch (error) {
+          console.log(error);
+          res.json({ status: "error 55555", message: error.message });
+      }
+    },
+    getFormations: async (req, res) => {
+      try {
+        const { id_candidat } = req.body;
+
+        // Select all formations of the candidat
+        const sql = "SELECT * FROM formations WHERE id IN (SELECT id_formation FROM form_candi WHERE id_candidat = ?)";
+        const [rows, fields] = await pool.query(sql, [id_candidat]);
+
+        res.json({ status: "success", data: rows });
+      } catch (error) {
+          console.log(error);
+          res.json({ status: "error", message: error.message });
+      }
     }
   };
   

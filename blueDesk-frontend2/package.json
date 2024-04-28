@@ -22,7 +22,8 @@
     "maska": "^2.1.10",
     "primevue": "^3.48.1",
     "quill": "^1.3.7",
-    "sass": "^1.69.4"
+    "sass": "^1.69.4",
+    "vue-dompurify-html": "^5.0.1"
   },
   "overrides": {
     "vue": "latest"

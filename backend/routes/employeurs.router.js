@@ -14,5 +14,9 @@ router.post("/deleteAnnonce", employeursController.deleteAnnonce);
 router.post("/refuser", employeursController.refusCandidature);
 router.post("/valider", employeursController.ValiderCandidature);
 router.post("/logo", employeursController.updateLogo);
+router.post("/secteur", employeursController.insertSecteur);
+router.post("/ville", employeursController.insertVille);
+router.post("/description", employeursController.insertDescription);
+router.get("/profil/:nom", employeursController.getProfil);
 
 module.exports = router;

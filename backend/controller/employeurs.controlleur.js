@@ -190,6 +190,59 @@ const employeursController = {
         res.json({ status: "error", message: error.message });
       }
     },
+    insertSecteur: async (req, res) => {
+      try {
+          const { secteur, id } = req.body; // Supposons que le nom du secteur est fourni dans le corps de la requête
+
+          // Assurez-vous de valider les données d'abord si nécessaire
+
+          const sql = "UPDATE employeurs SET secteur = ? WHERE id = ?;"; // Supposons que vous avez une table 'secteurs' avec une colonne 'nom'
+          const [rows, fields] = await pool.query(sql, [secteur, id]);
+          res.json({ status: "success", message: "Secteur ajouté avec succès" });
+      } catch (error) {
+          console.error(error);
+          res.json({ status: "error", message: error.message });
+      }
+    },
+    insertDescription: async (req, res) => {
+      try {
+          const { description, id } = req.body; // Supposons que la description est fournie dans le corps de la requête
+
+          // Assurez-vous de valider les données d'abord si nécessaire
+
+          const sql = "UPDATE employeurs SET description = ? WHERE id = ?;"; // Supposons que vous avez une table 'descriptions' avec une colonne 'description'
+          const [rows, fields] = await pool.query(sql, [description, id]);
+          res.json({ status: "success", message: "Description ajoutée avec succès" });
+      } catch (error) {
+          console.error(error);
+          res.json({ status: "error", message: error.message });
+      }
+    },
+    insertVille: async (req, res) => {
+      try {
+          const { ville, id } = req.body; // Supposons que le nom de la ville est fourni dans le corps de la requête
+
+          // Assurez-vous de valider les données d'abord si nécessaire
+
+          const sql = "UPDATE employeurs SET ville = ? WHERE id = ?;"; // Supposons que vous avez une table 'villes' avec une colonne 'nom'
+          const [rows, fields] = await pool.query(sql, [ville, id]);
+          res.json({ status: "success", message: "Ville ajoutée avec succès" });
+      } catch (error) {
+          console.error(error);
+          res.json({ status: "error", message: error.message });
+      }
+    },
+    getProfil: async (req, res) => {
+      try {
+        const { nom } = req.params;
+        const sql = "SELECT nom, url_logo, ville, secteur, description FROM employeurs WHERE nom = ?";
+        const [rows, fields] = await pool.query(sql, [nom]);
+        res.json({ data: rows });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
+    }
   };
   
   module.exports = employeursController;

@@ -64,6 +64,7 @@ const formatAnnonceDates = (annoncesData) => {
 .testt {
     max-width: 45px;
     max-height: 45px;
+    border-radius: 50%;
 }
 
 .job-title {

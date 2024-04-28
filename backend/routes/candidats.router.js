@@ -14,5 +14,12 @@ router.post("/candidature", candidatsController.getCandidature);
 router.post("/candidater", candidatsController.candidater)
 router.post("/deleteCandidature", candidatsController.deleteCandidature);
 router.post("/update_pp", candidatsController.updatePp);
+router.get("/profile-candidat/:id", candidatsController.getProfile);
+router.post("/insertProf", candidatsController.insertProfession);
+router.post("/insertExp", candidatsController.insertExperience);
+router.post("/insertForm", candidatsController.insertFormation);
+router.post("/insertDesc", candidatsController.insertDescription);
+router.post("/experiences", candidatsController.getExperiences);
+router.post("/formations", candidatsController.getFormations);
 
 module.exports = router;

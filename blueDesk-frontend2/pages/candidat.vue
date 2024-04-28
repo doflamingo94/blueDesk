@@ -1,4 +1,5 @@
 <template>
+  <div class="page-content">
     <div id="error-message" class="error-message"></div>
     <div id="notif-message" class="notif-message"></div>
     <div v-if="candidatData" class="user-profile">
@@ -34,22 +35,220 @@
               </CldUploadWidget>
             </Dialog>
 
-        <h1><span >{{ `${candidatData.prenom}` }} {{ `${candidatData.nom}` }}</span> </h1>
-        <div class="box-container">
+            <div class="container">
+              <div class="row">
+                <div class="col-md-4">
+                  <!-- <img class="profile-img" src="../assets/images/briefcase1.png" alt="Profile Picture">  -->
+                  <h2 class="mt-3 text-center">{{ `${candidatData.prenom}` }} {{ `${candidatData.nom}` }}</h2>
+                  <p class="text-muted text-center" v-if="candidatData.profession">{{ `${candidatData.profession}` }}</p>
+                  <Button v-else label="Rajouter une profession" @click="professionModal = true" />
+                </div>
+                <div class="col-md-8">
+                    <div class="card mb-3">
+                    <div class="card-header">
+                      <h3>Description</h3>
+                    </div>
+                    <p v-if="candidatData.description" v-dompurify-html="candidatData.description" class="text-muted"/>
+                    <div v-else>
+                      <Button label="Rajouter une description" @click="descriptionModal = true"/>
+                    </div>
+                  </div>
+                  <div class="card mb-3">
+                    <div class="card-header">
+                      <h3>Professional Experience</h3>
+                    </div>
+                    <ul v-if="experienceData" class="list-group list-group-flush" v-for="experience in experienceData" :key="experience.id">
+                      <li class="list-group-item">
+                        <h5>{{ `${experience.employeur}` }} - {{ `${experience.poste}` }}</h5>
+                        <p class="mb-0">du {{ `${experience.date_debut}` }} au <span v-if="experience.date_fin">{{ `${experience.date_fin}` }}</span></p>
+                        <!-- <p class="text-muted">{{ experience.description }}</p> -->
+                      </li>
+                    </ul>
+                    <Button label="Ajouter une experience" @click="experienceModal = true" />
+                  </div>
+                  <div  class="card">
+                    <div class="card-header">
+                      <h3>Formations</h3>
+                    </div>
+                    <ul v-if="formationData" class="list-group list-group-flush" v-for="formation in formationData" :key="formation.id">
+                      <li class="list-group-item">
+                        <h5>{{ `${formation.ecole}` }} - {{ `${formation.nom}` }}</h5>
+                        <p class="mb-0"> du {{ `${formation.date_debut}` }} au <span v-if="formation.date_fin">{{ `${formation.date_fin}` }}</span></p>
+                      </li>
+                    </ul>
+                    <Button label="Ajouter une formation" @click="formationModal = true" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Dialog v-model:visible="professionModal" modal :style="{ width: '100%', height: 'auto', padding: '12px' }">
+            <div class="wrapper">
+              <div class="title-text">
+                <div class="title" :style="{marginLeft: loginMargin}">Renseigner votre profession</div>
+              </div>
+              <div class="form-container">
+                <div class="form-inner">
+                  <form @submit.prevent class="login" :style="{marginLeft: loginFormMargin}">
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Nom de votre profession *" v-model="profession">
+                    </div>
+                    <div class="field btn">
+                      <div class="btn-layer"></div>
+                      <button @click="insertProfession" type="submit" class="clkbtn">Renseigner</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </Dialog>
+
+          <Dialog v-model:visible="descriptionModal" modal :style="{ width: '100%', height: 'auto', padding: '12px' }">
+            <div class="wrapper">
+              <div class="title-text">
+                <div class="title" :style="{marginLeft: loginMargin}">Décriver vous, vos compétences, vos interets, etc..</div>
+              </div>
+              <div class="form-container">
+                <div class="form-inner">
+                  <form @submit.prevent class="login" :style="{marginLeft: loginFormMargin}">
+                    <div class="editor-container">
+                      <Editor v-model="description" editorStyle="min-height: 320px" />
+                    </div>
+                    <div class="field btn">
+                      <div class="btn-layer"></div>
+                      <button @click="insertDescription" type="submit" class="clkbtn">Renseigner</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </Dialog>
+
+          <Dialog v-model:visible="experienceModal" modal :style="{ width: '100%', height: '90vh' }">
+            <div class="wrapper">
+              <div class="title-text">
+                <div class="title" :style="{marginLeft: loginMargin}">Renseignez une experience professionnelle</div>
+              </div>
+              <div class="form-container">
+                <div class="form-inner">
+                  <form @submit.prevent class="login" :style="{marginLeft: loginFormMargin}">
+                    <div class="field">
+                      <input type="text"
+                           placeholder="employeur *" v-model="experience.employeur">
+                    </div>
+                    <div class="field">
+                      <input v-maska data-maska="##/##/####" type="text"
+                           placeholder="Date de début *" v-model="experience.date_debut">
+                    </div>
+                    <div class="field">
+                      <input v-maska data-maska="##/##/####" type="text"
+                           placeholder="Date de fin" v-model="experience.date_fin">
+                    </div>
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Nom du poste *" v-model="experience.poste">
+                    </div>
+                    <div class="field btn">
+                      <div class="btn-layer"></div>
+                      <button @click="insertExperience" type="submit" class="clkbtn">renseigner</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </Dialog>
+
+          <Dialog v-model:visible="formationModal" modal :style="{ width: '100%', height: '90vh' }">
+            <div class="wrapper">
+              <div class="title-text">
+                <div class="title" :style="{marginLeft: loginMargin}">Renseignez une formation</div>
+              </div>
+              <div class="form-container">
+                <div class="form-inner">
+                  <form @submit.prevent class="login" :style="{marginLeft: loginFormMargin}">
+                    <div class="field">
+                      <input type="text"
+                           placeholder="ecole *" v-model="formation.ecole">
+                    </div>
+                    <div class="field">
+                      <input v-maska data-maska="##/##/####" type="text"
+                           placeholder="Date de début *" v-model="formation.date_debut">
+                    </div>
+                    <div class="field">
+                      <input v-maska data-maska="##/##/####" type="text"
+                           placeholder="Date de fin" v-model="formation.date_fin">
+                    </div>
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Nom de la formation *" v-model="formation.nom">
+                    </div>
+                    <div class="field btn">
+                      <div class="btn-layer"></div>
+                      <button @click="insertFormartion" type="submit" class="clkbtn">renseigner</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </Dialog>
+
+        <!-- <h1><span >{{ `${candidatData.prenom}` }} {{ `${candidatData.nom}` }}</span> </h1> -->
+        <!-- <div class="box-container">
             <div v-if="candidaturesData" class="box">
                 <h2>Mes candidatures</h2>
                 <ul v-for="candidature in candidaturesData" :key="candidature.date_candidature">
                   <li><nuxt-link :to="'annonce/'+ candidature.id_annonce">{{ `${candidature.poste}` }} chez {{ `${candidature.employeur_nom}` }}</nuxt-link> le {{ `${candidature.date_candidature}` }}  STATUT : {{ `${candidature.statut}` }}  <button v-if="candidature.statut != 'refusé' && candidature.statut != 'retenue'" @click="deleteCandidature(candidature.id_annonce)" >Annuler</button></li>
                 </ul>
             </div>
-        </div>
+        </div> -->
+        <table v-if="candidaturesData">
+          <caption>Mes candidatures</caption>
+          <thead>
+            <tr>
+              <th scope="col" v-for="header in headers" :key="header">{{ header }}</th>
+            </tr>
+          </thead>
+          <tbody v-if="candidaturesTable.length > 0" v-for="candidature in paginatedCandidatures" :key="candidature.id_annonce">
+            <tr v-if="candidature.statut === 'retenue'" class="retenue">
+              <td class="poste-style"><span class="only-small-mobile">Poste</span> <nuxt-link :to="'annonce/'+ candidature.id_annonce">{{ `${candidature.poste}` }}</nuxt-link> </td>
+              <td><span class="only-small-mobile">Employeur</span> {{ `${candidature.employeur_nom}` }}</td>
+              <td><span class="only-small-mobile">Date de candidatures</span>{{ `${candidature.date_candidature}` }}</td>
+              <td><span class="only-small-mobile">Statut</span>{{ `${candidature.statut}` }}</td>
+            </tr>
+            <tr v-else-if="candidature.statut === 'refusé'" class="refuse">
+              <td class="poste-style"><span class="only-small-mobile">Poste</span> <nuxt-link :to="'annonce/'+ candidature.id_annonce">{{ `${candidature.poste}` }}</nuxt-link> </td>
+              <td><span class="only-small-mobile">Employeur</span> {{ `${candidature.employeur_nom}` }}</td>
+              <td><span class="only-small-mobile">Date de candidatures</span>{{ `${candidature.date_candidature}` }}</td>
+              <td><span class="only-small-mobile">Statut</span>{{ `${candidature.statut}` }}</td>
+            </tr>
+            <tr v-else>
+              <td class="poste-style"><span class="only-small-mobile">Poste</span> <nuxt-link :to="'annonce/'+ candidature.id_annonce">{{ `${candidature.poste}` }}</nuxt-link> </td>
+              <td><span class="only-small-mobile">Employeur</span> {{ `${candidature.employeur_nom}` }}</td>
+              <td><span class="only-small-mobile">Date de candidatures</span>{{ `${candidature.date_candidature}` }}</td>
+              <td><span class="only-small-mobile">Statut</span>{{ `${candidature.statut}` }}</td>
+              <td><span class="only-small-mobile">Annulation</span> <Button v-if="candidature.statut != 'refusé' && candidature.statut != 'retenue'" @click="deleteCandidature(candidature.id_annonce)" >Annuler</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <Paginator
+            v-if="candidaturesData"
+            v-model:first="first"
+            :rows="5"
+            :totalRecords="candidaturesTable.length"
+        />
     </div>
+</div>
+    
 </template>
 <script setup>
 import { useAuthStore } from '~/store/auth';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { ref } from 'vue';
+import Editor from 'primevue/editor';
+import VueDOMPurifyHTML from 'vue-dompurify-html';
+
 
 const visible = ref(false);
 const router = useRouter();
@@ -58,43 +257,102 @@ const userId = authStore.getId;
 const candidatData = ref(null);
 const candidaturesData = ref(null);
 const config = useRuntimeConfig();
+const headers = ['Poste', 'Employeur', 'Date de candidature', 'Statut', 'Annulation'];
+const candidaturesTable = ref([]);
+const first = ref(0);
+const experienceData = ref(null);
+const formationData = ref(null);
+const professionModal = ref(false);
+const profession = ref(null);
+const descriptionModal = ref(false);
+const description = ref(null);
+const experienceModal = ref(false);
+const experience = ref({
+  poste: '',
+  employeur: '',
+  date_debut: '',
+  date_fin: ''
+});
+const formationModal = ref(false);
+const formation = ref({
+  nom: '',
+  ecole: '',
+  date_debut: '',
+  date_fin: ''
+});
+
 
 console.log(userId)
 
 if (!authStore.isLoggedIn) {
-    router.push({ path: '/' })
+  router.push({ path: '/' })
 } else {
-    onBeforeMount(async () => {
-        await Promise.all([hydrateUser(), candidatures()]);
-    })
+  onBeforeMount(async () => {
+    await Promise.all([hydrateUser(), candidatures(), hydrateExperiences(), hydrateFormations()]);
+  })
 }
 
 const hydrateUser = async () => {
-    try {
-        const response = await axios.get(`${config.public.backend}/api/v1/candidats/${userId}`);
-        candidatData.value = response.data.data[0];
-        console.log(response.data.data[0]);
-        console.log(candidatData.value);
-    } catch (err) {
-        console.log(err)
-    }
+  try {
+    const response = await axios.get(`${config.public.backend}/api/v1/candidats/${userId}`);
+    candidatData.value = response.data.data[0];
+    console.log(response.data.data[0]);
+    console.log(candidatData.value);
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const hydrateExperiences = async () => {
+  try {
+    const response = await axios.post(`${config.public.backend}/api/v1/candidats/experiences`, {
+          id_candidat: userId
+        });
+    experienceData.value = response.data.data;
+    formatExperiences(experienceData.value)
+    console.log(response.data.data);
+    console.log(experienceData.value);
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const hydrateFormations = async () => {
+  try {
+    const response = await axios.post(`${config.public.backend}/api/v1/candidats/formations`, {
+          id_candidat: userId
+        });
+    formationData.value = response.data.data;
+    formatExperiences(formationData.value);
+    console.log(response.data.data[0]);
+    console.log(formationData.value);
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 const candidatures = async () => {
-    try {
-        const response = await axios.post(`${config.public.backend}/api/v1/candidats/candidatures`, {
-            id_candidat: userId
-        });
-
-        candidaturesData.value = response.data.data;
-
-        formatCandidatureDates(candidaturesData.value);
-
-        console.log('Formatted Data:', candidaturesData.value);
-    } catch (err) {
-        console.log(err);
-    }
+  try {
+    const response = await axios.post(`${config.public.backend}/api/v1/candidats/candidatures`, {
+      id_candidat: userId
+    });
+    
+    candidaturesData.value = response.data.data;
+    candidaturesTable.value = candidaturesData.value;
+    
+    formatCandidatureDates(candidaturesData.value);
+    
+    console.log('Formatted Data:', candidaturesData.value);
+  } catch (err) {
+    console.log(err);
+  }
 };
+
+const paginatedCandidatures = computed(() => {
+        const startIndex = first.value;
+        const endIndex = startIndex + 5; // Change 15 to the number of jobs per page
+        return candidaturesTable.value.slice(startIndex, endIndex);
+    });
 
 const deleteCandidature = async (annonceId) => {
     try {
@@ -132,6 +390,20 @@ const formatCandidatureDates = (candidaturesData) => {
         for (const candidature of candidaturesData) {
             if (candidature.date_candidature) {
                 candidature.date_candidature = formatterDateSQL(candidature.date_candidature);
+            }
+        }
+    }
+};
+
+const formatExperiences = (experienceData) => {
+    if (Array.isArray(experienceData)) {
+        for (const experience of experienceData) {
+            if (experience.date_debut && !experience.date_fin) {
+                experience.date_debut = formatterDateSQL(experience.date_debut);
+            }
+            else if (experience.date_debut && experience.date_fin) {
+              experience.date_debut = formatterDateSQL(experience.date_debut);
+              experience.date_fin = formatterDateSQL(experience.date_fin);
             }
         }
     }
@@ -206,12 +478,136 @@ const modifLogo = async (data, extra) => {
             }
 }
 
+const insertProfession = async () => {
+  professionModal.value = false;
+  if (
+      !profession.value
+    ) {
+      showError("Veuillez renseigner une profession");
+    } else if (profession.value.length < 2) {
+      showError("Renseigner une profession d'au moins 2 lettres");
+    } else {
+      try {
+        const response = await axios.post(`${config.public.backend}/api/v1/candidats/insertProf`, {
+          profession: profession.value,
+          id: userId
+        });
+
+        console.log('Status Code:', response.status);
+        console.log('Response Data:', response.data);
+        profession.value = null;
+
+        // newAnnonce.value = {};
+        window.location.href = `/candidat`
+      } catch (err) {
+        console.log(err);
+      }
+  }
+}
+
+const insertDescription = async () => {
+  descriptionModal.value = false;
+  if (
+      !description.value
+    ) {
+      showError("Veuillez renseigner une description");
+    } else {
+      try {
+        const response = await axios.post(`${config.public.backend}/api/v1/candidats/insertDesc`, {
+          description: description.value,
+          id: userId
+        });
+
+        console.log('Status Code:', response.status);
+        console.log('Response Data:', response.data);
+        description.value = null;
+
+        // newAnnonce.value = {};
+        window.location.href = `/candidat`
+      } catch (err) {
+        console.log(err);
+      }
+  }
+}
+
+const insertExperience = async () => {
+  experienceModal.value = false;
+  if (
+      !experience.value.poste ||
+      !experience.value.employeur ||
+      !experience.value.date_debut
+    ) {
+      showError("Veuillez remplir 'tous' les champs obligatoires (*).");
+    }else {
+      try {
+        const date_debut = convertDateFormat(experience.value.date_debut);
+        if(experience.value.date_fin.length > 0){
+          experience.value.date_fin = convertDateFormat(experience.value.date_fin);
+        }
+        const response = await axios.post(`${config.public.backend}/api/v1/candidats/insertExp`, {
+          employeur: experience.value.employeur,
+          date_debut: date_debut,
+          poste: experience.value.poste,
+          date_fin: experience.value.date_fin,
+          id_candidat: userId
+        });
+
+        console.log('Status Code:', response.status);
+        console.log('Response Data:', response.data);
+
+        experience.value = {};
+        window.location.href = `/candidat`
+      } catch (err) {
+        console.log(err);
+      }
+  }
+}
+
+const insertFormartion = async () => {
+  formationModal.value = false;
+  if (
+      !formation.value.nom ||
+      !formation.value.ecole ||
+      !formation.value.date_debut
+    ) {
+      showError("Veuillez remplir 'tous' les champs obligatoires (*).");
+    }else {
+      try {
+        const date_debut = convertDateFormat(formation.value.date_debut);
+        if(formation.value.date_fin.length > 0){
+          formation.value.date_fin = convertDateFormat(formation.value.date_fin);
+        }
+        const response = await axios.post(`${config.public.backend}/api/v1/candidats/insertForm`, {
+          nom: formation.value.nom,
+          date_debut: date_debut,
+          ecole: formation.value.ecole,
+          date_fin: formation.value.date_fin,
+          id_candidat: userId
+        });
+
+        console.log('Status Code:', response.status);
+        console.log('Response Data:', response.data);
+
+        formation.value = {};
+        window.location.href = `/candidat`
+      } catch (err) {
+        console.log(err);
+      }
+  }
+}
+
 </script>
 <style scoped>
+.only-small-mobile {
+  display: none;
+}
 .box-container {
     width: 100%;
     display: flex;
     justify-content: center;
+}
+a:visited {
+  color: inherit;
 }
 .box {
     width: 550px;
@@ -341,7 +737,7 @@ const modifLogo = async (data, extra) => {
 
 .profile-picture {
     position: absolute;
-    top: 12rem;
+    top: 10rem;
     left: 13%;
     transform: translateX(-50%);
     border-radius: 50%;
@@ -391,7 +787,7 @@ const modifLogo = async (data, extra) => {
 @media screen and (max-width: 900px) {
     .profile-picture {
         position: absolute;
-        top: 7rem;
+        top: 5rem;
         left: 50%;
         transform: translateX(-50%);
         border-radius: 50%;
@@ -400,5 +796,316 @@ const modifLogo = async (data, extra) => {
         width: 150px;
         height: 150px;
     }
+}
+
+
+
+table {
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    /* margin-bottom: 20px; */
+    padding: 0;
+    width: 100%;
+    table-layout: fixed;
+  }
+  
+  table caption {
+    font-size: 1.5em;
+    margin: .5em 0 .75em;
+  }
+  
+  table tr {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    padding: .35em;
+  }
+
+.retenue {
+    background-color: rgb(127, 232, 127);
+    color: white;
+}
+
+.refuse {
+    background-color: rgb(255, 138, 138);
+    color: white;
+}
+  
+  table th,
+  table td {
+    padding: .625em;
+    text-align: center;
+  }
+  
+  table th {
+    font-size: .85em;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  
+  @media screen and (max-width: 600px) {
+    table {
+      border: 0;
+      margin: 0;
+    }
+
+    .only-small-mobile {
+      display: inline;
+      position: absolute;
+      left: 20px;
+    }
+  
+    table caption {
+      font-size: 1.3em;
+    }
+    
+    table thead {
+      border: none;
+      clip: rect(0 0 0 0);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      width: 1px;
+    }
+    
+    table tr {
+      border-bottom: 3px solid #ddd;
+      display: block;
+      margin-bottom: .625em;
+    }
+    
+    table td {
+      border-bottom: 1px solid #ddd;
+      display: block;
+      font-size: .8em;
+      text-align: right;
+    }
+    
+    table td::before {
+      content: attr(data-label);
+      float: left;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    
+    table td:last-child {
+      border-bottom: 0;
+    }
+  }
+  
+.poste-style {
+  color: rgb(54, 71, 227) !important;
+  font-weight: 700;
+}
+
+ /* Container */
+ .container {
+    padding: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background-color: #f0f2f5; /* Light background */
+  }
+
+  .row {
+    width: 100%;
+  }
+  
+  /* Columns */
+  .col {
+    flex: 0 0 50%;
+    padding: 15px;
+    background-color: #fff; /* White background for content */
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin-bottom: 20px;
+  }
+  
+  .col-md-8 {
+    text-align: left;
+  }
+  /* Profile Picture */
+  .profile-picture {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    /* border: 5px solid #e91e63; */
+  }
+  
+  /* Cards */
+  .card {
+    padding: 21px;
+    border-radius: 5px;
+    background-color: #f5f5f5; /* Light gray background */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* More prominent shadow */
+  }
+  
+  .card-header {
+    border-bottom: 1px solid #e91e63; /* Pink border */
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    color: #333; /* Darker text for better contrast */
+  }
+
+  .profile-img {
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+  }
+  
+  /* Button */
+  .btn {
+    padding: 10px 20px;
+    background-color: #e91e63; /* Pink button */
+    color: #fff; /* White text */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .btn:hover {
+    background-color: #c2185b; /* Darker pink on hover */
+  }
+  
+  /* Text Alignment */
+  .text-center {
+    text-align: center;
+  }
+  
+  /* Titles and Headings */
+  h2, h3, h5 {
+    color: #333; /* Darker text for better contrast */
+  }
+  
+  /* Description and Text */
+  p {
+    color: #666; /* Lighter text for readability */
+  }
+  
+  /* Responsiveness (Optional) */
+  @media (max-width: 768px) {
+    .col {
+      flex: 100%; /* Stack columns on smaller screens */
+    }
+  }
+
+  .wrapper .form-container{
+  width: 100%;
+  overflow: hidden;
+}
+.wrapper {
+  padding: 14px;
+}
+.form-container .form-inner{
+  display: flex;
+  width: 200%;
+}
+.form-container .form-inner form{
+  width: 50%;
+  transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+}
+.form-inner form .field{
+  height: 50px;
+  width: 100%;
+  margin-top: 20px;
+}
+.form-inner form .field input{
+  height: 100%;
+  width: 100%;
+  outline: none;
+  padding-left: 15px;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+  border-bottom-width: 2px;
+  font-size: 17px;
+  transition: all 0.3s ease;
+}
+textarea{
+  margin-top: 20px;
+  width: 100%;
+  outline: none;
+  padding-left: 15px;
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+  border-bottom-width: 2px;
+  font-size: 17px;
+  transition: all 0.3s ease;
+}
+.form-inner form .field input:focus{
+  border-color: #34a7d3;
+  /* box-shadow: inset 0 0 3px #fb6aae; */
+}
+.form-inner form .field input::placeholder{
+  color: #999;
+  transition: all 0.3s ease;
+}
+form .field input:focus::placeholder{
+  color: #b3b3b3;
+}
+.form-inner form .pass-link{
+  margin-top: 5px;
+}
+.form-inner form .signup-link{
+  text-align: center;
+  margin-top: 30px;
+}
+.form-inner form .pass-link a,
+.form-inner form .signup-link a{
+  color: #34a7d3;
+  text-decoration: none;
+}
+.form-inner form .pass-link a:hover,
+.form-inner form .signup-link a:hover{
+  text-decoration: underline;
+}
+form .btn{
+  height: 50px;
+  width: 100%;
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+}
+form .btn .btn-layer{
+  height: 100%;
+  width: 300%;
+  position: absolute;
+  left: -100%;
+  background: -webkit-linear-gradient(left, #68cef7, #08b2f5);
+  border-radius: 5px;
+  transition: all 0.4s ease;;
+}
+form .btn:hover .btn-layer{
+  left: 0;
+}
+form .btn input[type="submit"]{
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  position: relative;
+  background: none;
+  border: none;
+  color: #fff;
+  padding-left: 0;
+  border-radius: 5px;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
+}
+form .btn button{
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  position: relative;
+  background: none;
+  border: none;
+  color: #fff;
+  padding-left: 0;
+  border-radius: 5px;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
 }
 </style>
