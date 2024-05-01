@@ -40,13 +40,17 @@
                 <div class="col-md-4">
                   <!-- <img class="profile-img" src="../assets/images/briefcase1.png" alt="Profile Picture">  -->
                   <h2 class="mt-3 text-center">{{ `${candidatData.prenom}` }} {{ `${candidatData.nom}` }}</h2>
-                  <p class="text-muted text-center" v-if="candidatData.profession">{{ `${candidatData.profession}` }}</p>
-                  <Button v-else label="Rajouter une profession" @click="professionModal = true" />
+                  <div class="left-text">
+                    <p class="text-muted text-center" v-if="candidatData.profession">Profession : {{ `${candidatData.profession}` }} <Icon name="heroicons-solid:pencil-square" class="modif-icon" @click="professionModal = true" /> </p>
+                    <Button v-else label="Rajouter une profession" @click="professionModal = true" />
+                    <p class="text-muted text-center" v-if="candidatData.pays">Pays : {{ `${candidatData.pays}` }} <Icon name="heroicons-solid:pencil-square" class="modif-icon" @click="paysModal = true" /> </p>
+                    <Button v-else label="Rajouter un Pays" @click="paysModal = true" />
+                  </div>
                 </div>
                 <div class="col-md-8">
                     <div class="card mb-3">
                     <div class="card-header">
-                      <h3>Description</h3>
+                      <h3>Description <Icon name="heroicons-solid:pencil-square" class="modif-icon" @click="descriptionModal = true" /></h3>
                     </div>
                     <p v-if="candidatData.description" v-dompurify-html="candidatData.description" class="text-muted"/>
                     <div v-else>
@@ -55,12 +59,13 @@
                   </div>
                   <div class="card mb-3">
                     <div class="card-header">
-                      <h3>Professional Experience</h3>
+                      <h3>Experiences professionnelles</h3>
                     </div>
                     <ul v-if="experienceData" class="list-group list-group-flush" v-for="experience in experienceData" :key="experience.id">
                       <li class="list-group-item">
-                        <h5>{{ `${experience.employeur}` }} - {{ `${experience.poste}` }}</h5>
+                        <h5>{{ `${experience.employeur}` }} - {{ `${experience.poste}` }} <Icon name="heroicons-solid:pencil-square" class="modif-icon" @click="clickUpdateExp(experience.id)" /> <Icon name="material-symbols:auto-delete-outline" class="supprime-icon" @click="clickDeleteExp(experience.id)" /></h5>
                         <p class="mb-0">du {{ `${experience.date_debut}` }} au <span v-if="experience.date_fin">{{ `${experience.date_fin}` }}</span></p>
+                        <p class="mb-0">Pays : {{ `${experience.pays}` }} - Ville : {{ `${experience.ville}` }}</p>
                         <!-- <p class="text-muted">{{ experience.description }}</p> -->
                       </li>
                     </ul>
@@ -72,8 +77,9 @@
                     </div>
                     <ul v-if="formationData" class="list-group list-group-flush" v-for="formation in formationData" :key="formation.id">
                       <li class="list-group-item">
-                        <h5>{{ `${formation.ecole}` }} - {{ `${formation.nom}` }}</h5>
+                        <h5>{{ `${formation.ecole}` }} - {{ `${formation.nom}` }} <Icon name="heroicons-solid:pencil-square" class="modif-icon" @click="clickUpdateForm(formation.id)" /> <Icon name="material-symbols:auto-delete-outline" class="supprime-icon" @click="clickDeleteForm(formation.id)" /></h5>
                         <p class="mb-0"> du {{ `${formation.date_debut}` }} au <span v-if="formation.date_fin">{{ `${formation.date_fin}` }}</span></p>
+                        <p class="mb-0">Pays : {{ `${formation.pays}` }} - Ville : {{ `${formation.ville}` }}</p>
                       </li>
                     </ul>
                     <Button label="Ajouter une formation" @click="formationModal = true" />
@@ -104,6 +110,28 @@
             </div>
           </Dialog>
 
+          <Dialog v-model:visible="paysModal" modal :style="{ width: '100%', height: 'auto', padding: '12px' }">
+            <div class="wrapper">
+              <div class="title-text">
+                <div class="title" :style="{marginLeft: loginMargin}">Renseigner votre pays de résidence</div>
+              </div>
+              <div class="form-container">
+                <div class="form-inner">
+                  <form @submit.prevent class="login" :style="{marginLeft: loginFormMargin}">
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Nom du pays ou vous vivez *" v-model="pays">
+                    </div>
+                    <div class="field btn">
+                      <div class="btn-layer"></div>
+                      <button @click="insertPays" type="submit" class="clkbtn">Renseigner</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </Dialog>
+
           <Dialog v-model:visible="descriptionModal" modal :style="{ width: '100%', height: 'auto', padding: '12px' }">
             <div class="wrapper">
               <div class="title-text">
@@ -125,7 +153,7 @@
             </div>
           </Dialog>
 
-          <Dialog v-model:visible="experienceModal" modal :style="{ width: '100%', height: '90vh' }">
+          <Dialog v-model:visible="experienceModal" modal :style="{ width: '100%', height: 'auto' }">
             <div class="wrapper">
               <div class="title-text">
                 <div class="title" :style="{marginLeft: loginMargin}">Renseignez une experience professionnelle</div>
@@ -149,6 +177,14 @@
                       <input type="text"
                            placeholder="Nom du poste *" v-model="experience.poste">
                     </div>
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Pays de la experience *" v-model="experience.pays">
+                    </div>
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Ville de la experience *" v-model="experience.ville">
+                    </div>
                     <div class="field btn">
                       <div class="btn-layer"></div>
                       <button @click="insertExperience" type="submit" class="clkbtn">renseigner</button>
@@ -159,7 +195,67 @@
             </div>
           </Dialog>
 
-          <Dialog v-model:visible="formationModal" modal :style="{ width: '100%', height: '90vh' }">
+          <Dialog v-model:visible="updateExperienceModal" modal :style="{ width: '100%', height: 'auto' }">
+            <div class="wrapper">
+              <div class="title-text">
+                <div class="title" :style="{marginLeft: loginMargin}">Modifier une experience professionnelle</div>
+              </div>
+              <div class="form-container">
+                <div class="form-inner">
+                  <form @submit.prevent class="login" :style="{marginLeft: loginFormMargin}">
+                    <div class="field">
+                      <input type="text"
+                           placeholder="employeur *" v-model="experience.employeur">
+                    </div>
+                    <div class="field">
+                      <input v-maska data-maska="##/##/####" type="text"
+                           placeholder="Date de début *" v-model="experience.date_debut">
+                    </div>
+                    <div class="field">
+                      <input v-maska data-maska="##/##/####" type="text"
+                           placeholder="Date de fin" v-model="experience.date_fin">
+                    </div>
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Nom du poste *" v-model="experience.poste">
+                    </div>
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Pays de la experience *" v-model="experience.pays">
+                    </div>
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Ville de la experience *" v-model="experience.ville">
+                    </div>
+                    <div class="field btn">
+                      <div class="btn-layer"></div>
+                      <button @click="updateExperience(idExp)" type="submit" class="clkbtn">renseigner</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </Dialog>
+
+          <Dialog v-model:visible="deleteExperienceModal" modal :style="{ width: '100%', height: 'auto' }">
+            <div class="wrapper">
+              <div class="title-text">
+                <div class="title" :style="{marginLeft: loginMargin}">Etes vous sur de vouloir supprimer cette experience ?</div>
+              </div>
+              <div class="form-container">
+                <div class="form-inner">
+                  <form @submit.prevent class="login" :style="{marginLeft: loginFormMargin}">
+                    <div class="field btn">
+                      <div class="btn-layer"></div>
+                      <button @click="deleteExperience(idExp)" type="submit" class="clkbtn">Supprimer</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </Dialog>
+
+          <Dialog v-model:visible="formationModal" modal :style="{ width: '100%', height: 'auto' }">
             <div class="wrapper">
               <div class="title-text">
                 <div class="title" :style="{marginLeft: loginMargin}">Renseignez une formation</div>
@@ -183,9 +279,77 @@
                       <input type="text"
                            placeholder="Nom de la formation *" v-model="formation.nom">
                     </div>
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Pays de la formation *" v-model="formation.pays">
+                    </div>
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Ville de la formation *" v-model="formation.ville">
+                    </div>
                     <div class="field btn">
                       <div class="btn-layer"></div>
                       <button @click="insertFormartion" type="submit" class="clkbtn">renseigner</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </Dialog>
+
+          <Dialog v-model:visible="updateFormationModal" modal :style="{ width: '100%', height: 'auto' }">
+            <div class="wrapper">
+              <div class="title-text">
+                <div class="title" :style="{marginLeft: loginMargin}">Modifiez cette formation</div>
+              </div>
+              <div class="form-container">
+                <div class="form-inner">
+                  <form @submit.prevent class="login" :style="{marginLeft: loginFormMargin}">
+                    <div class="field">
+                      <input type="text"
+                           placeholder="ecole *" v-model="formation.ecole">
+                    </div>
+                    <div class="field">
+                      <input v-maska data-maska="##/##/####" type="text"
+                           placeholder="Date de début *" v-model="formation.date_debut">
+                    </div>
+                    <div class="field">
+                      <input v-maska data-maska="##/##/####" type="text"
+                           placeholder="Date de fin" v-model="formation.date_fin">
+                    </div>
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Nom de la formation *" v-model="formation.nom">
+                    </div>
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Pays de la formation *" v-model="formation.pays">
+                    </div>
+                    <div class="field">
+                      <input type="text"
+                           placeholder="Ville de la formation *" v-model="formation.ville">
+                    </div>
+                    <div class="field btn">
+                      <div class="btn-layer"></div>
+                      <button @click="updateFormation(idForm)" type="submit" class="clkbtn">renseigner</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </Dialog>
+
+          <Dialog v-model:visible="deleteFormationModal" modal :style="{ width: '100%', height: 'auto' }">
+            <div class="wrapper">
+              <div class="title-text">
+                <div class="title" :style="{marginLeft: loginMargin}">Etes vous sur de vouloir supprimer cette formation ?</div>
+              </div>
+              <div class="form-container">
+                <div class="form-inner">
+                  <form @submit.prevent class="login" :style="{marginLeft: loginFormMargin}">
+                    <div class="field btn">
+                      <div class="btn-layer"></div>
+                      <button @click="deleteFormation(idForm)" type="submit" class="clkbtn">Supprimer</button>
                     </div>
                   </form>
                 </div>
@@ -264,21 +428,33 @@ const experienceData = ref(null);
 const formationData = ref(null);
 const professionModal = ref(false);
 const profession = ref(null);
+const paysModal = ref(false);
+const pays = ref(null);
 const descriptionModal = ref(false);
 const description = ref(null);
 const experienceModal = ref(false);
+const updateExperienceModal =ref(false);
+const deleteExperienceModal = ref(false);
+const idExp = ref(null);
 const experience = ref({
   poste: '',
   employeur: '',
   date_debut: '',
-  date_fin: ''
+  date_fin: '',
+  pays: '',
+  ville: ''
 });
 const formationModal = ref(false);
+const updateFormationModal = ref(false);
+const deleteFormationModal = ref(false);
+const idForm = ref(null);
 const formation = ref({
   nom: '',
   ecole: '',
   date_debut: '',
-  date_fin: ''
+  date_fin: '',
+  pays: '',
+  ville: ''
 });
 
 
@@ -290,6 +466,26 @@ if (!authStore.isLoggedIn) {
   onBeforeMount(async () => {
     await Promise.all([hydrateUser(), candidatures(), hydrateExperiences(), hydrateFormations()]);
   })
+}
+
+const clickUpdateExp = (id) => {
+  updateExperienceModal.value = true;
+  idExp.value = id;
+}
+
+const clickDeleteExp = (id) => {
+  deleteExperienceModal.value = true;
+  idExp.value = id;
+}
+
+const clickUpdateForm = (id) => {
+  updateFormationModal.value = true;
+  idForm.value = id;
+}
+
+const clickDeleteForm = (id) => {
+  deleteFormationModal.value = true;
+  idForm.value = id;
 }
 
 const hydrateUser = async () => {
@@ -505,6 +701,33 @@ const insertProfession = async () => {
   }
 }
 
+const insertPays = async () => {
+  paysModal.value = false;
+  if (
+      !pays.value
+    ) {
+      showError("Veuillez renseigner un pays");
+    } else if (pays.value.length < 2) {
+      showError("Renseigner écrire au moins 2 lettres");
+    } else {
+      try {
+        const response = await axios.post(`${config.public.backend}/api/v1/candidats/insertPays`, {
+          pays: pays.value,
+          id: userId
+        });
+
+        console.log('Status Code:', response.status);
+        console.log('Response Data:', response.data);
+        pays.value = null;
+
+        // newAnnonce.value = {};
+        window.location.href = `/candidat`
+      } catch (err) {
+        console.log(err);
+      }
+  }
+}
+
 const insertDescription = async () => {
   descriptionModal.value = false;
   if (
@@ -535,7 +758,9 @@ const insertExperience = async () => {
   if (
       !experience.value.poste ||
       !experience.value.employeur ||
-      !experience.value.date_debut
+      !experience.value.date_debut ||
+      !experience.value.pays ||
+      !experience.value.ville
     ) {
       showError("Veuillez remplir 'tous' les champs obligatoires (*).");
     }else {
@@ -549,6 +774,8 @@ const insertExperience = async () => {
           date_debut: date_debut,
           poste: experience.value.poste,
           date_fin: experience.value.date_fin,
+          pays: experience.value.pays,
+          ville: experience.value.ville,
           id_candidat: userId
         });
 
@@ -563,15 +790,132 @@ const insertExperience = async () => {
   }
 }
 
+const updateExperience = async (id) => {
+  updateExperienceModal.value = false;
+  if (
+      !experience.value.poste ||
+      !experience.value.employeur ||
+      !experience.value.date_debut ||
+      !experience.value.pays ||
+      !experience.value.ville
+    ) {
+      showError("Veuillez remplir 'tous' les champs obligatoires (*).");
+    }else {
+      try {
+        const date_debut = convertDateFormat(experience.value.date_debut);
+        if(experience.value.date_fin.length > 0){
+          experience.value.date_fin = convertDateFormat(experience.value.date_fin);
+        }
+        const response = await axios.post(`${config.public.backend}/api/v1/candidats/updateExp`, {
+          employeur: experience.value.employeur,
+          date_debut: date_debut,
+          poste: experience.value.poste,
+          date_fin: experience.value.date_fin,
+          pays: experience.value.pays,
+          ville: experience.value.ville,
+          id_experience: id
+        });
+
+        console.log('Status Code:', response.status);
+        console.log('Response Data:', response.data);
+
+        experience.value = {};
+        idExp.value = null;
+        window.location.href = `/candidat`
+      } catch (err) {
+        console.log(err);
+      }
+  }
+}
+
+const deleteExperience = async (id) => {
+  deleteExperienceModal.value = false;
+  console.log(id)
+      try {
+        const response = await axios.post(`${config.public.backend}/api/v1/candidats/deleteExp`, {
+          id_experience: id
+        });
+
+        console.log('Status Code:', response.status);
+        console.log('Response Data:', response.data);
+
+        experience.value = {};
+        idExp.value = null;
+        window.location.href = `/candidat`
+      } catch (err) {
+        console.log(err, 'yyyy', id);
+      }
+  
+}
+
+const updateFormation = async (id) => {
+  updateFormationModal.value = false;
+  if (
+      !formation.value.nom ||
+      !formation.value.ecole ||
+      !formation.value.date_debut ||
+      !formation.value.pays ||
+      !formation.value.ville
+    ) {
+      showError("Veuillez remplir 'tous' les champs obligatoires (*).");
+    } else {
+      try {
+        const date_debut = convertDateFormat(formation.value.date_debut);
+        if(formation.value.date_fin.length > 0){
+          formation.value.date_fin = convertDateFormat(formation.value.date_fin);
+        }
+        const response = await axios.post(`${config.public.backend}/api/v1/candidats/updateForm`, {
+          nom: formation.value.nom,
+          date_debut: date_debut,
+          ecole: formation.value.ecole,
+          date_fin: formation.value.date_fin,
+          pays: formation.value.pays,
+          ville: formation.value.ville,
+          id_formation: id
+        });
+
+        console.log('Status Code:', response.status);
+        console.log('Response Data:', response.data);
+
+        formation.value = {};
+        window.location.href = `/candidat`
+      } catch (err) {
+        console.log(err);
+      }
+  }
+}
+
+const deleteFormation = async (id) => {
+  deleteFormationModal.value = false;
+  console.log(id)
+      try {
+        const response = await axios.post(`${config.public.backend}/api/v1/candidats/deleteForm`, {
+          id_formation: id
+        });
+
+        console.log('Status Code:', response.status);
+        console.log('Response Data:', response.data);
+
+        formation.value = {};
+        idForm.value = null;
+        // window.location.href = `/candidat`
+      } catch (err) {
+        console.log(err, 'yyyy', id);
+      }
+  
+}
+
 const insertFormartion = async () => {
   formationModal.value = false;
   if (
       !formation.value.nom ||
       !formation.value.ecole ||
-      !formation.value.date_debut
+      !formation.value.date_debut ||
+      !formation.value.pays ||
+      !formation.value.ville
     ) {
       showError("Veuillez remplir 'tous' les champs obligatoires (*).");
-    }else {
+    } else {
       try {
         const date_debut = convertDateFormat(formation.value.date_debut);
         if(formation.value.date_fin.length > 0){
@@ -582,6 +926,8 @@ const insertFormartion = async () => {
           date_debut: date_debut,
           ecole: formation.value.ecole,
           date_fin: formation.value.date_fin,
+          pays: formation.value.pays,
+          ville: formation.value.ville,
           id_candidat: userId
         });
 
@@ -608,6 +954,14 @@ const insertFormartion = async () => {
 }
 a:visited {
   color: inherit;
+}
+.modif-icon:hover {
+  color: blue;
+  cursor: pointer;
+}
+.supprime-icon:hover {
+  color: red;
+  cursor: pointer;
 }
 .box {
     width: 550px;
@@ -905,7 +1259,6 @@ table {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    background-color: #f0f2f5; /* Light background */
   }
 
   .row {
@@ -924,6 +1277,9 @@ table {
   
   .col-md-8 {
     text-align: left;
+  }
+  .col-md-4 button {
+    margin: 6px;
   }
   /* Profile Picture */
   .profile-picture {
@@ -1107,5 +1463,9 @@ form .btn button{
   font-size: 20px;
   font-weight: 500;
   cursor: pointer;
+}
+
+.left-text {
+  text-align: left;
 }
 </style>

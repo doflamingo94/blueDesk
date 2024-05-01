@@ -16,7 +16,7 @@
           <div @click="disconnect" class="test" ><li><nuxt-link to="/login">Deconnexion</nuxt-link></li></div>
         </ul>
       </div>
-      <span class="mask-demo" @click="toggleNavlinks"><button>X</button></span>
+      <span class="mask-demo" @click="toggleNavlinks"><Icon name="system-uicons:drag" size="3em" /></span>
     </nav>
 </template>
 

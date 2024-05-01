@@ -16,10 +16,15 @@ router.post("/deleteCandidature", candidatsController.deleteCandidature);
 router.post("/update_pp", candidatsController.updatePp);
 router.get("/profile-candidat/:id", candidatsController.getProfile);
 router.post("/insertProf", candidatsController.insertProfession);
+router.post("/insertPays", candidatsController.insertPays);
 router.post("/insertExp", candidatsController.insertExperience);
 router.post("/insertForm", candidatsController.insertFormation);
 router.post("/insertDesc", candidatsController.insertDescription);
 router.post("/experiences", candidatsController.getExperiences);
 router.post("/formations", candidatsController.getFormations);
+router.post("/updateForm", candidatsController.updateFormation);
+router.post("/updateExp", candidatsController.updateExperience);
+router.post("/deleteForm", candidatsController.deleteFormation);
+router.post("/deleteExp", candidatsController.deleteExperience);
 
 module.exports = router;

@@ -29,12 +29,17 @@ const candidatsController = {
         const sql = "SELECT COUNT(*) AS email_count FROM candidats WHERE mail = ?";
         const [rows, fields] = await pool.query(sql, [mail]);
         const emailCount = rows[0].email_count;
+        const sql2 = "SELECT COUNT(*) AS phone_count FROM candidats WHERE phone = ?";
+        const [rows2, fields2] = await pool.query(sql2, [phone]);
+        const phoneCount = rows2[0].phone_count;
         if(emailCount > 0){
           res.json({ data: 'mail existant' });
+        } else if (phoneCount > 0){
+          res.json({ data: 'téléphone existant' });
         } else {
               bcrypt.hash(pass, 10, async(err, hash) => {
-                const sql = "INSERT INTO candidats (prenom, nom, date_naissance, date_creation, mail, phone, pass, sexe) VALUES (?, ?, ?, NOW(), ?, ?, ?, ?)";
-                const [rows, fields] = await pool.query(sql, [prenom, nom, date_naissance, mail, phone, hash, sexe]);
+                const sql = "INSERT INTO candidats (prenom, nom, date_naissance, date_creation, mail, phone, pass, sexe, pays) VALUES (?, ?, ?, NOW(), ?, ?, ?, ?, ?)";
+                const [rows, fields] = await pool.query(sql, [prenom, nom, date_naissance, mail, phone, hash, sexe, pays]);
                 res.json({ data: rows });
               });    
         }
@@ -158,11 +163,11 @@ const candidatsController = {
     },
     insertExperience: async (req, res) => {
       try {
-        const { id_candidat, poste, employeur, date_debut, date_fin } = req.body;
+        const { id_candidat, poste, employeur, date_debut, date_fin, pays, ville } = req.body;
   
         // Insert into experiences table
-        const experienceSql = "INSERT INTO experiences (poste, employeur, date_debut, date_fin) VALUES (?, ?, ?, ?);";
-        const [experienceRows, _] = await pool.query(experienceSql, [poste, employeur, date_debut, date_fin]);
+        const experienceSql = "INSERT INTO experiences (poste, employeur, date_debut, date_fin, pays, ville) VALUES (?, ?, ?, ?, ?, ?);";
+        const [experienceRows, _] = await pool.query(experienceSql, [poste, employeur, date_debut, date_fin, pays, ville]);
   
         // Get the ID of the last inserted experience
         const experienceId = experienceRows.insertId;
@@ -191,6 +196,20 @@ const candidatsController = {
           res.json({ status: "error", message: error.message });
       }
     },
+    insertPays: async (req, res) => {
+      try {
+        const { id, pays } = req.body;
+
+        // Update the description of the candidat
+        const sql = "UPDATE candidats SET pays = ? WHERE id = ?";
+        await pool.query(sql, [pays, id]);
+  
+        res.json({ status: "success", message: "Pays inserted successfully." });
+      } catch (error) {
+          console.log(error);
+          res.json({ status: "error", message: error.message });
+      }
+    },
     insertProfession: async (req, res) => {
       try {
         const { id, profession } = req.body;
@@ -207,11 +226,11 @@ const candidatsController = {
     },
     insertFormation: async (req, res) => {
       try {
-        const { id_candidat, nom, ecole, date_debut, date_fin } = req.body;
+        const { id_candidat, nom, ecole, date_debut, date_fin, pays, ville } = req.body;
   
         // Insert into formations table
-        const formationSql = "INSERT INTO formations (nom, ecole, date_debut, date_fin) VALUES (?, ?, ?, ?);";
-        const [formationRows, _] = await pool.query(formationSql, [nom, ecole, date_debut, date_fin]);
+        const formationSql = "INSERT INTO formations (nom, ecole, date_debut, date_fin, pays, ville) VALUES (?, ?, ?, ?, ?, ?);";
+        const [formationRows, _] = await pool.query(formationSql, [nom, ecole, date_debut, date_fin, pays, ville]);
   
         // Get the ID of the last inserted formation
         const formationId = formationRows.insertId;
@@ -263,6 +282,92 @@ const candidatsController = {
           console.log(error);
           res.json({ status: "error", message: error.message });
       }
+    },
+    updateFormation: async (req, res) => {
+        try {
+            const { id_formation, nom, ecole, date_debut, date_fin, pays, ville } = req.body;
+    
+            // Update the formation in the formations table
+            const sql = `
+                UPDATE formations
+                SET nom = ?, ecole = ?, date_debut = ?, date_fin = ?, pays = ?, ville = ?
+                WHERE id = ?;
+            `;
+            await pool.query(sql, [nom, ecole, date_debut, date_fin, pays, ville, id_formation]);
+    
+            res.json({ status: "success", message: "Formation updated successfully." });
+        } catch (error) {
+            console.log(error);
+            res.json({ status: "error", message: error.message });
+        }
+    },
+    updateExperience: async (req, res) => {
+        try {
+            const { id_experience, poste, employeur, date_debut, date_fin, pays, ville } = req.body;
+    
+            // Update the experience in the experiences table
+            const sql = `
+                UPDATE experiences
+                SET poste = ?, employeur = ?, date_debut = ?, date_fin = ?, pays = ?, ville = ?
+                WHERE id = ?;
+            `;
+            await pool.query(sql, [poste, employeur, date_debut, date_fin, pays, ville, id_experience]);
+    
+            res.json({ status: "success", message: "Experience updated successfully." });
+        } catch (error) {
+            console.log(error);
+            res.json({ status: "error", message: error.message });
+        }
+    },
+    deleteFormation: async (req, res) => {
+        try {
+            const { id_formation } = req.body;
+    
+            // Supprimer les liens de la formation avec les candidats dans la table form_candi
+            const deleteLinkSql = `
+                DELETE FROM form_candi
+                WHERE id_formation = ?;
+            `;
+            await pool.query(deleteLinkSql, [id_formation]);
+            
+            // Supprimer la formation de la table formations
+            const sql = `
+                DELETE FROM formations
+                WHERE id = ?;
+            `;
+            await pool.query(sql, [id_formation]);
+    
+    
+            res.json({ status: "success", message: "Formation deleted successfully." });
+        } catch (error) {
+            console.log(error);
+            res.json({ status: "error", message: error.message });
+        }
+    },
+    deleteExperience: async (req, res) => {
+        try {
+            const { id_experience } = req.body;
+    
+            // Supprimer les liens de l'expérience avec les candidats dans la table exp_candi
+            const deleteLinkSql = `
+                DELETE FROM exp_candi
+                WHERE id_experience = ?;
+            `;
+            await pool.query(deleteLinkSql, [id_experience]);
+
+            // Supprimer l'expérience de la table experiences
+            const sql = `
+                DELETE FROM experiences
+                WHERE id = ?;
+            `;
+            await pool.query(sql, [id_experience]);
+    
+    
+            res.json({ status: "success", message: "Experience deleted successfully." });
+        } catch (error) {
+            console.log(error);
+            res.json({ status: "error", message: error.message });
+        }
     }
   };
   
