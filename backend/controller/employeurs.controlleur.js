@@ -25,7 +25,7 @@ const employeursController = {
     },
     create: async (req, res) => {
       try {
-        const { nom, numero_siret, pass, identifiant, phone, mail } = req.body;
+        const { nom, numero_siret, pass, identifiant, phone, mail, ville } = req.body;
     
         const sqlMail = "SELECT COUNT(*) AS email_count FROM employeurs WHERE mail = ?";
         const [rowsMail, fieldsMail] = await pool.query(sqlMail, [mail]);
@@ -53,8 +53,8 @@ const employeursController = {
           res.json({ data: 'nom existant' });
         } else {
           bcrypt.hash(pass, 10, async (err, hash) => {
-            const sql = "INSERT INTO employeurs (nom, numero_siret, pass, identifiant, phone, mail, date_creation) VALUES (?, ?, ?, ?, ?, ?, NOW())";
-            const [rows, fields] = await pool.query(sql, [nom, numero_siret, hash, identifiant, phone, mail]);
+            const sql = "INSERT INTO employeurs (nom, numero_siret, pass, identifiant, phone, mail, date_creation, ville) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)";
+            const [rows, fields] = await pool.query(sql, [nom, numero_siret, hash, identifiant, phone, mail, ville]);
             res.json({ data: rows });
           });
         }

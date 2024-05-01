@@ -58,8 +58,16 @@
                        placeholder="prénom">
             </div>
             <div class="field">
-                <input v-maska:[options] data-maska="A A" v-model="newUser.nom" type="text"
-                       placeholder="nom">
+              <input v-maska:[options] data-maska="A A" v-model="newUser.nom" type="text"
+              placeholder="nom">
+            </div>
+            <div v-if="newUser.typeUser === 'Candidat'" class="field">
+                <input v-maska:[options] data-maska="A A" v-model="newUser.pays" type="text"
+                       placeholder="Pays">
+            </div>
+            <div v-if="newUser.typeUser === 'Employeur'" class="field">
+                <input  v-model="newUser.ville" type="text"
+                       placeholder="Ville">
             </div>
             <div v-if="newUser.typeUser === 'Employeur'" class="field">
                 <input  v-model="newUser.identifiant" type="text"
@@ -146,6 +154,8 @@ const newUser = ref({
   sexe: '',
   identifiant: '',
   typeUser: '',
+  pays: '',
+  ville: ''
 });
 
 const userLog = ref({
@@ -299,7 +309,8 @@ function passwordRules(chaine) {
       !newUser.value.pass ||
       !newUser.value.date_naissance ||
       !newUser.value.sexe ||
-      !newUser.value.pass2
+      !newUser.value.pass2 ||
+      !newUser.value.pays
     ) {
       showError("Veuillez remplir 'tous' les champs.");
     } else if (newUser.value.pass != newUser.value.pass2) {
@@ -319,9 +330,12 @@ function passwordRules(chaine) {
           phone: newUser.value.phone,
           pass: newUser.value.pass,
           sexe: newUser.value.sexe,
+          pays: newUser.value.pays
         });
         if(response.data.data === 'mail existant'){
           showError("Un compte a déjà été créé avec cette adresse mail.");
+        } else if(response.data.data === 'téléphone existant'){
+          showError("Un compte a déjà été créé avec ce numéro.");
         } else {
           showNotif("Votre inscription a bien été prise en compte. Connectez vous!")
           newUser.value = {};
@@ -340,7 +354,8 @@ function passwordRules(chaine) {
       !newUser.value.phone ||
       !newUser.value.pass ||
       !newUser.value.pass2 ||
-      !newUser.value.numero_siret
+      !newUser.value.numero_siret ||
+      !newUser.value.ville
     ) {
       showError("Veuillez remplir 'tous' les champs.");
     } else if (newUser.value.pass != newUser.value.pass2) {
@@ -358,6 +373,7 @@ function passwordRules(chaine) {
           pass: newUser.value.pass,
           identifiant: newUser.value.identifiant,
           numero_siret: newUser.value.numero_siret,
+          ville: newUser.value.ville
         });
         if(response.data.data === 'mail existant'){
           showError("Un compte a déjà été créé avec cette adresse mail.");

@@ -47,10 +47,10 @@
           <div class="profile-info">
             <div class="row">
               <div class="col-sm-4">
-                <strong>Ville:</strong>
+                <strong>Ville:  </strong> <Icon v-if="employeursData.ville" name="heroicons-solid:pencil-square" @click="villeModal = true" class="modif-icon" aria-label="RRRRRR" />
               </div>
               <div v-if="employeursData.ville" class="col-sm-8">
-                <span>{{ `${employeursData.ville}` }}</span>
+                <span>{{ `${employeursData.ville}` }}</span> 
               </div>
               <div v-else class="col-sm-8">
                 <span> <Button class="yooooo" label="Renseigner" @click="villeModal = true"/> </span>
@@ -58,7 +58,7 @@
             </div>
             <div class="row">
               <div class="col-sm-4">
-                <strong>Secteur d'activité:</strong>
+                <strong>Secteur d'activité:  </strong> <Icon v-if="employeursData.secteur" name="heroicons-solid:pencil-square" class="modif-icon" @click="secteurModal = true" />
               </div>
               <div v-if="employeursData.secteur" class="col-sm-8">
                 <span>{{ `${employeursData.secteur}` }}</span>
@@ -69,7 +69,7 @@
             </div>
             <div class="row">
               <div class="col-sm-4">
-                <strong>Description:</strong>
+                <strong>Description:  </strong> <Icon v-if="employeursData.description" name="heroicons-solid:pencil-square" class="modif-icon" @click="descriptionModal = true" /> 
               </div>
               <div v-if="employeursData.description" class="col-sm-8">
                 <p v-dompurify-html="employeursData.description"></p>
@@ -595,7 +595,10 @@ const insertDescription = async () => {
     justify-content: center;
     margin-bottom: 5px;
 }
-
+.modif-icon:hover {
+  color: blue;
+  cursor: pointer;
+}
 :deep(.p-button){
       background-color: #03a9f4;
     }

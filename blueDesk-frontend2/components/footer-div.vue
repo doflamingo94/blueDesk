@@ -16,10 +16,9 @@
         <div class="footer-col">
           <h3>Suivez nous</h3>
           <ul class="social-links">
-            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-            <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+            <li><a href="#"><Icon name="devicon-plain:facebook" color="white" /></a></li>
+            <li><a href="#"><Icon name="simple-icons:instagram" color="white" /></a></li>
+            <li><a href="#"><Icon name="ant-design:linkedin-outlined" color="white" /></a></li>
           </ul>
         </div>
       </div>

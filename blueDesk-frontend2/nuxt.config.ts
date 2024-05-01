@@ -31,7 +31,7 @@ export default defineNuxtConfig({
     '@/assets/global.css',
     '@/assets/scss/main.scss'
   ],
-  modules: ['@nuxtjs/google-fonts', '@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt', '@nuxtjs/cloudinary', 'nuxt-primevue'],
+  modules: ['@nuxtjs/google-fonts', '@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt', '@nuxtjs/cloudinary', 'nuxt-primevue', 'nuxt-icon'],
   googleFonts: {
     display: "swap",
     families:{

@@ -20,6 +20,7 @@
                   <!-- <img class="profile-img" src="../assets/images/briefcase1.png" alt="Profile Picture">  -->
                   <h2 class="mt-3 text-center">{{ `${candidatData.prenom}` }} {{ `${candidatData.nom}` }}</h2>
                   <p class="text-muted text-center" v-if="candidatData.profession">{{ `${candidatData.profession}` }}</p>
+                  <p class="text-muted text-center" v-if="candidatData.pays">{{ `${candidatData.pays}` }} <Icon name="material-symbols:location-on" /> </p>
                 </div>
                 <div class="col-md-8">
                     <div class="card mb-3">
@@ -51,6 +52,12 @@
                       </li>
                     </ul>
                   </div>
+                </div>
+                <div v-if="status === 'retenue'" class="col-md-4">
+                  <!-- <img class="profile-img" src="../assets/images/briefcase1.png" alt="Profile Picture">  -->
+                  <h3 class="mt-3 text-center">Contacts</h3>
+                  <p class="text-muted text-center">Téléphone : {{ `${candidatData.phone}` }}</p>
+                  <p class="text-muted text-center">Mail : {{ `${candidatData.mail}` }}</p>
                 </div>
               </div>
             </div>
