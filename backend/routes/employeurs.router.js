@@ -18,5 +18,9 @@ router.post("/secteur", employeursController.insertSecteur);
 router.post("/ville", employeursController.insertVille);
 router.post("/description", employeursController.insertDescription);
 router.get("/profil/:nom", employeursController.getProfil);
+router.get("/verify-email/:token", employeursController.verifMailToken);
+router.get("/retryMail/:mail", employeursController.retryMailToken);
+router.post("/forgotPass", employeursController.forgotPass);
+router.post("/resetPass", employeursController.resetPass);
 
 module.exports = router;

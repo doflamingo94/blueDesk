@@ -1,30 +1,32 @@
 <template>
-<div class="responsive-container-block bigContainer">
-  <div class="responsive-container-block Container bottomContainer">
-    <div class="ultimateImg">
-      <img class="mainImg" src="../assets/images/background-pexels-matheus-natan-3297593.jpg">
-      <div class="purpleBox">
-        <p class="purpleText">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget purus lectus viverra in semper nec pretium mus.
-        </p>
-       
+<div class="page-content">
+    <div class="responsive-container-block bigContainer">
+      <div class="responsive-container-block Container bottomContainer">
+        <div class="ultimateImg">
+          <img class="mainImg" src="../assets/images/background-pexels-matheus-natan-3297593.jpg">
+          <div class="purpleBox">
+            <p class="purpleText">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget purus lectus viverra in semper nec pretium mus.
+            </p>
+          
+          </div>
+        </div>
+        <div class="allText bottomText">
+          <p class="text-blk headingText">
+            Qui sommes nous ?
+          </p>
+          <p class="text-blk subHeadingText">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          </p>
+          <p class="text-blk description">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fermentum pulvinar ullamcorper suspendisse ac eget. Pellentesque tempus leo in ullamcorper quis vestibulum ligula elementum ut.
+          </p><nuxt-link to="/contact">
+          <div class="explore">
+            Nous contacter
+          </div></nuxt-link>
+        </div>
       </div>
     </div>
-    <div class="allText bottomText">
-      <p class="text-blk headingText">
-        Qui sommes nous ?
-      </p>
-      <p class="text-blk subHeadingText">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      </p>
-      <p class="text-blk description">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fermentum pulvinar ullamcorper suspendisse ac eget. Pellentesque tempus leo in ullamcorper quis vestibulum ligula elementum ut.
-      </p><nuxt-link to="/contact">
-      <div class="explore">
-        Nous contacter
-      </div></nuxt-link>
-    </div>
-  </div>
 </div>
 </template>
 <style scoped>

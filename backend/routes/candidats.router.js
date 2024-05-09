@@ -26,5 +26,10 @@ router.post("/updateForm", candidatsController.updateFormation);
 router.post("/updateExp", candidatsController.updateExperience);
 router.post("/deleteForm", candidatsController.deleteFormation);
 router.post("/deleteExp", candidatsController.deleteExperience);
+router.get("/verify-email/:token", candidatsController.verifMailToken);
+router.get("/retryMail/:mail", candidatsController.retryMailToken); 
+router.post("/forgotPass", candidatsController.forgotPass);
+router.post("/resetPass", candidatsController.resetPass);
+
 
 module.exports = router;

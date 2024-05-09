@@ -1465,7 +1465,7 @@ form .btn button{
   cursor: pointer;
 }
 
-.left-text {
+/* .left-text {
   text-align: left;
-}
+} */
 </style>
