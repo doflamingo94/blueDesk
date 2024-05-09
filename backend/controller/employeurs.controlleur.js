@@ -1,5 +1,14 @@
 const pool = require("../database/index");
 const bcrypt = require("bcrypt");
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const transporter = nodemailer.createTransport({
+    service: 'outlook',
+    auth: {
+      user: 'khaledkhaled94400@hotmail.fr',
+      pass: 'SkywalkinDallas4real*',
+    },
+  });
 
 const employeursController = {
     getAll: async (req, res) => {
@@ -26,6 +35,7 @@ const employeursController = {
     create: async (req, res) => {
       try {
         const { nom, numero_siret, pass, identifiant, phone, mail, ville } = req.body;
+        const verificationToken = crypto.randomBytes(20).toString('hex');
     
         const sqlMail = "SELECT COUNT(*) AS email_count FROM employeurs WHERE mail = ?";
         const [rowsMail, fieldsMail] = await pool.query(sqlMail, [mail]);
@@ -52,10 +62,27 @@ const employeursController = {
         } else if (nomCount > 0) {
           res.json({ data: 'nom existant' });
         } else {
+
           bcrypt.hash(pass, 10, async (err, hash) => {
-            const sql = "INSERT INTO employeurs (nom, numero_siret, pass, identifiant, phone, mail, date_creation, ville) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)";
-            const [rows, fields] = await pool.query(sql, [nom, numero_siret, hash, identifiant, phone, mail, ville]);
-            res.json({ data: rows });
+            if (err) throw err; // Handle error from bcrypt.hash
+      
+            try {
+              const sql = "INSERT INTO employeurs (nom, numero_siret, pass, identifiant, phone, mail, date_creation, ville, verification_token, is_verified) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?)";
+              await pool.query(sql, [nom, numero_siret, hash, identifiant, phone, mail, ville, verificationToken, false]);
+      
+              const mailOptions = {
+                from: 'khaledkhaled94400@hotmail.fr',
+                to: mail,
+                subject: 'Email Verification',
+                text: `Click the following link to verify your email: ${process.env.NUXT_PUBLIC_FRONTEND}/verification-mail?role=employeur&token=${verificationToken}`,
+              };
+              await transporter.sendMail(mailOptions);
+      
+              res.status(200).json({ message: 'Verification email sent. Please check your inbox.' });
+            } catch (error) {
+              console.error(error);
+              res.status(500).json({ status: "error", message: 'Failed to create user. Please try again.' });
+            }
           });
         }
     
@@ -97,8 +124,10 @@ const employeursController = {
     
           try {
             const result = await bcrypt.compare(pass, user.pass);
-    
-            if (result) {
+            if (!user.is_verified) {
+              res.json({ status: "error", message: "Adresse mail non vérifé" });
+            }
+            else if (result) {
               const userId = user.id;
               const role = 'employeur';
               res.json({ status: "success", message: "Login successful", userId, role });
@@ -242,6 +271,92 @@ const employeursController = {
         console.log(error);
         res.json({ status: "error", message: error.message });
       }
+    },
+    verifMailToken: async (req, res) => {
+      const { token } = req.params;
+      const vrai = true;
+      console.log(token)
+      try {
+        const sql = 'SELECT * FROM employeurs WHERE verification_token = ?';
+        const [rows, fields] = await pool.query(sql, [token]);
+        const user = rows[0];
+        if (!user) {
+          return res.status(404).json({ message: 'Invalid or expired verification token' }); console.log('invalid')
+        }
+    
+        // Update user's verification status in the database
+        const sql2 = "UPDATE employeurs SET is_verified = ? WHERE verification_token = ?;"; // Supposons que vous avez une table 'villes' avec une colonne 'nom'
+        const [rows2, fields2] = await pool.query(sql2, [vrai, token]);
+    
+        res.json({ status: 'success' });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
+    },
+    retryMailToken: async(req, res) => {
+      const { mail } = req.params;
+      try {
+        const sql = 'SELECT verification_token FROM employeurs WHERE mail = ?';
+        const [rows, fields] = await pool.query(sql, [mail]);
+
+        const mailOptions = {
+          from: 'khaledkhaled94400@hotmail.fr',
+          to: mail,
+          subject: 'Email Verification',
+          text: `Click the following link to verify your email: ${process.env.NUXT_PUBLIC_FRONTEND}/verification-mail?role=employeur&token=${rows[0]}`,
+        };
+        await transporter.sendMail(mailOptions);
+
+        res.json({data: rows})
+      } catch (error) {
+ 
+      }
+    },
+    forgotPass: async(req, res) => {
+      const verificationToken = crypto.randomBytes(20).toString('hex');
+      const { mail } = req.body;
+      try {
+        const sqlMail = "SELECT COUNT(*) AS email_count FROM employeurs WHERE mail = ?";
+        const [rowsMail, fieldsMail] = await pool.query(sqlMail, [mail]);
+        const emailCount = rowsMail[0].email_count;
+
+        if (emailCount === 0) {
+          res.json({ data: 'mail non existant' });
+        } else {
+          const sql = 'UPDATE employeurs SET verification_token = ? WHERE mail = ?;';
+          const [rows, fields] = await pool.query(sql, [verificationToken, mail]);
+  
+          const mailOptions = {
+            from: 'khaledkhaled94400@hotmail.fr',
+            to: mail,
+            subject: 'Mot de passe oublié',
+            text: `Click the following link to change your password: ${process.env.NUXT_PUBLIC_FRONTEND}/pass-change?role=employeur&token=${verificationToken}`,
+          };
+          await transporter.sendMail(mailOptions); 
+  
+          res.json({status: "success"})
+        }
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
+    },
+    resetPass: async(req, res) => {
+      const { pass, token } = req.body;
+      bcrypt.hash(pass, 10, async (err, hash) => {
+        if (err) throw err; // Handle error from bcrypt.hash
+  
+        try {
+          const sql = "UPDATE employeurs SET pass = ? WHERE verification_token = ?";
+          await pool.query(sql, [hash, token]);
+  
+          res.status(200).json({ status: "success", message: 'mot de passe réinitialisé' });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ status: "error", message: 'Failed to create user. Please try again.' });
+        }
+      });
     }
   };
   
