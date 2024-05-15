@@ -22,5 +22,10 @@ router.get("/verify-email/:token", employeursController.verifMailToken);
 router.get("/retryMail/:mail", employeursController.retryMailToken);
 router.post("/forgotPass", employeursController.forgotPass);
 router.post("/resetPass", employeursController.resetPass);
+router.post("/changeMail", employeursController.changeMailRequest);
+router.post("/resetMail", employeursController.resetMail);
+router.post("/corrigePhone", employeursController.updatePhone);
+router.post("/corrigeNom", employeursController.updateNom);
+router.post("/supprimeCompteEmployeur", employeursController.deleteEmployeur);
 
 module.exports = router;

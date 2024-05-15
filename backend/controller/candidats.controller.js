@@ -3,12 +3,12 @@ const bcrypt = require("bcrypt");
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const transporter = nodemailer.createTransport({
-    service: 'outlook',
-    auth: {
-      user: 'khaledkhaled94400@hotmail.fr',
-      pass: 'SkywalkinDallas4real*',
-    },
-  });
+  service: 'outlook',
+  auth: {
+    user: 'khaledtestdev@hotmail.com',
+    pass: 'SkywalkinDallas4real*',
+  },
+});
 
 const candidatsController = {
     getAll: async (req, res) => {
@@ -54,7 +54,7 @@ const candidatsController = {
                   const [rows, fields] = await pool.query(sql, [prenom, nom, date_naissance, mail, phone, hash, sexe, pays, verificationToken, false]);
 
                   const mailOptions = {
-                    from: 'khaledkhaled94400@hotmail.fr',
+                    from: 'khaledtestdev@hotmail.com',
                     to: mail,
                     subject: 'Email Verification',
                     text: `Click the following link to verify your email: ${process.env.NUXT_PUBLIC_FRONTEND}/verification-mail?role=candidat&token=${verificationToken}`,
@@ -112,7 +112,7 @@ const candidatsController = {
           try {
             const result = await bcrypt.compare(pass, user.pass);
             if (!user.is_verified) {
-              res.json({ status: "error", message: "Adresse mail non vérifé" });
+              res.json({ message: "Adresse mail non vérifée" });
             }
             else if (result && user.is_verified) {
               const userId = user.id;
@@ -425,7 +425,7 @@ const candidatsController = {
         const [rows, fields] = await pool.query(sql, [mail]);
 
         const mailOptions = {
-          from: 'khaledkhaled94400@hotmail.fr',
+          from: 'khaledtestdev@hotmail.com',
           to: mail,
           subject: 'Email Verification',
           text: `Click the following link to verify your email: ${process.env.NUXT_PUBLIC_FRONTEND}/verification-mail?role=candidat&token=${rows[0]}`,
@@ -453,7 +453,7 @@ const candidatsController = {
           const [rows, fields] = await pool.query(sql, [verificationToken, mail]);
   
           const mailOptions = {
-            from: 'khaledkhaled94400@hotmail.fr',
+            from: 'khaledtestdev@hotmail.com',
             to: mail,
             subject: 'Mot de passe oublié',
             text: `Click the following link to change your password: ${process.env.NUXT_PUBLIC_FRONTEND}/pass-change?role=candidat&token=${verificationToken}`,
@@ -482,7 +482,149 @@ const candidatsController = {
           res.status(500).json({ status: "error", message: 'mot de passe non modifié' });
         }
       });
+    },
+    changeMailRequest: async(req, res) => {
+      const verificationToken = crypto.randomBytes(20).toString('hex');
+      const { mail } = req.body;
+      try {
+        const sqlMail = "SELECT COUNT(*) AS email_count FROM candidats WHERE mail = ?";
+        const [rowsMail, fieldsMail] = await pool.query(sqlMail, [mail]);
+        const emailCount = rowsMail[0].email_count;
+
+        if (emailCount === 0) {
+          res.json({ data: 'mail non existant' });
+        } else {
+          const sql = 'UPDATE candidats SET verification_token = ? WHERE mail = ?;';
+          const [rows, fields] = await pool.query(sql, [verificationToken, mail]);
+  
+          const mailOptions = {
+            from: 'khaledtestdev@hotmail.com',
+            to: mail,
+            subject: 'Modifier mon e-mail',
+            text: `Click the following link to change your e-mail: ${process.env.NUXT_PUBLIC_FRONTEND}/mail-change?role=candidat&token=${verificationToken}`,
+          };
+          await transporter.sendMail(mailOptions); 
+  
+          res.json({status: "success"})
+        }
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
+    },
+    resetMail: async(req, res) => {
+      const { mail, token } = req.body;
+      const verificationToken = crypto.randomBytes(20).toString('hex');
+        try {
+          const sqlMail = "SELECT COUNT(*) AS email_count FROM candidats WHERE mail = ?";
+          const [rowsMail, fieldsMail] = await pool.query(sqlMail, [mail]);
+          const emailCount = rowsMail[0].email_count;
+
+          if (emailCount === 1) {
+            res.json({ message: 'Mail existant' });
+          } else if (emailCount === 0) {
+            const sql = "UPDATE candidats SET mail = ?, is_verified = false WHERE verification_token = ?";
+            await pool.query(sql, [mail, token]);
+            const sql2 = "UPDATE candidats SET verification_token = ? WHERE mail = ?";
+            await pool.query(sql2, [verificationToken, mail]);
+  
+            const mailOptions = {
+              from: 'khaledtestdev@hotmail.com',
+              to: mail,
+              subject: 'Modifier mon e-mail',
+              text: `Click the following link to verify your email: ${process.env.NUXT_PUBLIC_FRONTEND}/verification-mail?role=candidat&token=${verificationToken}`,
+            };
+            await transporter.sendMail(mailOptions); 
+    
+            res.status(200).json({ status: "success", message: 'mail réinitialisé' });
+          }
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ status: "error", message: 'mail non modifié' });
+        }
+    },
+    updateDateNaissance: async (req, res) => {
+      try {
+        const { date_naissance, id } = req.body;
+        const sql = "UPDATE candidats SET date_naissance = ? WHERE id = ?";
+        const [rows, fields] = await pool.query(sql, [date_naissance, id]);
+        res.json({ status: "success" });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
+    },
+    updatePrenom: async (req, res) => {
+      try {
+        const { prenom, id } = req.body;
+        const sql = "UPDATE candidats SET prenom = ? WHERE id = ?";
+        const [rows, fields] = await pool.query(sql, [prenom, id]);
+        res.json({ status: "success" });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
+    },
+    updatePhone: async (req, res) => {
+      try {
+        const { phone, id } = req.body;
+        const sql2 = "SELECT COUNT(*) AS phone_count FROM candidats WHERE phone = ?";
+        const [rows2, fields2] = await pool.query(sql2, [phone]);
+        const phoneCount = rows2[0].phone_count;
+        if (phoneCount > 0){
+          res.json({ message: 'téléphone existant' });
+        } else {
+          const sql = "UPDATE candidats SET phone = ? WHERE id = ?";
+          const [rows, fields] = await pool.query(sql, [phone, id]);
+          res.json({ status: "success" });
+        }
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
+    },
+    updateNom: async (req, res) => {
+      try {
+        const { nom, id } = req.body;
+        const sql = "UPDATE candidats SET nom = ? WHERE id = ?";
+        const [rows, fields] = await pool.query(sql, [nom, id]);
+        res.json({ status: "success" });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: "error", message: error.message });
+      }
+    },
+    deleteCandidat: async (req, res) => {
+      try {
+        const { id } = req.body;
+    
+        // Supprimer les candidatures associées à ce candidat
+        const sqlDeleteApplications = "DELETE FROM candidatures WHERE id_candidat = ?";
+        await pool.query(sqlDeleteApplications, [id]);
+    
+        // Supprimer les compétences associées à ce candidat
+        const sqlDeleteSkills = "DELETE FROM comp_candi WHERE id_candidat = ?";
+        await pool.query(sqlDeleteSkills, [id]);
+    
+        // Supprimer les expériences associées à ce candidat
+        const sqlDeleteExperiences = "DELETE FROM exp_candi WHERE id_candidat = ?";
+        await pool.query(sqlDeleteExperiences, [id]);
+    
+        // Supprimer les formations associées à ce candidat
+        const sqlDeleteFormations = "DELETE FROM form_candi WHERE id_candidat = ?";
+        await pool.query(sqlDeleteFormations, [id]);
+    
+        // Supprimer le candidat
+        const sqlDeleteCandidate = "DELETE FROM candidats WHERE id = ?";
+        await pool.query(sqlDeleteCandidate, [id]);
+    
+        res.status(200).json({ status: "success", message: "Candidat et données associées supprimés avec succès." });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: "error", message: "Erreur lors de la suppression du candidat et des données associées." });
+      }
     }
+    
   };
   
   module.exports = candidatsController;

@@ -1,6 +1,6 @@
 <template>
     <nav>
-      <div class="logo"><NuxtLink class="linkRoute" to="/">Kazi</NuxtLink></div>
+      <div class="logo"><NuxtLink class="linkRoute" to="/"><img src="../assets/img/Logo-KAZI.png" alt="logo" class="logo-img"></NuxtLink></div>
       <div :class="{ navlinks: true, 'navlinks--visible': showNavlinks }">
         <ul v-if="!authStore.isAuthenticated">
           <div @click="toggleNavlinks" class="test"><li><nuxt-link to="/jobs/kazisearch">Jobs</nuxt-link></li></div>
@@ -14,20 +14,22 @@
           <div @click="toggleNavlinks" class="test" ><li><nuxt-link to="/aboutus">À propos</nuxt-link></li></div>  
           <div @click="toggleNavlinks" class="test"><li><nuxt-link :to="`/${authStore.getRole}`">Mon compte</nuxt-link></li></div>
           <div @click="disconnect" class="test" ><li><nuxt-link to="/login">Deconnexion</nuxt-link></li></div>
+          <div @click="toggleNavlinks" class="test" ><li><nuxt-link to="/settings"><Icon name="material-symbols:settings-rounded" color="#ff5a8a" /></nuxt-link></li></div>
         </ul>
       </div>
       <span class="mask-demo" @click="toggleNavlinks"><Icon name="system-uicons:drag" size="3em" /></span>
     </nav>
+    
 </template>
 
 <style scoped>
 
   a{
-    color: white !important;
+    color: black !important;
   }
 
   a:hover{
-    color: blue !important;
+    color: #ff5a8a !important;
   }
     .blue{
     color: rgb(13 102 132);
@@ -50,15 +52,15 @@
     height: 49px;
     box-sizing: border-box;
     align-items: center;
-    /* backdrop-filter: blur(16px); */
-    background-color: #34a7d3;
+    /* backdrop-filter: blur(16px); */background-color: rgb(255, 255, 255);
+    box-shadow: 0 25px 20px -20px #252525;
     transition: 0.2s;
     position: fixed;
     z-index: 13;
   }
   nav:hover{
-    background-color: rgb(255, 255, 255);
-    box-shadow: 0 25px 20px -20px #252525;
+    background-color: black;
+    box-shadow: 0 0 0 0 transparent;
   }
   nav:hover .mask-demo{
     color: rgb(13 102 132);
@@ -78,13 +80,13 @@
     color: rgb(14, 14, 14) !important;
   }
   nav:hover ul .test a {
-    color: black !important;
+    color: #ff5a8a  !important;
   }
   .test:hover li{
     font-size: larger;
     font-weight: bolder;
-    color: rgb(13 102 132);
-    background-color: white;
+    /* color: rgb(13 102 132);
+    background-color: white; */
   }
 
   .test:hover li, a{
@@ -122,30 +124,40 @@
       display: block;
       cursor: pointer;
       z-index: 54;
-      color: rgb(255, 255, 255);
+      color: #de4b7f;
     }
     nav:hover .mask-demo{
       /* padding: 0; */
-      color : rgb(13 102 132);
+      color : #de4b7f;
     }
-    .navlinks{
+    .navlinks {
       position: fixed;
       z-index: 1;
       top: 0;
       left: 0;
-      background-color: rgba(254, 254, 254, 0);
+      background-color: rgba(255, 255, 255, 1);
       backdrop-filter: blur(20px);
       width: 100%;
       height: 100vh;
-      display: none;
+      visibility: hidden;
+      opacity: 0;
+      display: flex;
       align-items: center;
       justify-content: center;
       transform: translateX(-100%);
-      transition: transform 0.7s ease-in-out;
+      transition: visibility 0s, opacity 0.5s, transform 0.5s;
     }
+
     .navlinks--visible {
-      transform: translateX(0);
-      display: flex;
+      visibility: visible;
+      opacity: 1;
+      height: 105vh;
+      transform: translateX(0%);
+      transition: visibility 0s, opacity 0.5s, transform 0.5s;
+    }
+
+    .test .icon {
+      color: white !important;
     }
     .navlinks ul{        
       display: flex;
@@ -154,9 +166,9 @@
     .navlinks ul li{
       margin: 25px 0;
       padding: 3px;
-      border-radius: 15px;
+      border-radius: 4px;
       font-size: 2.2em;
-      background-color:#34a7d3;
+      background-color:#de4b7f;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -165,16 +177,15 @@
       cursor: pointer;
     }
 
-    .navlinks ul li:hover {
+    /* .navlinks ul li:hover {
       margin: 19px 0;
       background-color:#34a7d3 !important;
       font-size: 1.7rem;
-    }
+    } */
 
     .test:hover li{
       margin: 25px 0;
       padding: 3px;
-      border-radius: 15px;
       font-size: 2.2em;
       display: flex;
       justify-content: center;
@@ -191,6 +202,11 @@
       margin: 3px 0;
       transition: 0.5s;
     }
+  }
+
+  .logo-img {
+    width: auto;
+    height: 25px;
   }
   </style>
   

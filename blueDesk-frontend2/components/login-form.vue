@@ -309,11 +309,11 @@ function passwordRules(chaine) {
             mail: userLog.value.mail,
             pass: userLog.value.pass,
           });
-          if(response.data.status === "error"){
-            showError("Informations incorrectes !")
-          }
-          else if(response.data.status === "error" && response.data.message === "Adresse mail non vérifé"){
+          if(response.data.message === "Adresse mail non vérifée"){
             showError("Vous n'avez pas encore vérifié votre adresse mail.")
+          }
+          else if(response.data.status === "error"){
+            showError("Informations incorrectes !")
           }
           else if(response.data.status === "success") {
             console.log('Status Code:', response.status);
@@ -331,7 +331,7 @@ function passwordRules(chaine) {
             identifiant: userLog.value.identifiant,
             pass: userLog.value.pass,
           });
-          if(response.data.status === "error" && response.data.message === "Adresse mail non vérifé"){
+          if(response.data.message === "Adresse mail non vérifée"){
             showError("Vous n'avez pas encore vérifié votre adresse mail.")
           }
           else if(response.data.status === "error"){

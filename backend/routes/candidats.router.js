@@ -30,6 +30,13 @@ router.get("/verify-email/:token", candidatsController.verifMailToken);
 router.get("/retryMail/:mail", candidatsController.retryMailToken); 
 router.post("/forgotPass", candidatsController.forgotPass);
 router.post("/resetPass", candidatsController.resetPass);
+router.post("/changeMail", candidatsController.changeMailRequest);
+router.post("/resetMail", candidatsController.resetMail);
+router.post("/corrigeDateNaissance", candidatsController.updateDateNaissance);
+router.post("/corrigePrenom", candidatsController.updatePrenom);
+router.post("/corrigePhone", candidatsController.updatePhone);
+router.post("/corrigeNom", candidatsController.updateNom);
+router.post("/supprimeCompteCandidat", candidatsController.deleteCandidat);
 
 
 module.exports = router;
