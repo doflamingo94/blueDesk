@@ -766,24 +766,39 @@ const insertExperience = async () => {
     }else {
       try {
         const date_debut = convertDateFormat(experience.value.date_debut);
-        if(experience.value.date_fin.length > 0){
-          experience.value.date_fin = convertDateFormat(experience.value.date_fin);
+        if(experience.value.date_fin.length === 0){
+            const response = await axios.post(`${config.public.backend}/api/v1/candidats/insertExp`, {
+            employeur: experience.value.employeur,
+            date_debut: date_debut,
+            poste: experience.value.poste,
+            date_fin: false,
+            pays: experience.value.pays,
+            ville: experience.value.ville,
+            id_candidat: userId
+          });
+
+          console.log('Status Code:', response.status);
+          console.log('Response Data:', response.data);
+          experience.value = {};
+          window.location.href = `/candidat`
+
+        } else {
+          const date_fin = convertDateFormat(experience.value.date_fin);
+          const response = await axios.post(`${config.public.backend}/api/v1/candidats/insertExp`, {
+            employeur: experience.value.employeur,
+            date_debut: date_debut,
+            poste: experience.value.poste,
+            date_fin: date_fin,
+            pays: experience.value.pays,
+            ville: experience.value.ville,
+            id_candidat: userId
+          });
+  
+          console.log('Status Code:', response.status);
+          console.log('Response Data:', response.data);
+          experience.value = {};
+          window.location.href = `/candidat`
         }
-        const response = await axios.post(`${config.public.backend}/api/v1/candidats/insertExp`, {
-          employeur: experience.value.employeur,
-          date_debut: date_debut,
-          poste: experience.value.poste,
-          date_fin: experience.value.date_fin,
-          pays: experience.value.pays,
-          ville: experience.value.ville,
-          id_candidat: userId
-        });
-
-        console.log('Status Code:', response.status);
-        console.log('Response Data:', response.data);
-
-        experience.value = {};
-        window.location.href = `/candidat`
       } catch (err) {
         console.log(err);
       }
@@ -803,25 +818,42 @@ const updateExperience = async (id) => {
     }else {
       try {
         const date_debut = convertDateFormat(experience.value.date_debut);
-        if(experience.value.date_fin.length > 0){
-          experience.value.date_fin = convertDateFormat(experience.value.date_fin);
+        if(experience.value.date_fin.length === 0){
+            const response = await axios.post(`${config.public.backend}/api/v1/candidats/updateExp`, {
+            employeur: experience.value.employeur,
+            date_debut: date_debut,
+            poste: experience.value.poste,
+            date_fin: false,
+            pays: experience.value.pays,
+            ville: experience.value.ville,
+            id_experience: id
+          });
+
+          console.log('Status Code:', response.status);
+          console.log('Response Data:', response.data);
+
+          experience.value = {};
+          idExp.value = null;
+          window.location.href = `/candidat`
+        } else {
+            const date_fin = convertDateFormat(experience.value.date_fin);
+            const response = await axios.post(`${config.public.backend}/api/v1/candidats/updateExp`, {
+              employeur: experience.value.employeur,
+              date_debut: date_debut,
+              poste: experience.value.poste,
+              date_fin: date_fin,
+              pays: experience.value.pays,
+              ville: experience.value.ville,
+              id_experience: id
+            });
+    
+            console.log('Status Code:', response.status);
+            console.log('Response Data:', response.data);
+    
+            experience.value = {};
+            idExp.value = null;
+            window.location.href = `/candidat`
         }
-        const response = await axios.post(`${config.public.backend}/api/v1/candidats/updateExp`, {
-          employeur: experience.value.employeur,
-          date_debut: date_debut,
-          poste: experience.value.poste,
-          date_fin: experience.value.date_fin,
-          pays: experience.value.pays,
-          ville: experience.value.ville,
-          id_experience: id
-        });
-
-        console.log('Status Code:', response.status);
-        console.log('Response Data:', response.data);
-
-        experience.value = {};
-        idExp.value = null;
-        window.location.href = `/candidat`
       } catch (err) {
         console.log(err);
       }
@@ -861,24 +893,40 @@ const updateFormation = async (id) => {
     } else {
       try {
         const date_debut = convertDateFormat(formation.value.date_debut);
-        if(formation.value.date_fin.length > 0){
-          formation.value.date_fin = convertDateFormat(formation.value.date_fin);
+        if(formation.value.date_fin.length === 0){
+          const response = await axios.post(`${config.public.backend}/api/v1/candidats/updateForm`, {
+            nom: formation.value.nom,
+            date_debut: date_debut,
+            ecole: formation.value.ecole,
+            date_fin: false,
+            pays: formation.value.pays,
+            ville: formation.value.ville,
+            id_formation: id
+          });
+
+          console.log('Status Code:', response.status);
+          console.log('Response Data:', response.data);
+
+          formation.value = {};
+          window.location.href = `/candidat`
+        } else {
+            date_fin = convertDateFormat(formation.value.date_fin);
+            const response = await axios.post(`${config.public.backend}/api/v1/candidats/updateForm`, {
+              nom: formation.value.nom,
+              date_debut: date_debut,
+              ecole: formation.value.ecole,
+              date_fin: date_fin,
+              pays: formation.value.pays,
+              ville: formation.value.ville,
+              id_formation: id
+            });
+    
+            console.log('Status Code:', response.status);
+            console.log('Response Data:', response.data);
+    
+            formation.value = {};
+            window.location.href = `/candidat`
         }
-        const response = await axios.post(`${config.public.backend}/api/v1/candidats/updateForm`, {
-          nom: formation.value.nom,
-          date_debut: date_debut,
-          ecole: formation.value.ecole,
-          date_fin: formation.value.date_fin,
-          pays: formation.value.pays,
-          ville: formation.value.ville,
-          id_formation: id
-        });
-
-        console.log('Status Code:', response.status);
-        console.log('Response Data:', response.data);
-
-        formation.value = {};
-        window.location.href = `/candidat`
       } catch (err) {
         console.log(err);
       }
@@ -898,7 +946,7 @@ const deleteFormation = async (id) => {
 
         formation.value = {};
         idForm.value = null;
-        // window.location.href = `/candidat`
+        window.location.href = `/candidat`
       } catch (err) {
         console.log(err, 'yyyy', id);
       }
@@ -918,24 +966,40 @@ const insertFormartion = async () => {
     } else {
       try {
         const date_debut = convertDateFormat(formation.value.date_debut);
-        if(formation.value.date_fin.length > 0){
-          formation.value.date_fin = convertDateFormat(formation.value.date_fin);
+        if(formation.value.date_fin.length === 0){
+            const response = await axios.post(`${config.public.backend}/api/v1/candidats/insertForm`, {
+            nom: formation.value.nom,
+            date_debut: date_debut,
+            ecole: formation.value.ecole,
+            date_fin: false,
+            pays: formation.value.pays,
+            ville: formation.value.ville,
+            id_candidat: userId
+          });
+
+          console.log('Status Code:', response.status);
+          console.log('Response Data:', response.data);
+
+          formation.value = {};
+          window.location.href = `/candidat`
+        } else {
+            const date_fin = convertDateFormat(formation.value.date_fin);
+            const response = await axios.post(`${config.public.backend}/api/v1/candidats/insertForm`, {
+              nom: formation.value.nom,
+              date_debut: date_debut,
+              ecole: formation.value.ecole,
+              date_fin: date_fin,
+              pays: formation.value.pays,
+              ville: formation.value.ville,
+              id_candidat: userId
+            });
+    
+            console.log('Status Code:', response.status);
+            console.log('Response Data:', response.data);
+    
+            formation.value = {};
+            window.location.href = `/candidat`
         }
-        const response = await axios.post(`${config.public.backend}/api/v1/candidats/insertForm`, {
-          nom: formation.value.nom,
-          date_debut: date_debut,
-          ecole: formation.value.ecole,
-          date_fin: formation.value.date_fin,
-          pays: formation.value.pays,
-          ville: formation.value.ville,
-          id_candidat: userId
-        });
-
-        console.log('Status Code:', response.status);
-        console.log('Response Data:', response.data);
-
-        formation.value = {};
-        window.location.href = `/candidat`
       } catch (err) {
         console.log(err);
       }

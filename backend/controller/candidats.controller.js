@@ -191,19 +191,33 @@ const candidatsController = {
     insertExperience: async (req, res) => {
       try {
         const { id_candidat, poste, employeur, date_debut, date_fin, pays, ville } = req.body;
-  
-        // Insert into experiences table
-        const experienceSql = "INSERT INTO experiences (poste, employeur, date_debut, date_fin, pays, ville) VALUES (?, ?, ?, ?, ?, ?);";
-        const [experienceRows, _] = await pool.query(experienceSql, [poste, employeur, date_debut, date_fin, pays, ville]);
-  
-        // Get the ID of the last inserted experience
-        const experienceId = experienceRows.insertId;
-  
-        // Insert into exp_candi table to link the experience with the candidate
-        const expCandiSql = "INSERT INTO exp_candi (id_candidat, id_experience) VALUES (?, ?);";
-        await pool.query(expCandiSql, [id_candidat, experienceId]);
-  
-        res.json({ status: "success", message: "Experience inserted successfully." });
+        
+        if(date_fin === false) {
+          const experienceSql = "INSERT INTO experiences (poste, employeur, date_debut, pays, ville) VALUES (?, ?, ?, ?, ?);";
+          const [experienceRows, _] = await pool.query(experienceSql, [poste, employeur, date_debut, pays, ville]);
+    
+          // Get the ID of the last inserted experience
+          const experienceId = experienceRows.insertId;
+    
+          // Insert into exp_candi table to link the experience with the candidate
+          const expCandiSql = "INSERT INTO exp_candi (id_candidat, id_experience) VALUES (?, ?);";
+          await pool.query(expCandiSql, [id_candidat, experienceId]);
+    
+          res.json({ status: "success", message: "Experience inserted successfully." });
+        } else {
+          // Insert into experiences table
+          const experienceSql = "INSERT INTO experiences (poste, employeur, date_debut, date_fin, pays, ville) VALUES (?, ?, ?, ?, ?, ?);";
+          const [experienceRows, _] = await pool.query(experienceSql, [poste, employeur, date_debut, date_fin, pays, ville]);
+    
+          // Get the ID of the last inserted experience
+          const experienceId = experienceRows.insertId;
+    
+          // Insert into exp_candi table to link the experience with the candidate
+          const expCandiSql = "INSERT INTO exp_candi (id_candidat, id_experience) VALUES (?, ?);";
+          await pool.query(expCandiSql, [id_candidat, experienceId]);
+    
+          res.json({ status: "success", message: "Experience inserted successfully." });
+        }
       } catch (error) {
           console.log(error);
           res.json({ status: "error", message: error.message });
@@ -254,19 +268,32 @@ const candidatsController = {
     insertFormation: async (req, res) => {
       try {
         const { id_candidat, nom, ecole, date_debut, date_fin, pays, ville } = req.body;
-  
-        // Insert into formations table
-        const formationSql = "INSERT INTO formations (nom, ecole, date_debut, date_fin, pays, ville) VALUES (?, ?, ?, ?, ?, ?);";
-        const [formationRows, _] = await pool.query(formationSql, [nom, ecole, date_debut, date_fin, pays, ville]);
-  
-        // Get the ID of the last inserted formation
-        const formationId = formationRows.insertId;
-  
-        // Insert into form_candi table to link the formation with the candidate
-        const formCandiSql = "INSERT INTO form_candi (id_candidat, id_formation) VALUES (?, ?);";
-        await pool.query(formCandiSql, [id_candidat, formationId]);
-  
-        res.json({ status: "success", message: "Formation inserted successfully." });
+        if (date_fin === false) {
+          const formationSql = "INSERT INTO formations (nom, ecole, date_debut, pays, ville) VALUES (?, ?, ?, ?, ?);";
+          const [formationRows, _] = await pool.query(formationSql, [nom, ecole, date_debut, pays, ville]);
+    
+          // Get the ID of the last inserted formation
+          const formationId = formationRows.insertId;
+    
+          // Insert into form_candi table to link the formation with the candidate
+          const formCandiSql = "INSERT INTO form_candi (id_candidat, id_formation) VALUES (?, ?);";
+          await pool.query(formCandiSql, [id_candidat, formationId]);
+    
+          res.json({ status: "success", message: "Formation inserted successfully." });
+        } else {
+            // Insert into formations table
+            const formationSql = "INSERT INTO formations (nom, ecole, date_debut, date_fin, pays, ville) VALUES (?, ?, ?, ?, ?, ?);";
+            const [formationRows, _] = await pool.query(formationSql, [nom, ecole, date_debut, date_fin, pays, ville]);
+      
+            // Get the ID of the last inserted formation
+            const formationId = formationRows.insertId;
+      
+            // Insert into form_candi table to link the formation with the candidate
+            const formCandiSql = "INSERT INTO form_candi (id_candidat, id_formation) VALUES (?, ?);";
+            await pool.query(formCandiSql, [id_candidat, formationId]);
+      
+            res.json({ status: "success", message: "Formation inserted successfully." });
+        }
       } catch (error) {
           console.log(error);
           res.json({ status: "error", message: error.message });
@@ -313,16 +340,27 @@ const candidatsController = {
     updateFormation: async (req, res) => {
         try {
             const { id_formation, nom, ecole, date_debut, date_fin, pays, ville } = req.body;
-    
-            // Update the formation in the formations table
-            const sql = `
-                UPDATE formations
-                SET nom = ?, ecole = ?, date_debut = ?, date_fin = ?, pays = ?, ville = ?
-                WHERE id = ?;
-            `;
-            await pool.query(sql, [nom, ecole, date_debut, date_fin, pays, ville, id_formation]);
-    
-            res.json({ status: "success", message: "Formation updated successfully." });
+            if (date_fin === false) {
+              // Update the formation in the formations table
+              const sql = `
+                  UPDATE formations
+                  SET nom = ?, ecole = ?, date_debut = ?, pays = ?, ville = ?
+                  WHERE id = ?;
+              `;
+              await pool.query(sql, [nom, ecole, date_debut, pays, ville, id_formation]);
+      
+              res.json({ status: "success", message: "Formation updated successfully." });
+            } else {
+                // Update the formation in the formations table
+                const sql = `
+                    UPDATE formations
+                    SET nom = ?, ecole = ?, date_debut = ?, date_fin = ?, pays = ?, ville = ?
+                    WHERE id = ?;
+                `;
+                await pool.query(sql, [nom, ecole, date_debut, date_fin, pays, ville, id_formation]);
+        
+                res.json({ status: "success", message: "Formation updated successfully." });
+            }
         } catch (error) {
             console.log(error);
             res.json({ status: "error", message: error.message });
@@ -331,16 +369,27 @@ const candidatsController = {
     updateExperience: async (req, res) => {
         try {
             const { id_experience, poste, employeur, date_debut, date_fin, pays, ville } = req.body;
-    
-            // Update the experience in the experiences table
-            const sql = `
-                UPDATE experiences
-                SET poste = ?, employeur = ?, date_debut = ?, date_fin = ?, pays = ?, ville = ?
-                WHERE id = ?;
-            `;
-            await pool.query(sql, [poste, employeur, date_debut, date_fin, pays, ville, id_experience]);
-    
-            res.json({ status: "success", message: "Experience updated successfully." });
+            if (date_fin === false) {
+                 // Update the experience in the experiences table
+                 const sql = `
+                 UPDATE experiences
+                 SET poste = ?, employeur = ?, date_debut = ?, pays = ?, ville = ?
+                 WHERE id = ?;
+                `;
+                await pool.query(sql, [poste, employeur, date_debut, pays, ville, id_experience]);
+        
+                res.json({ status: "success", message: "Experience updated successfully." });
+            } else {
+              // Update the experience in the experiences table
+              const sql = `
+                  UPDATE experiences
+                  SET poste = ?, employeur = ?, date_debut = ?, date_fin = ?, pays = ?, ville = ?
+                  WHERE id = ?;
+              `;
+              await pool.query(sql, [poste, employeur, date_debut, date_fin, pays, ville, id_experience]);
+      
+              res.json({ status: "success", message: "Experience updated successfully." });
+            }
         } catch (error) {
             console.log(error);
             res.json({ status: "error", message: error.message });
