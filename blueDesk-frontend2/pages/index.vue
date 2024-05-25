@@ -1,25 +1,28 @@
 <template>
-    <!-- <div class="hero-container"> -->
-        <!-- <he-ro /> -->
-        <HeroTest />
-        <!-- <VueCardCarousel /> -->
-       <!-- <div class="titles">
-            <h1>Rechercher un emploi aux Comores</h1>
-            
-       </div>  -->
-    <!-- </div> -->
-    <!-- <div class="container">
-        <SearchBar @clicked="handleSearch" />
-    </div> -->
-    <div class="titles">
-        <h1>Nos annonces</h1>
-    </div> 
-    <JobCards :message="paginatedJobs" />
-    <Paginator
-    v-model:first="first"
-    :rows="10"
-    :totalRecords="jobs.length"
-    />
+    <div>
+
+        <!-- <div class="hero-container"> -->
+            <!-- <he-ro /> -->
+            <HeroTest />
+            <!-- <VueCardCarousel /> -->
+           <!-- <div class="titles">
+                <h1>Rechercher un emploi aux Comores</h1>
+                
+           </div>  -->
+        <!-- </div> -->
+        <!-- <div class="container">
+            <SearchBar @clicked="handleSearch" />
+        </div> -->
+        <div class="titles">
+            <h1>Nos annonces</h1>
+        </div> 
+        <JobCards :message="paginatedJobs" />
+        <Paginator
+        v-model="first"
+        :rows="10"
+        :totalRecords="jobs.length"
+        />
+    </div>
 </template>
 
 <script setup>

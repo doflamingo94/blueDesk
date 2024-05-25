@@ -3,12 +3,17 @@ const bcrypt = require("bcrypt");
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const transporter = nodemailer.createTransport({
-    service: 'outlook',
-    auth: {
-      user: 'khaledtestdev@hotmail.com',
-      pass: 'SkywalkinDallas4real*',
-    },
-  });
+  host: 'pro3.mail.ovh.net',
+  port: 587, // Use port 587 for STARTTLS
+  secure: false, // Set to false for STARTTLS
+  auth: {
+    user: 'noreply@kazicomores.com',
+    pass: 'TA42013*',
+  },
+  tls: {
+    rejectUnauthorized: false, // Set to false to allow self-signed certificates if any
+  }
+});
 
 const employeursController = {
     getAll: async (req, res) => {
@@ -71,7 +76,7 @@ const employeursController = {
               await pool.query(sql, [nom, numero_siret, hash, identifiant, phone, mail, ville, verificationToken, false]);
       
               const mailOptions = {
-                from: 'khaledtestdev@hotmail.com',
+                from: 'noreply@kazicomores.com',
                 to: mail,
                 subject: 'Email Verification',
                 text: `Click the following link to verify your email: ${process.env.NUXT_PUBLIC_FRONTEND}/verification-mail?role=employeur&token=${verificationToken}`,
@@ -301,7 +306,7 @@ const employeursController = {
         const [rows, fields] = await pool.query(sql, [mail]);
 
         const mailOptions = {
-          from: 'khaledtestdev@hotmail.com',
+          from: 'noreply@kazicomores.com',
           to: mail,
           subject: 'Email Verification',
           text: `Click the following link to verify your email: ${process.env.NUXT_PUBLIC_FRONTEND}/verification-mail?role=employeur&token=${rows[0]}`,
@@ -328,7 +333,7 @@ const employeursController = {
           const [rows, fields] = await pool.query(sql, [verificationToken, mail]);
   
           const mailOptions = {
-            from: 'khaledtestdev@hotmail.com',
+            from: 'noreply@kazicomores.com',
             to: mail,
             subject: 'Mot de passe oublié',
             text: `Click the following link to change your password: ${process.env.NUXT_PUBLIC_FRONTEND}/pass-change?role=employeur&token=${verificationToken}`,
@@ -373,7 +378,7 @@ const employeursController = {
           const [rows, fields] = await pool.query(sql, [verificationToken, mail]);
   
           const mailOptions = {
-            from: 'khaledtestdev@hotmail.com',
+            from: 'noreply@kazicomores.com',
             to: mail,
             subject: 'Modifier mon e-mail',
             text: `Click the following link to change your e-mail: ${process.env.NUXT_PUBLIC_FRONTEND}/mail-change?role=employeur&token=${verificationToken}`,
@@ -404,7 +409,7 @@ const employeursController = {
             await pool.query(sql2, [verificationToken, mail]);
   
             const mailOptions = {
-              from: 'khaledtestdev@hotmail.com',
+              from: 'noreply@kazicomores.com',
               to: mail,
               subject: 'Modifier mon e-mail',
               text: `Click the following link to verify your email: ${process.env.NUXT_PUBLIC_FRONTEND}/verification-mail?role=employeur&token=${verificationToken}`,

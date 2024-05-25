@@ -42,7 +42,7 @@ onBeforeMount(() => {
     if(!router.currentRoute.value.query.role || !router.currentRoute.value.query.token) {
         router.push({path: `/`})
     }
-}),
+})
 
 function showError(message) {
   const errorMessage = document.getElementById('error-message');
@@ -83,13 +83,15 @@ async function submitForm() {
   showSpinner.value = true;
   toggleBodyOverflow(true);
   if (newPass.value.one != newPass.value.two) {
+      showSpinner.value = false;
+      toggleBodyOverflow(false);
       showError("Vos mots de passe ne sont pas identiques");
-      showSpinner.value = false;
-      toggleBodyOverflow(false);
+      
     }  else if (!passwordRules(newPass.value.one)) {
-      showError("Votre mot de passe doit contenir au minimum 8 caractères, minuscule, majuscule et un chiffre");
       showSpinner.value = false;
       toggleBodyOverflow(false);
+      showError("Votre mot de passe doit contenir au minimum 8 caractères, minuscule, majuscule et un chiffre");
+      
     }
   else{
         try {

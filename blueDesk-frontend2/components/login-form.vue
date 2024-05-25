@@ -20,7 +20,7 @@
             <form @submit.prevent="loggin" class="login" :style="{marginLeft: loginFormMargin}">
               <div class="field">
                   <select name="typeUser" v-model="userLog.typeUser" class="format-input">
-                      <option value="" disabled selected>Tu es ?</option>
+                      <option value="" disabled selected>Je suis ?</option>
                       <option value="Employeur">Employeur</option>
                       <option value="Candidat">Candidat</option>
                     </select>
@@ -52,7 +52,7 @@
             <form @submit.prevent action="#" class="signup" :style="{marginLeft: signupFormMargin}">
               <div class="field">
                   <select name="typeUser" v-model="newUser.typeUser" class="format-input">
-                      <option value="" disabled selected>Tu es ?</option>
+                      <option value="" disabled selected>Je suis ?</option>
                       <option value="Employeur">Employeur</option>
                       <option value="Candidat">Candidat</option>
                     </select>

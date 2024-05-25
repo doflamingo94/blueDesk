@@ -11,7 +11,7 @@
         </h2>
         <Paginator
         v-if="testAnnonces && jobs.length > 15"
-        v-model:first="first"
+        v-model="first"
         :rows="10"
         :totalRecords="jobs.length"
         />
@@ -74,6 +74,7 @@ const hydrateJobs = async () => {
 const paginatedJobs = computed(() => {
         const startIndex = first.value;
         const endIndex = startIndex + 15; // Change 15 to the number of jobs per page
+        console.log(jobs.value.slice(startIndex, endIndex))
         return jobs.value.slice(startIndex, endIndex);
     });
 
