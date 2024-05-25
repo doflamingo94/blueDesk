@@ -59,7 +59,8 @@
     z-index: 13;
   }
   nav:hover{
-    background-color: black;
+    background-color: rgb(255, 255, 255);
+    border-bottom: solid 1px rgb(243, 243, 243);
     box-shadow: 0 0 0 0 transparent;
   }
   nav:hover .mask-demo{

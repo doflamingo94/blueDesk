@@ -1,11 +1,11 @@
 <template>
-    <div v-if="!candidaturesData" class="page-content">
+    <div v-if="!candidaturesData || candidaturesData.length === 0" class="page-content">
         <div class="header">
             <h1>Pas encore de candidature</h1>
         </div>
     </div>
     <div v-else class="page-content">
-        <div class="header">
+        <div v-if="candidaturesData[0].poste" class="header">
             <h1>Candidatures pour le poste de {{ `${candidaturesData[0].poste}` }} </h1>
         </div>
         <table v-if="candidaturesData">
