@@ -12,7 +12,7 @@
             <CldUploadWidget
               v-slot="{ open }"
               uploadPreset="candidat-pp"
-              :options="{ clientAllowedFormats: ['png', 'jpeg'], maxFiles: 1 }"
+              :options="uploadOptions"
               @upload="handleSuccess"
             >
                 <p @click="open" class="overlay-text">Ajouter une photo</p>
@@ -28,7 +28,7 @@
               <CldUploadWidget
               v-slot="{ open }"
               uploadPreset="candidat-pp"
-              :options="{ clientAllowedFormats: ['png', 'jpeg'], maxFiles: 1 }"
+              :options="uploadOptions"
               @upload="modifLogo"
               >
                 <Button label="modifier" @click="open"/>
@@ -456,6 +456,52 @@ const formation = ref({
   pays: '',
   ville: ''
 });
+const uploadOptions = {
+  cloudName: config.public.cname,  // Replace with your Cloudinary cloud name
+  uploadPreset: 'candidat-pp',
+  sources: [
+    'local', 'url', 'camera', 'image_search', 
+    'google_drive', 'facebook', 'dropbox'
+  ],
+  cropping: true,  // Enables cropping tool
+  croppingCoordinatesMode: 'custom',
+  croppingAspectRatio: 1,  // Optional: Enforces aspect ratio (1 for square)
+  croppingShowBackButton: true,  // Shows a back button in the cropping UI
+  croppingDefaultSelectionRatio: 0.8,  // Optional: Default cropping area
+  multiple: false,  // Optional: Allows multiple uploads
+  defaultSource: 'local',
+  clientAllowedFormats: ['png', 'jpeg'],  // Allowed formats
+  maxFiles: 1,  // Maximum number of files
+  styles: {
+    palette: {
+      window: "#FFFFFF",
+      windowBorder: "#90A0B3",
+      tabIcon: "#0078FF",
+      menuIcons: "#5A616A",
+      textDark: "#000000",
+      textLight: "#FFFFFF",
+      link: "#0078FF",
+      action: "#FF620C",
+      inactiveTabIcon: "#0E2F5A",
+      error: "#F44235",
+      inProgress: "#0078FF",
+      complete: "#20B832",
+      sourceBg: "#E4EBF1"
+    },
+    fonts: {
+      default: null,
+      "'Fira Sans', sans-serif": {
+        url: "https://fonts.googleapis.com/css?family=Fira+Sans",
+        active: true
+      }
+    }
+  },
+  resource_type: 'image',
+  croppingCoordinatesMode: 'custom',
+  croppedImageTransformation: [
+    { width: 500, height: 500, crop: 'limit' }  // Set transformation for the cropped image
+  ]
+};
 
 
 console.log(userId)
